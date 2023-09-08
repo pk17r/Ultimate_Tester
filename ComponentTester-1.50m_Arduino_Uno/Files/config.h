@@ -359,7 +359,7 @@
  *  - uncomment to enable
  */
 
-//#define HW_FLASHLIGHT
+#define HW_FLASHLIGHT
 
 
 
@@ -1177,8 +1177,8 @@
  *  - enable one
  */
 
-//#define POWER_SWITCH_SOFT
-#define POWER_SWITCH_MANUAL
+#define POWER_SWITCH_SOFT
+//#define POWER_SWITCH_MANUAL
 
 
 /*
