@@ -328,9 +328,9 @@
  *  - uncomment to enable and also select the correct buzzer type
  */
 
-//#define HW_BUZZER
-#define BUZZER_ACTIVE                   /* active buzzer */
-//#define BUZZER_PASSIVE                  /* passive buzzer */
+#define HW_BUZZER
+//#define BUZZER_ACTIVE                   /* active buzzer */
+#define BUZZER_PASSIVE                  /* passive buzzer */
 
 
 /*
@@ -701,7 +701,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_CONTINUITY_CHECK
+#define SW_CONTINUITY_CHECK
 
 
 /*
@@ -830,7 +830,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_FAHRENHEIT
+#define UI_FAHRENHEIT
 
 
 /*
@@ -856,7 +856,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_SHORT_CIRCUIT_MENU
+#define UI_SHORT_CIRCUIT_MENU
 
 
 /*
@@ -867,7 +867,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_KEY_HINTS
+#define UI_KEY_HINTS
 
 
 /*
@@ -902,7 +902,7 @@
  *    (see section 'Busses') 
  */
 
-#define UI_SERIAL_COMMANDS
+//#define UI_SERIAL_COMMANDS
 
 
 /*
@@ -933,7 +933,7 @@
  *  - uncomment to enable, also adjust timeout (in s)
  */
 
-//#define POWER_OFF_TIMEOUT     60
+#define POWER_OFF_TIMEOUT     60
 
 
 /*
@@ -961,7 +961,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_QUESTION_MARK
+#define UI_QUESTION_MARK
 
 
 /*
@@ -1045,7 +1045,7 @@
  *    (COLOR_PROBE_1, COLOR_PROBE_2 and COLOR_PROBE_3)
  */
 
-#define UI_PROBE_COLORS
+//#define UI_PROBE_COLORS
 
 
 /*
@@ -1086,7 +1086,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_MENU_PAGEMODE
+#define UI_MENU_PAGEMODE
 
 
 /*
@@ -1094,7 +1094,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_MAINMENU_AUTOEXIT
+#define UI_MAINMENU_AUTOEXIT
 
 
 /*
@@ -1147,7 +1147,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_PROBING_DONE_BEEP
+#define UI_PROBING_DONE_BEEP
 
 
 /*
