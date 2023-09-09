@@ -952,7 +952,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_PINOUT_ALT
+#define UI_PINOUT_ALT
 
 
 /*
@@ -1138,7 +1138,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_CENTER_ALIGN
+#define UI_CENTER_ALIGN
 
 
 /*
@@ -1385,7 +1385,7 @@
  *  - uncomment to enable
  */
 
-//#define ADC_LARGE_BUFFER_CAP
+#define ADC_LARGE_BUFFER_CAP
 
 
 
