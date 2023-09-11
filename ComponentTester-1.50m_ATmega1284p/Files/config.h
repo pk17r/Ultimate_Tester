@@ -314,9 +314,9 @@
  *  - uncomment to enable and adjust resistor values
  */
 
-//#define HW_LOGIC_PROBE
-//#define LOGIC_PROBE_R1        10000
-//#define LOGIC_PROBE_R2        3300
+#define HW_LOGIC_PROBE
+#define LOGIC_PROBE_R1        10000
+#define LOGIC_PROBE_R2        3300
 
 
 /*
@@ -374,7 +374,7 @@
  *  - uncomment to enable
  */
 
-#define SW_PWM_SIMPLE
+//#define SW_PWM_SIMPLE
 
 
 /*
@@ -384,7 +384,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_PWM_PLUS
+#define SW_PWM_PLUS
 
 
 /*
@@ -1189,9 +1189,9 @@
  *  - uncomment one of the modes
  */
 
-#define BAT_NONE
+//#define BAT_NONE
 //#define BAT_DIRECT
-//#define BAT_DIVIDER
+#define BAT_DIVIDER
 
 
 /*
@@ -1204,7 +1204,7 @@
  *  - uncomment to enable
  */
 
-#define BAT_EXT_UNMONITORED
+//#define BAT_EXT_UNMONITORED
 
 
 /*

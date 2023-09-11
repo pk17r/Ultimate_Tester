@@ -460,14 +460,14 @@
  *  - I2C interface using hardware I2C
  */
 
-#if 0
+#if 1
 #define LCD_SH1106                      /* display controller SH1106 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_I2C                         /* I2C interface */
 #define LCD_I2C_ADDR     0x3c           /* SH1106's I2C address */
 /* control lines */
-#define LCD_PORT         PORTB          /* port data register */
-#define LCD_DDR          DDRB           /* port data direction register */
+//#define LCD_PORT         PORTB          /* port data register */
+//#define LCD_DDR          DDRB           /* port data direction register */
 //#define LCD_RESET        PB2            /* port pin used for /RES (optional) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
@@ -476,7 +476,7 @@
 #define LCD_FLIP_X                      /* enable horizontal flip */
 #define LCD_FLIP_Y                      /* enable vertical flip */
 //#define LCD_COM_SEQ                     /* COM pin layout: sequential */
-#define LCD_CONTRAST     127            /* default contrast (0-255) */
+#define LCD_CONTRAST     255            /* default contrast (0-255) */
 /* font and symbols: vertically aligned & flipped, bank-wise grouping */
 #define FONT_8X8_VF                     /* 8x8 font */
 #define SYMBOLS_24X24_VFP               /* 24x24 symbols */
@@ -484,7 +484,9 @@
 //#define SYMBOLS_24X24_ALT2_VFP          /* 24x24 alternative symbols #2 */
 /* I2C bus */
 #define I2C_HARDWARE                    /* hardware I2C (MCU's TWI) */
-#define I2C_STANDARD_MODE               /* 100kHz bus speed */
+//#define I2C_BITBANG                     /* bit-bang I2C */
+//#define I2C_STANDARD_MODE               /* 100kHz bus speed */
+#define I2C_FAST_MODE                   /* 400kHz bus speed */
 #endif
 
 
@@ -581,7 +583,7 @@
  *  - I2C interface using hardware I2C
  */
 
-#if 1
+#if 0
 #define LCD_SSD1306                     /* display controller SSD1306 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_I2C                         /* I2C interface */
@@ -979,11 +981,11 @@
 #define TP2              PA1       /* test pin / probe #2 */
 #define TP3              PA2       /* test pin / probe #3 */
 
-#define TP_ZENER         PA3       /* test pin for for Zener check (10:1 voltage divider) */
-#define TP_REF           PA4       /* test pin for 2.5V reference and relay */
+#define TP_ZENER         PA6       /* test pin for for Zener check (10:1 voltage divider) */
+#define TP_REF           PA3       /* test pin for 2.5V reference and relay */
 #define TP_BAT           PA5       /* test pin for battery (4:1 voltage divider) */
 #define TP_CAP           PA7       /* test pin for self-adjustment cap */
-#define TP_LOGIC         PA6       /* test pin for Logic Probe (4:1 voltage divider) */
+#define TP_LOGIC         PA4       /* test pin for Logic Probe (4:1 voltage divider) */
 
 
 /*
@@ -1040,8 +1042,8 @@
 #define ENCODER_PORT     PORTC     /* port data register */
 #define ENCODER_DDR      DDRC      /* port data direction register */
 #define ENCODER_PIN      PINC      /* port input pins register */
-#define ENCODER_A        PC3       /* rotary encoder A signal */
-#define ENCODER_B        PC4       /* rotary encoder B signal */
+#define ENCODER_A        PC4       /* rotary encoder A signal */
+#define ENCODER_B        PC3       /* rotary encoder B signal */
 
 
 /*
@@ -1051,8 +1053,8 @@
 #define KEY_PORT         PORTC     /* port data register */
 #define KEY_DDR          DDRC      /* port data direction register */
 #define KEY_PIN          PINC      /* port input pins register */
-#define KEY_INC          PC4       /* increase push button (low active) */
-#define KEY_DEC          PC3       /* decrease push button (low active) */
+#define KEY_INC          PC3       /* increase push button (low active) */
+#define KEY_DEC          PC4       /* decrease push button (low active) */
 
 
 /*
