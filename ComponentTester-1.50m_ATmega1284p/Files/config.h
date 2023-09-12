@@ -80,7 +80,7 @@
  *    reference
  */
 
-//#define HW_REF25
+#define HW_REF25
 
 
 /*
@@ -89,7 +89,7 @@
  *  - or use >= 5.5 digit DMM to measure the voltage
  */
 
-#define UREF_25           2495
+#define UREF_25           2500
 
 
 /*
@@ -264,7 +264,7 @@
  *  - uncomment to enable
  */
 
-//#define HW_ADJUST_CAP
+#define HW_ADJUST_CAP
 
 
 /*
@@ -1016,7 +1016,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_BATTERY
+#define UI_BATTERY
 
 
 /*
@@ -1102,7 +1102,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_POWER_OFF
+#define SW_POWER_OFF
 
 
 /*
@@ -1265,7 +1265,7 @@
  *  ADC voltage reference based on Vcc (in mV). 
  */
 
-#define UREF_VCC         5001
+#define UREF_VCC         5020
 
 
 /*
