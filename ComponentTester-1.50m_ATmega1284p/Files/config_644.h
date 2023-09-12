@@ -1029,10 +1029,10 @@
  *  - can't be same port as ADC_PORT or R_PORT
  */
 
-#define BUTTON_PORT      PORTC     /* port data register */
-#define BUTTON_DDR       DDRC      /* port data direction register */
-#define BUTTON_PIN       PINC      /* port input pins register */
-#define TEST_BUTTON      PC7       /* test/start push button (low active) */
+#define BUTTON_PORT      PORTB     /* port data register */
+#define BUTTON_DDR       DDRB      /* port data direction register */
+#define BUTTON_PIN       PINB      /* port input pins register */
+#define TEST_BUTTON      PB0       /* test/start push button (low active) */
 
 
 /*
