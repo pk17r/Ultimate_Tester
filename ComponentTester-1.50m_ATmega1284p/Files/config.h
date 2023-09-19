@@ -315,8 +315,8 @@
  */
 
 #define HW_LOGIC_PROBE
-#define LOGIC_PROBE_R1        10000
-#define LOGIC_PROBE_R2        3300
+#define LOGIC_PROBE_R1        219050
+#define LOGIC_PROBE_R2        47170
 
 
 /*
@@ -892,7 +892,7 @@
  *  - also enable SERIAL_BITBANG or SERIAL_HARDWARE (see section 'Busses')
  */
 
-#define UI_SERIAL_COPY
+//#define UI_SERIAL_COPY
 
 
 /*

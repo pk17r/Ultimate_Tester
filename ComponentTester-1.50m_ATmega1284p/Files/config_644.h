@@ -1232,9 +1232,9 @@
  *  flashlight / general purpose switched output
  */
 
-#define FLASHLIGHT_PORT  PORTC     /* port data register */
-#define FLASHLIGHT_DDR   DDRC      /* port data direction register */
-#define FLASHLIGHT_CTRL  PC2       /* control pin */
+#define FLASHLIGHT_PORT  PORTB     /* port data register */
+#define FLASHLIGHT_DDR   DDRB      /* port data direction register */
+#define FLASHLIGHT_CTRL  PB1       /* control pin */
 
 
 /*
