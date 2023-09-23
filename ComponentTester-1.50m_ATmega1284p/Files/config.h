@@ -359,7 +359,7 @@
  *  - uncomment to enable
  */
 
-#define HW_FLASHLIGHT
+//#define HW_FLASHLIGHT
 
 
 
@@ -1227,6 +1227,7 @@
  */  
 
 #define BAT_OFFSET       290
+#define USBV_OFFSET      441
 
 
 /*

@@ -57,6 +57,7 @@
   /* options */
   #if ! defined (BAT_NONE) && ! defined (UI_BATTERY)
     const unsigned char Battery_str[] MEM_TYPE = "Bat";
+    const unsigned char USBV_str[] MEM_TYPE = "Bat";
     const unsigned char OK_str[] MEM_TYPE = "ok";
     const unsigned char Weak_str[] MEM_TYPE = "weak";
     const unsigned char Low_str[] MEM_TYPE = "low";

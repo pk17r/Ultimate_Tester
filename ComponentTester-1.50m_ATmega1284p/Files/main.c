@@ -2171,7 +2171,10 @@ void ShowBattery(void)
 
   #ifndef UI_BATTERY
   /* display battery info (text) */
-  Display_EEString_Space(Battery_str);     /* display: Bat. */
+  if(!Cfg.USBVoltageFlag)
+    Display_EEString_Space(Battery_str);     /* display: Bat. */
+  else
+    Display_EEString_Space(USBV_str);     /* display: USB. */
 
     #ifdef BAT_EXT_UNMONITORED
     /* check for unmonitored external power supply */
@@ -2318,12 +2321,12 @@ void CheckBattery(void)
   /* get current battery voltage */
   U_Bat = ReadU(TP_BAT);           /* read voltage (mV) */
 
-  #ifdef BAT_DIVIDER
+#ifdef BAT_DIVIDER
   uint32_t          Temp;          /* temporary value */
 
   /*
    *  ADC pin is connected to a voltage divider (top: R1 / bottom: R2).
-   *  - U2 = (Uin / (R1 + R2)) * R2 
+   *  - U2 = (Uin / (R1 + R2)) * R2
    *  - Uin = (U2 * (R1 + R2)) / R2
    */
 
@@ -2331,36 +2334,51 @@ void CheckBattery(void)
   Temp *= U_Bat;                   /* Uin (0.001 mV) */
   Temp /= 1000;                    /* Uin (mV) */
   U_Bat = (uint16_t)Temp;          /* keep 2 bytes */
-  #endif
+#endif
 
-  U_Bat += BAT_OFFSET;             /* add offset for voltage drop */
-  Cfg.Vbat = U_Bat;                /* save battery voltage */
-  Cfg.BatTimer = 100;              /* reset timer for next battery check (in 100ms) */
-                                   /* about 10s */
+  uint8_t           USBV_not_used;               /* temp. value */
+  USBV_not_used = USBV_PIN & (1 << USBV_BUTTON);
 
-  /* check for low-voltage situation */
-  if (U_Bat < BAT_LOW)             /* low level reached */
+  if (!USBV_not_used)
   {
-    #ifdef BAT_EXT_UNMONITORED
-    /* not for unmonitored external power supply */
-    if (U_Bat >= 900)                   /* >= 0.9V */
-    {
-      /* battery operation */
-    #endif
+      U_Bat += USBV_OFFSET;             /* add offset for voltage drop */
+      Cfg.Vbat = U_Bat;                /* save battery voltage */
+      Cfg.USBVoltageFlag = 1;
+      Cfg.BatTimer = 100;              /* reset timer for next battery check (in 100ms) */
+      /* about 10s */
+  }
+  else
+  {
+      U_Bat += BAT_OFFSET;             /* add offset for voltage drop */
+      Cfg.Vbat = U_Bat;                /* save battery voltage */
+      Cfg.USBVoltageFlag = 0;
+      Cfg.BatTimer = 100;              /* reset timer for next battery check (in 100ms) */
+      /* about 10s */
 
-      #ifdef UI_COLORED_CURSOR
-      /* because of TestKey() we have to reset the pen color */
-      UI.PenColor = COLOR_PEN;     /* set default pen color */
-      #endif
+/* check for low-voltage situation */
+      if (U_Bat < BAT_LOW)             /* low level reached */
+      {
+#ifdef BAT_EXT_UNMONITORED
+          /* not for unmonitored external power supply */
+          if (U_Bat >= 900)                   /* >= 0.9V */
+          {
+              /* battery operation */
+#endif
 
-      LCD_Clear();                 /* clear display */
-      ShowBattery();               /* display battery status */
-      MilliSleep(3000);            /* let user read info */
-      PowerOff();                  /* power off */
+#ifdef UI_COLORED_CURSOR
+/* because of TestKey() we have to reset the pen color */
+              UI.PenColor = COLOR_PEN;     /* set default pen color */
+#endif
 
-    #ifdef BAT_EXT_UNMONITORED
-    }
-    #endif
+              LCD_Clear();                 /* clear display */
+              ShowBattery();               /* display battery status */
+              MilliSleep(3000);            /* let user read info */
+              PowerOff();                  /* power off */
+
+#ifdef BAT_EXT_UNMONITORED
+      }
+#endif
+      }
   }
 }
 

@@ -1025,6 +1025,17 @@
 
 
 /*
+ *  USB Voltage Being Used
+ *  - can't be same port as ADC_PORT or R_PORT
+ */
+
+#define USBV_PORT        PORTC     /* port data register */
+#define USBV_DDR         DDRC      /* port data direction register */
+#define USBV_PIN         PINC      /* port input pins register */
+#define USBV_BUTTON      PC0       /* test/start push button (low active) */
+
+
+/*
  *  test push button
  *  - can't be same port as ADC_PORT or R_PORT
  */
