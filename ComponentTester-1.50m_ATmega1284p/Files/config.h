@@ -666,10 +666,10 @@
  *  - uncomment to enable (one or more)
  */
 
-//#define SW_R_E24_5_T          /* E24 5% tolerance, text */
-//#define SW_R_E24_5_CC         /* E24 5% tolerance, color-code */
-//#define SW_R_E24_1_T          /* E24 1% tolerance, text */
-//#define SW_R_E24_1_CC         /* E24 1% tolerance, color-code */
+#define SW_R_E24_5_T          /* E24 5% tolerance, text */
+#define SW_R_E24_5_CC         /* E24 5% tolerance, color-code */
+#define SW_R_E24_1_T          /* E24 1% tolerance, text */
+#define SW_R_E24_1_CC         /* E24 1% tolerance, color-code */
 //#define SW_R_E96_T            /* E96 1% tolerance, text */
 //#define SW_R_E96_CC           /* E96 1% tolerance, color-code */
 //#define SW_R_E96_EIA96        /* E96 1% tolerance, EIA-96 code */
@@ -1045,7 +1045,7 @@
  *    (COLOR_PROBE_1, COLOR_PROBE_2 and COLOR_PROBE_3)
  */
 
-//#define UI_PROBE_COLORS
+#define UI_PROBE_COLORS
 
 
 /*
@@ -1055,7 +1055,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_COLORED_TITLES
+#define UI_COLORED_TITLES
 
 
 /*
@@ -1065,7 +1065,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_COLORED_CURSOR
+#define UI_COLORED_CURSOR
 
 
 /*
@@ -1076,7 +1076,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_COLORED_VALUES
+#define UI_COLORED_VALUES
 
 
 /*

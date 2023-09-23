@@ -460,7 +460,7 @@
  *  - I2C interface using hardware I2C
  */
 
-#if 1
+#if 0
 #define LCD_SH1106                      /* display controller SH1106 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_I2C                         /* I2C interface */
@@ -742,7 +742,7 @@
  *  - 4 wire SPI interface using hardware SPI
  */
 
-#if 0
+#if 1
 #define LCD_ST7735                      /* display controller ST7735 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_COLOR                       /* color display */
@@ -757,9 +757,9 @@
 #define LCD_SDA          PB5            /* port pin used for SDA */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
-#define LCD_DOTS_Y       160            /* number of vertical dots */
-//#define LCD_OFFSET_X     4               /* enable x offset of 2 or 4 dots */
-//#define LCD_OFFSET_Y     2               /* enable y offset of 1 or 2 dots */
+#define LCD_DOTS_Y       162            /* number of vertical dots */
+#define LCD_OFFSET_X     2               /* enable x offset of 2 or 4 dots */
+#define LCD_OFFSET_Y     1               /* enable y offset of 1 or 2 dots */
 //#define LCD_FLIP_X                      /* enable horizontal flip */
 #define LCD_FLIP_Y                      /* enable vertical flip */
 #define LCD_ROTATE                      /* switch X and Y (rotate by 90°) */
@@ -1232,9 +1232,9 @@
  *  flashlight / general purpose switched output
  */
 
-#define FLASHLIGHT_PORT  PORTB     /* port data register */
-#define FLASHLIGHT_DDR   DDRB      /* port data direction register */
-#define FLASHLIGHT_CTRL  PB1       /* control pin */
+#define FLASHLIGHT_PORT  PORTC     /* port data register */
+#define FLASHLIGHT_DDR   DDRC      /* port data direction register */
+#define FLASHLIGHT_CTRL  PC1       /* control pin */
 
 
 /*
