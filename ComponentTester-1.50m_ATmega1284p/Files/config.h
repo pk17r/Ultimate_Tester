@@ -1227,7 +1227,7 @@
  */  
 
 #define BAT_OFFSET       290
-#define USBV_OFFSET      441
+#define USBV_OFFSET      496
 
 
 /*
