@@ -2346,7 +2346,7 @@ void CheckBattery(void)
 #endif
 
   uint8_t           USBV_not_used;               /* temp. value */
-  USBV_not_used = USBV_PIN & (1 << USBV_BUTTON);
+  USBV_not_used = USBV_PIN & (1 << USBV_SENSE);
 
   if (!USBV_not_used)
   {

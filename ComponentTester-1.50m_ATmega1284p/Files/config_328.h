@@ -515,7 +515,7 @@
  *  - I2C interface using bit-bang I2C
  */
 
-#if 1
+#if 0
 #define LCD_SSD1306                     /* display controller SSD1306 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_I2C                         /* I2C interface */
@@ -677,19 +677,19 @@
  *  - 4 wire SPI interface using bit-bang SPI
  */
 
-#if 0
+#if 1
 #define LCD_ST7735                      /* display controller ST7735 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_COLOR                       /* color display */
 #define LCD_SPI                         /* SPI interface */
 /* control and data lines */
-#define LCD_PORT         PORTD          /* port data register */
-#define LCD_DDR          DDRD           /* port data direction register */
-#define LCD_RES          PD4            /* port pin used for /RESX (optional) */
-#define LCD_CS           PD5            /* port pin used for /CSX (optional) */
-#define LCD_DC           PD3            /* port pin used for D/CX */
-#define LCD_SCL          PD2            /* port pin used for SCL */
-#define LCD_SDA          PD1            /* port pin used for SDA */
+#define LCD_PORT         PORTB          /* port data register */
+#define LCD_DDR          DDRB           /* port data direction register */
+//#define LCD_RES          PB1            /* port pin used for /RESX (optional) */
+#define LCD_CS           PB2            /* port pin used for /CSX (optional) */
+#define LCD_DC           PB4            /* port pin used for D/CX */
+#define LCD_SCL          PB5            /* port pin used for SCL */
+#define LCD_SDA          PB3            /* port pin used for SDA */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
 #define LCD_DOTS_Y       160            /* number of vertical dots */
@@ -883,14 +883,14 @@
 #define ADC_PORT         PORTC     /* port data register */
 #define ADC_DDR          DDRC      /* port data direction register */
 #define ADC_PIN          PINC      /* port input pins register */
-#define TP1              PC0       /* test pin / probe #1 */
-#define TP2              PC1       /* test pin / probe #2 */
-#define TP3              PC2       /* test pin / probe #3 */
+#define TP1              PC3       /* test pin / probe #1 */
+#define TP2              PC4       /* test pin / probe #2 */
+#define TP3              PC5       /* test pin / probe #3 */
 
-#define TP_ZENER         PC3       /* test pin for for Zener check (10:1 voltage divider) */
-#define TP_REF           PC4       /* test pin for 2.5V reference and relay */
-#define TP_BAT           PC5       /* test pin for battery (4:1 voltage divider) */
-//#define TP_LOGIC         PC3       /* test pin for Logic Probe (4:1 voltage divider) */
+#define TP_ZENER         PC2       /* test pin for for Zener check (10:1 voltage divider) */
+#define TP_REF           PC1       /* test pin for 2.5V reference and relay */
+#define TP_BAT           PC0       /* test pin for battery (4:1 voltage divider) */
+#define TP_LOGIC         PC2       /* test pin for Logic Probe (4:1 voltage divider) */
 
 
 /*
@@ -899,14 +899,14 @@
  *  - Don't share this port with POWER_CTRL or TEST_BUTTON!
  */
 
-#define R_PORT           PORTB     /* port data register */
-#define R_DDR            DDRB      /* port data direction register */
-#define R_RL_1           PB0       /* Rl (680R) for test pin #1 */
-#define R_RH_1           PB1       /* Rh (470k) for test pin #1 */
-#define R_RL_2           PB2       /* Rl (680R) for test pin #2 */
-#define R_RH_2           PB3       /* Rh (470k) for test pin #2 */
-#define R_RL_3           PB4       /* Rl (680R) for test pin #3 */
-#define R_RH_3           PB5       /* Rh (470k) for test pin #3 */
+#define R_PORT           PORTD     /* port data register */
+#define R_DDR            DDRD      /* port data direction register */
+#define R_RL_1           PD0       /* Rl (680R) for test pin #1 */
+#define R_RH_1           PD1       /* Rh (470k) for test pin #1 */
+#define R_RL_2           PD2       /* Rl (680R) for test pin #2 */
+#define R_RH_2           PD3       /* Rh (470k) for test pin #2 */
+#define R_RL_3           PD4       /* Rl (680R) for test pin #3 */
+#define R_RH_3           PD5       /* Rh (470k) for test pin #3 */
 
 
 /*
@@ -924,9 +924,9 @@
  *  - can't be same port as ADC_PORT or R_PORT
  */
 
-#define POWER_PORT       PORTD     /* port data register */
-#define POWER_DDR        DDRD      /* port data direction register */
-#define POWER_CTRL       PD6       /* control pin (1: on / 0: off) */
+#define POWER_PORT       PORTB     /* port data register */
+#define POWER_DDR        DDRB      /* port data direction register */
+#define POWER_CTRL       PB1       /* control pin (1: on / 0: off) */
 
 
 /*
@@ -934,10 +934,10 @@
  *  - can't be same port as ADC_PORT or R_PORT
  */
 
-#define BUTTON_PORT      PORTD     /* port data register */
-#define BUTTON_DDR       DDRD      /* port data direction register */
-#define BUTTON_PIN       PIND      /* port input pins register */
-#define TEST_BUTTON      PD7       /* test/start push button (low active) */
+#define BUTTON_PORT      PORTB     /* port data register */
+#define BUTTON_DDR       DDRB      /* port data direction register */
+#define BUTTON_PIN       PINB      /* port input pins register */
+#define TEST_BUTTON      PB0       /* test/start push button (low active) */
 
 
 /*
@@ -947,8 +947,8 @@
 #define ENCODER_PORT     PORTD     /* port data register */
 #define ENCODER_DDR      DDRD      /* port data direction register */
 #define ENCODER_PIN      PIND      /* port input pins register */
-#define ENCODER_A        PD3       /* rotary encoder A signal */
-#define ENCODER_B        PD2       /* rotary encoder B signal */
+#define ENCODER_A        PD6       /* rotary encoder A signal */
+#define ENCODER_B        PD7       /* rotary encoder B signal */
 
 
 /*
@@ -1068,9 +1068,9 @@
  *  buzzer
  */
 
-#define BUZZER_PORT      PORTD     /* port data register */
-#define BUZZER_DDR       DDRD      /* port data direction register */
-#define BUZZER_CTRL      PD5       /* control pin (low: off / high: on) */
+#define BUZZER_PORT      PORTB     /* port data register */
+#define BUZZER_DDR       DDRB      /* port data direction register */
+#define BUZZER_CTRL      PB2       /* control pin (low: off / high: on) */
 
 
 /*

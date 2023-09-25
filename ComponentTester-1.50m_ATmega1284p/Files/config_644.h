@@ -761,7 +761,7 @@
 #define LCD_OFFSET_X     2               /* enable x offset of 2 or 4 dots */
 #define LCD_OFFSET_Y     1               /* enable y offset of 1 or 2 dots */
 //#define LCD_FLIP_X                      /* enable horizontal flip */
-#define LCD_FLIP_Y                      /* enable vertical flip */
+//#define LCD_FLIP_Y                      /* enable vertical flip */
 #define LCD_ROTATE                      /* switch X and Y (rotate by 90°) */
 //#define LCD_BGR                         /* reverse red and blue color channels */
 //#define LCD_LATE_ON                     /* turn on LCD after clearing it */
@@ -1025,14 +1025,15 @@
 
 
 /*
- *  USB Voltage Being Used
+ *  USB Power Sense Pin
  *  - can't be same port as ADC_PORT or R_PORT
+ *  - function implemented to read USB Voltage instead of Batt Voltage when USB Power is used
  */
 
 #define USBV_PORT        PORTC     /* port data register */
 #define USBV_DDR         DDRC      /* port data direction register */
 #define USBV_PIN         PINC      /* port input pins register */
-#define USBV_BUTTON      PC0       /* test/start push button (low active) */
+#define USBV_SENSE      PC1        /* sense if USB power is being used (low active) */
 
 
 /*
