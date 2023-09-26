@@ -22,7 +22,7 @@ PROJECT = ComponentTester
 # - ATmega 1280            : atmega1280
 # - ATmega 1284P           : atmega1284p
 # - ATmega 2560            : atmega2560
-MCU = atmega1284p
+MCU = atmega328
 
 # MCU freqency:
 # - 1MHz  : 1
@@ -69,7 +69,7 @@ endif
 # - ATmega 1284   : m1284
 # - ATmega 1284P  : m1284p
 # - ATmega 2560   : m2560
-PARTNO = m1284p
+PARTNO = m328
 
 # avrdude: ISP programmer, port and options
 

@@ -80,7 +80,7 @@
  *    reference
  */
 
-#define HW_REF25
+//#define HW_REF25
 
 
 /*
@@ -188,7 +188,7 @@
  *  - uncomment to enable
  */
 
-#define HW_FREQ_COUNTER_BASIC
+//#define HW_FREQ_COUNTER_BASIC
 
 
 /*
@@ -264,7 +264,7 @@
  *  - uncomment to enable
  */
 
-#define HW_ADJUST_CAP
+//#define HW_ADJUST_CAP
 
 
 /*
@@ -314,7 +314,7 @@
  *  - uncomment to enable and adjust resistor values
  */
 
-#define HW_LOGIC_PROBE
+//#define HW_LOGIC_PROBE
 #define LOGIC_PROBE_R1        219050
 #define LOGIC_PROBE_R2        47170
 
@@ -429,7 +429,7 @@
  *  - uncomment to enable
  */
 
-#define SW_ENCODER
+//#define SW_ENCODER
 
 
 /*
@@ -527,7 +527,7 @@
  *  - uncomment to enable
  */
 
-#define SW_OPTO_COUPLER
+//#define SW_OPTO_COUPLER
 
 
 /*
@@ -604,7 +604,7 @@
  *  - uncomment to enable
  */
 
-#define SW_CAP_LEAKAGE
+//#define SW_CAP_LEAKAGE
 
 
 /*
@@ -666,10 +666,10 @@
  *  - uncomment to enable (one or more)
  */
 
-#define SW_R_E24_5_T          /* E24 5% tolerance, text */
-#define SW_R_E24_5_CC         /* E24 5% tolerance, color-code */
-#define SW_R_E24_1_T          /* E24 1% tolerance, text */
-#define SW_R_E24_1_CC         /* E24 1% tolerance, color-code */
+//#define SW_R_E24_5_T          /* E24 5% tolerance, text */
+//#define SW_R_E24_5_CC         /* E24 5% tolerance, color-code */
+//#define SW_R_E24_1_T          /* E24 1% tolerance, text */
+//#define SW_R_E24_1_CC         /* E24 1% tolerance, color-code */
 //#define SW_R_E96_T            /* E96 1% tolerance, text */
 //#define SW_R_E96_CC           /* E96 1% tolerance, color-code */
 //#define SW_R_E96_EIA96        /* E96 1% tolerance, EIA-96 code */
@@ -726,7 +726,7 @@
  *  - uncomment to enable
  */
 
-#define SW_PHOTODIODE
+//#define SW_PHOTODIODE
 
 
 
@@ -1227,7 +1227,6 @@
  */  
 
 #define BAT_OFFSET       290
-#define USBV_OFFSET      496
 
 
 /*
@@ -1290,7 +1289,7 @@
 #define R_LOW            680
 
 /* Rh in Ohms */
-#define R_HIGH           470000
+#define R_HIGH           475000
 
 
 /*
@@ -1515,7 +1514,7 @@
 
 //#define SERIAL_BITBANG             /* bit-bang serial */
 #define SERIAL_HARDWARE            /* hardware serial */
-#define SERIAL_RW                  /* enable serial read support */
+//#define SERIAL_RW                  /* enable serial read support */
 
 
 /*
