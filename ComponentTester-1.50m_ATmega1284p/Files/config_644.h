@@ -1025,18 +1025,6 @@
 
 
 /*
- *  USB Power Sense Pin
- *  - can't be same port as ADC_PORT or R_PORT
- *  - function implemented to read USB Voltage instead of Batt Voltage when USB Power is used
- */
-
-#define USBV_PORT        PORTC     /* port data register */
-#define USBV_DDR         DDRC      /* port data direction register */
-#define USBV_PIN         PINC      /* port input pins register */
-#define USBV_SENSE      PC1        /* sense if USB power is being used (low active) */
-
-
-/*
  *  test push button
  *  - can't be same port as ADC_PORT or R_PORT
  */

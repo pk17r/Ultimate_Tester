@@ -314,7 +314,7 @@
  *  - uncomment to enable and adjust resistor values
  */
 
-//#define HW_LOGIC_PROBE
+#define HW_LOGIC_PROBE
 #define LOGIC_PROBE_R1        219050
 #define LOGIC_PROBE_R2        47170
 
@@ -634,11 +634,11 @@
  *  - uncomment to enable (one or more)
  */
 
-//#define SW_MONITOR_R          /* just R */
-//#define SW_MONITOR_C          /* just C plus ESR */
-//#define SW_MONITOR_L          /* just L */
-//#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
-//#define SW_MONITOR_RL         /* R plus L */
+#define SW_MONITOR_R          /* just R */
+#define SW_MONITOR_C          /* just C plus ESR */
+#define SW_MONITOR_L          /* just L */
+#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
+#define SW_MONITOR_RL         /* R plus L */
 
 
 /*
@@ -933,7 +933,7 @@
  *  - uncomment to enable, also adjust timeout (in s)
  */
 
-//#define POWER_OFF_TIMEOUT     60
+#define POWER_OFF_TIMEOUT     60
 
 
 /*
@@ -1045,7 +1045,7 @@
  *    (COLOR_PROBE_1, COLOR_PROBE_2 and COLOR_PROBE_3)
  */
 
-#define UI_PROBE_COLORS
+//#define UI_PROBE_COLORS
 
 
 /*
@@ -1055,7 +1055,7 @@
  *  - uncomment to enable
  */
 
-#define UI_COLORED_TITLES
+//#define UI_COLORED_TITLES
 
 
 /*
@@ -1065,7 +1065,7 @@
  *  - uncomment to enable
  */
 
-#define UI_COLORED_CURSOR
+//#define UI_COLORED_CURSOR
 
 
 /*
@@ -1076,7 +1076,7 @@
  *  - uncomment to enable
  */
 
-#define UI_COLORED_VALUES
+//#define UI_COLORED_VALUES
 
 
 /*
