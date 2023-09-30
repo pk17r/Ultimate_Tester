@@ -298,13 +298,13 @@
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_SPI                         /* SPI interface */
 /* control and data lines */
-#define LCD_PORT         PORTD          /* port data register */
-#define LCD_DDR          DDRD           /* port data direction register */
-#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
-#define LCD_CS           PD5            /* port pin used for /CS (optional) */
-#define LCD_A0           PD3            /* port pin used for A0 */
-#define LCD_SCL          PD2            /* port pin used for SCL */
-#define LCD_SI           PD1            /* port pin used for SI (data input) */
+#define LCD_PORT         PORTB          /* port data register */
+#define LCD_DDR          DDRB           /* port data direction register */
+//#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
+#define LCD_CS           PB1            /* port pin used for /CS (optional) */
+#define LCD_A0           PB4            /* port pin used for A0 */
+#define LCD_SCL          PB5            /* port pin used for SCL */
+#define LCD_SI           PB3            /* port pin used for SI (data input) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
 #define LCD_DOTS_Y       64             /* number of vertical dots */
@@ -353,7 +353,7 @@
 #define LCD_PORT         PORTB          /* port data register */
 #define LCD_DDR          DDRB           /* port data direction register */
 //#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
-//#define LCD_CS           PD5            /* port pin used for /CS (optional) */
+#define LCD_CS           PB4            /* port pin used for /CS (optional) */
 #define LCD_SCL          PB5            /* port pin used for SCL */
 #define LCD_SI           PB3            /* port pin used for SI (data input) */
 /* display settings */
@@ -391,8 +391,8 @@
 #define LCD_I2C                         /* I2C interface */
 #define LCD_I2C_ADDR     0x3c           /* SH1106's I2C address */
 /* control lines */
-#define LCD_PORT         PORTC          /* port data register */
-#define LCD_DDR          DDRC           /* port data direction register */
+//#define LCD_PORT         PORTB          /* port data register */
+//#define LCD_DDR          DDRB           /* port data direction register */
 //#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
@@ -401,7 +401,7 @@
 #define LCD_FLIP_X                      /* enable horizontal flip */
 #define LCD_FLIP_Y                      /* enable vertical flip */
 //#define LCD_COM_SEQ                     /* COM pin layout: sequential */
-#define LCD_CONTRAST     127            /* default contrast (0-255) */
+#define LCD_CONTRAST     255            /* default contrast (0-255) */
 /* font and symbols: vertically aligned & flipped, bank-wise grouping */
 #define FONT_8X8_VF                     /* 8x8 font */
 #define SYMBOLS_24X24_VFP               /* 24x24 symbols */
@@ -410,11 +410,12 @@
 /* I2C bus */
 #define I2C_BITBANG                     /* bit-bang I2C */
 #define I2C_FAST_MODE                   /* 400kHz bus speed */
-#define I2C_PORT         PORTC          /* I2C port data register */
-#define I2C_DDR          DDRC           /* I2C port data direction register */
-#define I2C_PIN          PINC           /* I2C port input pins register */
-#define I2C_SDA          PC4            /* port pin used for SDA */
-#define I2C_SCL          PC5            /* port pin used for SCL */
+//#define I2C_STANDARD_MODE
+#define I2C_PORT         PORTB          /* I2C port data register */
+#define I2C_DDR          DDRB           /* I2C port data direction register */
+#define I2C_PIN          PINB           /* I2C port input pins register */
+#define I2C_SDA          PB4            /* port pin used for SDA */
+#define I2C_SCL          PB5            /* port pin used for SCL */
 #endif
 
 
@@ -429,19 +430,20 @@
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_SPI                         /* SPI interface */
 /* control and data lines */
-#define LCD_PORT         PORTD          /* port data register */
-#define LCD_DDR          DDRD           /* port data direction register */
-#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
-#define LCD_CS           PD5            /* port pin used for /CS (optional) */
-#define LCD_DC           PD3            /* port pin used for D/C */
-#define LCD_SCLK         PD2            /* port pin used for SCLK */
-#define LCD_SDIN         PD1            /* port pin used for SDIN (data input) */
+#define LCD_PORT         PORTB          /* port data register */
+#define LCD_DDR          DDRB           /* port data direction register */
+//#define LCD_RESET        PB4            /* port pin used for /RES (optional) */
+#define LCD_CS           PB2            /* port pin used for /CS (optional) */
+#define LCD_DC           PB4            /* port pin used for D/C */
+#define LCD_SCLK         PB5            /* port pin used for SCLK */
+#define LCD_SDIN         PB3            /* port pin used for SDIN (data input) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
 #define LCD_DOTS_Y       64             /* number of vertical dots */
-#define LCD_FLIP_X                      /* enable horizontal flip */
-#define LCD_FLIP_Y                      /* enable vertical flip */
-//#define LCD_COM_SEQ                     /* COM pin layout: sequential */
+#define LCD_OFFSET_X     2              /* enable x offset of 2 or 4 dots */
+//#define LCD_FLIP_X                      /* enable horizontal flip */
+//#define LCD_FLIP_Y                      /* enable vertical flip */
+#define LCD_COM_SEQ                     /* COM pin layout: sequential */
 //#define LCD_COM_REMAP                   /* COM pin mapping: reversed */
 #define LCD_CONTRAST     127            /* default contrast (0-255) */
 /* font and symbols: vertically aligned & flipped, bank-wise grouping */
@@ -461,11 +463,11 @@
 //#define SYMBOLS_24X24_ALT1_VFP          /* 24x24 alternative symbols #1 */
 //#define SYMBOLS_24X24_ALT2_VFP          /* 24x24 alternative symbols #2 */
 /* SPI bus */
-#define SPI_BITBANG                     /* bit-bang SPI */
-#define SPI_PORT         LCD_PORT       /* SPI port data register */
-#define SPI_DDR          LCD_DDR        /* SPI port data direction register */
-#define SPI_SCK          LCD_SCLK       /* port pin used for SCK */
-#define SPI_MOSI         LCD_SDIN       /* port pin used for MOSI */
+#define SPI_HARDWARE                     /* bit-bang SPI */
+//#define SPI_PORT         LCD_PORT       /* SPI port data register */
+//#define SPI_DDR          LCD_DDR        /* SPI port data direction register */
+//#define SPI_SCK          LCD_SCLK       /* port pin used for SCK */
+//#define SPI_MOSI         LCD_SDIN       /* port pin used for MOSI */
 #endif
 
 
@@ -480,12 +482,12 @@
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_SPI                         /* SPI interface */
 /* control and data lines */
-#define LCD_PORT         PORTD          /* port data register */
-#define LCD_DDR          DDRD           /* port data direction register */
-#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
-#define LCD_CS           PD5            /* port pin used for /CS (optional) */
-#define LCD_SCLK         PD2            /* port pin used for SCLK */
-#define LCD_SDIN         PD1            /* port pin used for SDIN (data input) */
+#define LCD_PORT         PORTB          /* port data register */
+#define LCD_DDR          DDRB           /* port data direction register */
+//#define LCD_RESET        PB4            /* port pin used for /RES (optional) */
+#define LCD_CS           PB4            /* port pin used for /CS (optional) */
+#define LCD_SCLK         PB5            /* port pin used for SCLK */
+#define LCD_SDIN         PB3            /* port pin used for SDIN (data input) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
 #define LCD_DOTS_Y       64             /* number of vertical dots */
@@ -889,8 +891,9 @@
 
 #define TP_ZENER         PC2       /* test pin for for Zener check (10:1 voltage divider) */
 #define TP_REF           PC0       /* test pin for 2.5V reference and relay */
-#define TP_BAT           PC0       /* test pin for battery (4:1 voltage divider) */
-#define TP_LOGIC         PC2       /* test pin for Logic Probe (4:1 voltage divider) */
+#define TP_BAT           PC4       /* test pin for battery (4:1 voltage divider) */
+#define TP_CAP           PC0       /* test pin for self-adjustment cap */
+#define TP_LOGIC         PC5       /* test pin for Logic Probe (4:1 voltage divider) */
 
 
 /*
@@ -914,9 +917,9 @@
  *  - don't change this!
  */
 
-#define SIGNAL_PORT      PORTB     /* port data register */
-#define SIGNAL_DDR       DDRB      /* port data direction register */
-#define SIGNAL_OUT       PB2       /* MCU's OC1B pin */
+//#define SIGNAL_PORT      PORTB     /* port data register */
+//#define SIGNAL_DDR       DDRB      /* port data direction register */
+//#define SIGNAL_OUT       PB2       /* MCU's OC1B pin */
 
 
 /*
@@ -926,7 +929,7 @@
 
 #define POWER_PORT       PORTB     /* port data register */
 #define POWER_DDR        DDRB      /* port data direction register */
-#define POWER_CTRL       PB2       /* control pin (1: on / 0: off) */
+#define POWER_CTRL       PB3       /* control pin (1: on / 0: off) */
 
 
 /*
@@ -1062,6 +1065,18 @@
 #define ONEWIRE_DDR      DDRD      /* port data direction register */
 #define ONEWIRE_PIN      PIND      /* port input pins register */
 #define ONEWIRE_DQ       PD5       /* DQ (data line) */
+
+
+/*
+ *  fixed cap for self-adjustment
+ *  - ADC pin is TP_CAP from above
+ *  - settings are for 470k resistor
+ *  - should be film cap with 100nF - 1000nF
+ */
+
+#define ADJUST_PORT      PORTB     /* port data register */
+#define ADJUST_DDR       DDRB      /* port data direction register */
+#define ADJUST_RH        PB2       /* Rh (470k) for fixed cap */
 
 
 /*

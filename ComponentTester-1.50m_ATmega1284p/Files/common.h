@@ -481,7 +481,6 @@ typedef struct
   uint16_t          Vcc;           /* voltage of Vcc (mV) */
   #ifndef BAT_NONE
   uint16_t          Vbat;          /* battery voltage (mV) */
-  uint8_t           USBVoltageFlag;     /* flag to know if USB is attached, thus disable Battery Monitoring */
   uint8_t           BatTimer;      /* timer for battery check (100ms) */
   #endif
   #ifdef SW_DISPLAY_ID

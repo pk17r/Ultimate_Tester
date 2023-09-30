@@ -89,7 +89,7 @@
  *  - or use >= 5.5 digit DMM to measure the voltage
  */
 
-#define UREF_25           2500
+//#define UREF_25           2500
 
 
 /*
@@ -264,7 +264,7 @@
  *  - uncomment to enable
  */
 
-//#define HW_ADJUST_CAP
+#define HW_ADJUST_CAP
 
 
 /*
@@ -1513,7 +1513,7 @@
  */
 
 //#define SERIAL_BITBANG             /* bit-bang serial */
-#define SERIAL_HARDWARE            /* hardware serial */
+//#define SERIAL_HARDWARE            /* hardware serial */
 //#define SERIAL_RW                  /* enable serial read support */
 
 

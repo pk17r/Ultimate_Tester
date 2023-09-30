@@ -69,7 +69,7 @@ endif
 # - ATmega 1284   : m1284
 # - ATmega 1284P  : m1284p
 # - ATmega 2560   : m2560
-PARTNO = m328
+PARTNO = m328p
 
 # avrdude: ISP programmer, port and options
 

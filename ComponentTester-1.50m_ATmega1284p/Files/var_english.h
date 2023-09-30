@@ -61,7 +61,6 @@
     const unsigned char Weak_str[] MEM_TYPE = "weak";
     const unsigned char Low_str[] MEM_TYPE = "low";
   #endif
-  const unsigned char USBV_str[] MEM_TYPE = "USBV";
 
   #ifdef BAT_EXT_UNMONITORED
     const unsigned char External_str[] MEM_TYPE = "ext";
