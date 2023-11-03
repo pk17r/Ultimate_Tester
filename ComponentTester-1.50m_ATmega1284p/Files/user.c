@@ -2304,10 +2304,10 @@ uint8_t PresentMainMenu(void)
    *  tester management and settings
    */
 
-  /* selftest */
-  Item_Str[n] = (void *)Selftest_str;
-  Item_ID[n] = MENUITEM_SELFTEST;
-  n++;
+  ///* selftest */
+  //Item_Str[n] = (void *)Selftest_str;
+  //Item_ID[n] = MENUITEM_SELFTEST;
+  //n++;
 
   /* self-adjustment */
   Item_Str[n] = (void *)Adjustment_str;
@@ -2359,7 +2359,7 @@ uint8_t PresentMainMenu(void)
 
   #ifdef SW_POWER_OFF
   /* power off tester */
-  Item_Str[n] = (void *)PowerOff_str;
+  Item_Str[n] = (void*)PowerOff_str;
   Item_ID[n] = MENUITEM_POWER_OFF;
   n++;
   #endif

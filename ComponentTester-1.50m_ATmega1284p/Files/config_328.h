@@ -889,9 +889,9 @@
 #define TP2              PC2       /* test pin / probe #2 */
 #define TP3              PC3       /* test pin / probe #3 */
 
-#define TP_ZENER         PC2       /* test pin for for Zener check (10:1 voltage divider) */
-#define TP_REF           PC0       /* test pin for 2.5V reference and relay */
-#define TP_BAT           PC4       /* test pin for battery (4:1 voltage divider) */
+#define TP_ZENER         PC4       /* test pin for for Zener check (10:1 voltage divider) */
+#define TP_REF           ((1<<MUX2)|(1<<MUX1))       /* test pin for 2.5V reference and relay */
+#define TP_BAT           ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))       /* test pin for battery (4:1 voltage divider) */
 #define TP_CAP           PC0       /* test pin for self-adjustment cap */
 #define TP_LOGIC         PC5       /* test pin for Logic Probe (4:1 voltage divider) */
 
@@ -917,9 +917,9 @@
  *  - don't change this!
  */
 
-//#define SIGNAL_PORT      PORTB     /* port data register */
-//#define SIGNAL_DDR       DDRB      /* port data direction register */
-//#define SIGNAL_OUT       PB2       /* MCU's OC1B pin */
+#define SIGNAL_PORT      PORTB     /* port data register */
+#define SIGNAL_DDR       DDRB      /* port data direction register */
+#define SIGNAL_OUT       PB2       /* MCU's OC1B pin */
 
 
 /*
@@ -961,8 +961,8 @@
 #define KEY_PORT         PORTD     /* port data register */
 #define KEY_DDR          DDRD      /* port data direction register */
 #define KEY_PIN          PIND      /* port input pins register */
-#define KEY_INC          PD2       /* increase push button (low active) */
-#define KEY_DEC          PD3       /* decrease push button (low active) */
+#define KEY_INC          PD6       /* increase push button (low active) */
+#define KEY_DEC          PD7       /* decrease push button (low active) */
 
 
 /*
@@ -972,7 +972,7 @@
 
 #define COUNTER_PORT     PORTD     /* port data register */
 #define COUNTER_DDR      DDRD      /* port data direction register */
-#define COUNTER_IN       PD4       /* signal input T0 */
+#define COUNTER_IN       PD6       /* signal input T0 */
 
 
 /*
@@ -982,7 +982,7 @@
 
 #define RINGTESTER_PORT  PORTD     /* port data register */
 #define RINGTESTER_DDR   DDRD      /* port data direction register */
-#define RINGTESTER_OUT   PD5       /* pulse output */
+#define RINGTESTER_OUT   PD6       /* pulse output */
 
 
 
@@ -994,7 +994,7 @@
 #define IR_PORT          PORTD     /* port data register */
 #define IR_DDR           DDRD      /* port data direction register */
 #define IR_PIN           PIND      /* port input pins register */
-#define IR_DATA          PD5       /* data signal */
+#define IR_DATA          PD6       /* data signal */
 
 
 /*

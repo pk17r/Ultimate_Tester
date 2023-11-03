@@ -80,7 +80,7 @@
  *    reference
  */
 
-//#define HW_REF25
+#define HW_REF25
 
 
 /*
@@ -89,7 +89,7 @@
  *  - or use >= 5.5 digit DMM to measure the voltage
  */
 
-//#define UREF_25           2500
+#define UREF_25           2500
 
 
 /*
@@ -176,7 +176,7 @@
  *  - uncomment to enable
  */
 
-//#define HW_FIXED_SIGNAL_OUTPUT
+#define HW_FIXED_SIGNAL_OUTPUT
 
 
 /*
@@ -264,7 +264,7 @@
  *  - uncomment to enable
  */
 
-#define HW_ADJUST_CAP
+//#define HW_ADJUST_CAP
 
 
 /*
@@ -315,8 +315,8 @@
  */
 
 #define HW_LOGIC_PROBE
-#define LOGIC_PROBE_R1        219050
-#define LOGIC_PROBE_R2        47170
+#define LOGIC_PROBE_R1        10000
+#define LOGIC_PROBE_R2        3300
 
 
 /*
@@ -329,8 +329,8 @@
  */
 
 #define HW_BUZZER
-//#define BUZZER_ACTIVE                   /* active buzzer */
-#define BUZZER_PASSIVE                  /* passive buzzer */
+#define BUZZER_ACTIVE                   /* active buzzer */
+//#define BUZZER_PASSIVE                  /* passive buzzer */
 
 
 /*
@@ -421,7 +421,7 @@
  *  - uncomment to enable
  */
 
-#define SW_ESR_TOOL
+//#define SW_ESR_TOOL
 
 
 /*
@@ -634,11 +634,11 @@
  *  - uncomment to enable (one or more)
  */
 
-#define SW_MONITOR_R          /* just R */
-#define SW_MONITOR_C          /* just C plus ESR */
-#define SW_MONITOR_L          /* just L */
-#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
-#define SW_MONITOR_RL         /* R plus L */
+//#define SW_MONITOR_R          /* just R */
+//#define SW_MONITOR_C          /* just C plus ESR */
+//#define SW_MONITOR_L          /* just L */
+//#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
+//#define SW_MONITOR_RL         /* R plus L */
 
 
 /*
@@ -718,7 +718,7 @@
  *  - uncomment to enable
  */ 
 
-//#define SW_C_VLOSS
+#define SW_C_VLOSS
 
 
 /*
@@ -726,7 +726,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_PHOTODIODE
+#define SW_PHOTODIODE
 
 
 
@@ -1226,7 +1226,7 @@
  *  - Schottky diode about 200mV / PNP BJT about 100mV.
  */  
 
-#define BAT_OFFSET       290
+#define BAT_OFFSET       0
 
 
 /*
@@ -1235,7 +1235,7 @@
  *  - Voltage drop BAT_OFFSET is considered in calculation.
  */
 
-#define BAT_WEAK         7400
+#define BAT_WEAK         3300
 
 
 /*
@@ -1244,7 +1244,7 @@
  *  - Voltage drop BAT_OFFSET is considered in calculation.
  */
 
-#define BAT_LOW          6400 
+#define BAT_LOW          3000 
 
 
 /*
@@ -1265,7 +1265,7 @@
  *  ADC voltage reference based on Vcc (in mV). 
  */
 
-#define UREF_VCC         5020
+#define UREF_VCC         5000
 
 
 /*
@@ -1289,7 +1289,7 @@
 #define R_LOW            680
 
 /* Rh in Ohms */
-#define R_HIGH           475000
+#define R_HIGH           470000
 
 
 /*
@@ -1319,7 +1319,7 @@
  *  - uncomment to enable
  */
 
-#define R_MULTIOFFSET
+//#define R_MULTIOFFSET
 
 
 /* 
@@ -1344,7 +1344,7 @@
  *  - uncomment to enable
  */
 
-#define CAP_MULTIOFFSET
+//#define CAP_MULTIOFFSET
 
 
 /*
