@@ -1,8 +1,0 @@
-Arduino Uno Default Fuses
-
-L 0xFF
-H 0xDE
-E 0xFD
-LB 0xCF
-
-
