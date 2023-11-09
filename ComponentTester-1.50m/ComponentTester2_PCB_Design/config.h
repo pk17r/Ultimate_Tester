@@ -176,7 +176,7 @@
  *  - uncomment to enable
  */
 
-//#define HW_FIXED_SIGNAL_OUTPUT
+#define HW_FIXED_SIGNAL_OUTPUT
 
 
 /*
@@ -359,7 +359,7 @@
  *  - uncomment to enable
  */
 
-#define HW_FLASHLIGHT
+//#define HW_FLASHLIGHT
 
 
 
@@ -604,7 +604,7 @@
  *  - uncomment to enable
  */
 
-#define SW_CAP_LEAKAGE
+//#define SW_CAP_LEAKAGE
 
 
 /*
