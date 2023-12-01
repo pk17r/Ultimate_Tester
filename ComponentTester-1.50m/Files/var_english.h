@@ -27,7 +27,7 @@
   /* common terms and texts */
   const unsigned char Probing_str[] MEM_TYPE = "Probing...";
   const unsigned char Timeout_str[] MEM_TYPE = "Timeout";
-  const unsigned char Failed1_str[] MEM_TYPE = "No component";
+  const unsigned char Failed1_str[] MEM_TYPE = "No component  ";
   const unsigned char Failed2_str[] MEM_TYPE = "found!";
   const unsigned char Done_str[] MEM_TYPE = "done!";
   const unsigned char Select_str[] MEM_TYPE = "Select";
@@ -48,7 +48,7 @@
   const unsigned char Triac_str[] MEM_TYPE = "Triac";
   const unsigned char PUT_str[] MEM_TYPE = "PUT";
   const unsigned char Bye_str[] MEM_TYPE = "Bye!";
-
+  const unsigned char Vout_str[] MEM_TYPE = "VOUT";
 
   /* units */
   const unsigned char Hertz_str[] MEM_TYPE = "Hz";
