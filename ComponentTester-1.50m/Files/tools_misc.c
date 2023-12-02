@@ -2432,6 +2432,172 @@ void Flashlight(void)
 
 
 /* ************************************************************************
+ *   voltage current measure
+ * ************************************************************************ */
+
+
+#ifdef HW_V_I_MEASURE
+
+ /*
+  *  measures various voltages and current through I sense IC TMCS1108A4B
+  *  Vin, Vout, Vlogic
+  */
+
+void VoltageCurrentMeasure(void)
+{
+  // toggle ON Flashlight to power ON I sense IC
+  Flashlight();
+
+  int32_t          Isensitivity = 400;    // I sense IC sensitivity mV/A
+  int32_t          VI_offset = 95;        // Offset in VIsense measured experimentally
+  
+  uint8_t           Flag;               /* loop control */
+  uint8_t           Test;               /* user feedback */
+  uint16_t          Vin;
+  uint16_t          Vout;
+  uint16_t          Vlogic;
+  uint16_t          VIsense;
+  int32_t           Isense; // , Isense2, Isense3;
+  uint32_t          Value;              /* temporary value */
+
+  /* local constants for Flag (bitfield) */
+  #define RUN_FLAG            0b00000001     /* run / otherwise end */
+
+  /*
+   *  init
+   */
+  ADC_DDR &= ~(1 << TP_BAT);          /* set pin to HiZ */
+  ADC_DDR &= ~(1 << TP_VOUT);          /* set pin to HiZ */
+  ADC_DDR &= ~(1 << TP_LOGIC);          /* set pin to HiZ */
+  ADC_DDR &= ~(1 << TP_I_MEASURE);          /* set pin to HiZ */
+  Cfg.Samples = 100;                      /* do just 5 samples to be fast */
+  Flag = RUN_FLAG;                      /* enter processing loop */
+
+  LCD_Clear();
+
+  /*
+   *  processing loop
+   */
+
+  while (Flag > 0)
+  {
+    /*
+     *  check voltages
+     *  and output result
+     */
+
+     /* get voltage */
+    Vin = ReadU(TP_BAT);          /* read voltage */
+    Vout = ReadU(TP_VOUT);          /* read voltage */
+    Vlogic = ReadU(TP_LOGIC);          /* read voltage */
+    VIsense = ReadU(TP_I_MEASURE);          /* read voltage */
+
+    /* VIN consider voltage divider */
+    Value = (((uint32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
+    Value *= Vin;                   /* Uin (0.001 mV) */
+    Value /= 1000;                    /* Uin (mV) */
+    Vin = (uint16_t)Value;          /* keep 2 bytes */
+    /* VOUT consider voltage divider */
+    Value = (((uint32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
+    Value *= Vout;                   /* Uin (0.001 mV) */
+    Value /= 1000;                    /* Uin (mV) */
+    Vout = (uint16_t)Value;          /* keep 2 bytes */
+    /* TP LOGIC consider voltage divider */
+    Value = (((uint32_t)(LOGIC_PROBE_R1 + LOGIC_PROBE_R2) * 1000) / LOGIC_PROBE_R2);  /* factor (0.001) */
+    Value *= Vlogic;                   /* voltage (0.001 mV) */
+    Value /= 1000;                  /* scale to mV */
+    Vlogic = (uint16_t)Value;          /* keep 2 bytes */
+    /* I SENSE consider sensitivity and 0 value */
+    Isense = ((int32_t)VIsense - (int32_t)Cfg.Vcc / 2);  /* factor (0.001) */
+    Isense += VI_offset;                                  /* add offset */
+    Isense = Isense * 1000 / Isensitivity;                 /* divide by sensitivity and scale to mA */
+    
+
+    /* display values */
+
+    uint8_t lineNo = 2;
+    uint8_t lineIncrement = 2;
+
+    LCD_ClearLine(lineNo);
+    LCD_CharPos(1, lineNo);
+    Display_EEString(Vin_str);
+    Display_Space();
+    Display_Value(Vin / 10, -2, 'V');
+
+    //LCD_ClearLine(3);
+    //LCD_CharPos(1, 3);
+    //Display_Char('V');
+    //Display_EEString(Isense_str);
+    //Display_Space();
+    //Display_Value(VIsense / 10, -2, 'V');
+
+    lineNo += lineIncrement;
+    LCD_ClearLine(lineNo);
+    LCD_CharPos(1, lineNo);
+    Display_EEString(Vout_str);
+    Display_Space();
+    Display_Value(Vout / 10, -2, 'V');
+
+    //LCD_ClearLine(5);
+    //LCD_CharPos(1, 5);
+    //Display_EEString(Isense_str);
+    //Display_Space();
+    //Display_SignedValue(Isense / 10, -2, 'A');
+
+    lineNo += lineIncrement;
+    LCD_ClearLine(lineNo);
+    LCD_CharPos(1, lineNo);
+    Display_EEString(Vlogic_str);
+    Display_Space();
+    Display_Value(Vlogic / 10, -2, 'V');
+
+    //LCD_ClearLine(7);
+    //LCD_CharPos(1, 7);
+    //Display_EEString(Isense_str);
+    //Display_Char('2');
+    //Display_Space();
+    //Display_SignedValue(Isense2 / 10, -2, 'A');
+
+    lineNo += lineIncrement;
+    LCD_ClearLine(lineNo);
+    LCD_CharPos(1, lineNo);
+    Display_EEString(Isense_str);
+    Display_Space();
+    Display_SignedValue(Isense / 10, -2, 'A');
+
+    /*
+     *  user feedback
+     */
+
+     /* check for user feedback and slow down update rate */
+    Test = TestKey(50, CHECK_KEY_TWICE | CHECK_BAT);
+
+    if (Test == KEY_TWICE)         /* two short key presses */
+    {
+      Flag = 0;                    /* end loop */
+    }
+  }
+
+
+  /*
+   *  clean up
+   */
+
+   /* global settings */
+  Cfg.Samples = ADC_SAMPLES;            /* set ADC samples back to default */
+  // toggle OFF Flashlight to power OFF I sense IC
+  Flashlight();
+
+  /* local constants for Flag */
+#undef RUN_FLAG
+}
+
+
+#endif
+
+
+
+/* ************************************************************************
  *   photodiode check
  * ************************************************************************ */
 

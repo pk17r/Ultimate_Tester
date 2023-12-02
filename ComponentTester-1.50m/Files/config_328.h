@@ -890,11 +890,11 @@
 #define TP3              PC3       /* test pin / probe #3 */
 
 #define TP_ZENER         PC9       /* test pin for for Zener check (10:1 voltage divider) */
-#define TP_REF           PC5       /* test pin for 2.5V reference and relay */ 								//ADC6 ((1<<MUX2)|(1<<MUX1))
-#define TP_BAT           ((1<<MUX2)|(1<<MUX1))       /* test pin for battery (4:1 voltage divider) */							//ADC7 ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))
+#define TP_REF           PC5       /* test pin for 2.5V reference and relay */
+#define TP_BAT           ((1<<MUX2)|(1<<MUX1))       /* test pin for battery (4:1 voltage divider) */  //ADC6
 #define TP_CAP           PC9       /* test pin for self-adjustment cap */
 #define TP_LOGIC         PC4       /* test pin for Logic Probe (4:1 voltage divider) */
-#define TP_I_MEASURE     ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))
+#define TP_I_MEASURE     ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))		//ADC7
 #define TP_VOUT          PC0       /* test pin for VOUT measurement (4:1 voltage divider) */
 
 

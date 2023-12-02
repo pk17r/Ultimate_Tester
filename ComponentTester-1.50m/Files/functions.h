@@ -534,6 +534,10 @@
   extern void PhotodiodeCheck(void);
   #endif
 
+  #ifdef HW_V_I_MEASURE
+  extern void VoltageCurrentMeasure(void);
+  #endif
+
 #endif
 
 

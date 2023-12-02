@@ -27,6 +27,15 @@
  * ************************************************************************ */
 
 
+
+/*
+ *  Current Sense IC
+ *  - ADC Pin TP_I_MEASURE
+ */
+
+#define HW_V_I_MEASURE
+
+
 /*
  *  rotary encoder for user interface
  *  - default pins: PD2 & PD3 (ATmega 328)

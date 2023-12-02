@@ -50,6 +50,12 @@
   const unsigned char Bye_str[] MEM_TYPE = "Bye!";
   const unsigned char Vout_str[] MEM_TYPE = "VOUT";
 
+#ifdef HW_V_I_MEASURE
+  const unsigned char Vin_str[] MEM_TYPE = "VIN";
+  const unsigned char Vlogic_str[] MEM_TYPE = "Vlogic";
+  const unsigned char Isense_str[] MEM_TYPE = "Isense";
+#endif
+
   /* units */
   const unsigned char Hertz_str[] MEM_TYPE = "Hz";
 
@@ -216,6 +222,10 @@
     const unsigned char Photodiode_str[] MEM_TYPE = "Photodiode";
     const unsigned char NoBias_str[] MEM_TYPE = "no";
     const unsigned char ReverseBias_str[] MEM_TYPE = "rev";
+  #endif
+
+  #ifdef HW_V_I_MEASURE
+    const unsigned char V_I_Measure_str[] MEM_TYPE = "V I Measure";
   #endif
 
 #endif

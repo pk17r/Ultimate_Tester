@@ -1846,6 +1846,7 @@ void AdjustmentMenu(uint8_t Mode)
 #define MENUITEM_FLASHLIGHT       37
 #define MENUITEM_DS18S20          38
 #define MENUITEM_PHOTODIODE       39
+#define MENUITEM_V_I_MEASURE      40
 
 
 /*
@@ -2067,11 +2068,16 @@ uint8_t PresentMainMenu(void)
     #define ITEM_34      0
   #endif
 
+  #ifdef HW_V_I_MEASURE
+    #define ITEM_35      1
+  #else
+    #define ITEM_35      0
+  #endif
 
   #define ITEMS_PACK_0   (ITEM_01 + ITEM_02 + ITEM_03 + ITEM_04 + ITEM_05 + ITEM_06 + ITEM_07 + ITEM_08 + ITEM_09 + ITEM_10)
   #define ITEMS_PACK_1   (ITEM_11 + ITEM_12 + ITEM_13 + ITEM_14 + ITEM_15 + ITEM_16 + ITEM_17 + ITEM_18 + ITEM_19 + ITEM_20)
   #define ITEMS_PACK_2   (ITEM_21 + ITEM_22 + ITEM_23 + ITEM_24 + ITEM_25 + ITEM_26 + ITEM_27 + ITEM_28 + ITEM_29 + ITEM_30)
-  #define ITEMS_PACK_3   (ITEM_31 + ITEM_32 + ITEM_33 + ITEM_34)
+  #define ITEMS_PACK_3   (ITEM_31 + ITEM_32 + ITEM_33 + ITEM_34 + ITEM_35)
 
   /* number of menu items */
   #define MENU_ITEMS     (ITEMS_BASIC + ITEMS_PACK_0 + ITEMS_PACK_1 + ITEMS_PACK_2 + ITEMS_PACK_3)
@@ -2095,6 +2101,13 @@ uint8_t PresentMainMenu(void)
   /*
    *  test/check/signal features
    */
+
+  #ifdef HW_V_I_MEASURE
+   /* voltage current measure */
+  Item_Str[n] = (void*)V_I_Measure_str;
+  Item_ID[n] = MENUITEM_V_I_MEASURE;
+  n++;
+  #endif
 
   #if defined (SW_PWM_SIMPLE) || defined (SW_PWM_PLUS)
   /* PWM tool */
@@ -2298,8 +2311,7 @@ uint8_t PresentMainMenu(void)
   Item_ID[n] = MENUITEM_FLASHLIGHT;
   n++;  
   #endif
-
-
+  
   /*
    *  tester management and settings
    */
@@ -2427,6 +2439,7 @@ uint8_t PresentMainMenu(void)
   #undef ITEM_32
   #undef ITEM_33
   #undef ITEM_34
+  #undef ITEM_35
 
   return(ID);                 /* return item ID */
 }
@@ -2742,6 +2755,14 @@ uint8_t MainMenu(void)
       PhotodiodeCheck();
       break;
     #endif
+    
+    #ifdef HW_V_I_MEASURE
+    /* voltage current measure */
+    case MENUITEM_V_I_MEASURE:
+      VoltageCurrentMeasure();
+      break;
+    #endif
+
   }
 
 
@@ -2845,6 +2866,7 @@ uint8_t MainMenu(void)
 #undef MENUITEM_FLASHLIGHT
 #undef MENUITEM_DS18S20
 #undef MENUITEM_PHOTODIODE
+#undef MENUITEM_V_I_MEASURE
 
 
 

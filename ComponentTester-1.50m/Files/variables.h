@@ -911,6 +911,14 @@
   #ifdef HW_FLASHLIGHT
     extern const unsigned char Flashlight_str[];
   #endif
+  
+  #ifdef HW_V_I_MEASURE
+    extern const unsigned char V_I_Measure_str[];
+    extern const unsigned char Vin_str[];
+    extern const unsigned char Vout_str[];
+    extern const unsigned char Vlogic_str[];
+    extern const unsigned char Isense_str[];
+  #endif
 
   #ifdef SW_PHOTODIODE
     extern const unsigned char Photodiode_str[];
