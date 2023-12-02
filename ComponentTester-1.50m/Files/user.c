@@ -2137,6 +2137,13 @@ uint8_t PresentMainMenu(void)
   n++;
   #endif
 
+  #ifdef HW_FLASHLIGHT
+  /* flashlight / general purpose switched output */
+  Item_Str[n] = (void*)Flashlight_str;
+  Item_ID[n] = MENUITEM_FLASHLIGHT;
+  n++;
+  #endif
+
   #ifdef SW_CONTINUITY_CHECK
   /* continuity check */
   Item_Str[n] = (void *)ContinuityCheck_str;
@@ -2305,13 +2312,6 @@ uint8_t PresentMainMenu(void)
   n++;
   #endif
 
-  #ifdef HW_FLASHLIGHT
-  /* flashlight / general purpose switched output */
-  Item_Str[n] = (void *)Flashlight_str;
-  Item_ID[n] = MENUITEM_FLASHLIGHT;
-  n++;  
-  #endif
-  
   /*
    *  tester management and settings
    */

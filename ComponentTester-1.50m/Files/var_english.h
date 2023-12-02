@@ -51,9 +51,11 @@
   const unsigned char Vout_str[] MEM_TYPE = "VOUT";
 
 #ifdef HW_V_I_MEASURE
-  const unsigned char Vin_str[] MEM_TYPE = "VIN";
+  const unsigned char Usb_str[] MEM_TYPE = "USB";
   const unsigned char Vlogic_str[] MEM_TYPE = "Vlogic";
   const unsigned char Isense_str[] MEM_TYPE = "Isense";
+  const unsigned char averaged_str[] MEM_TYPE = "AVERAGED";
+  const unsigned char fast_str[] MEM_TYPE = "FAST";
 #endif
 
   /* units */
@@ -61,8 +63,8 @@
 
 
   /* options */
+  const unsigned char Battery_str[] MEM_TYPE = "BATT";
   #if ! defined (BAT_NONE) && ! defined (UI_BATTERY)
-    const unsigned char Battery_str[] MEM_TYPE = "Bat";
     const unsigned char OK_str[] MEM_TYPE = "ok";
     const unsigned char Weak_str[] MEM_TYPE = "weak";
     const unsigned char Low_str[] MEM_TYPE = "low";

@@ -98,7 +98,7 @@
  *  - or use >= 5.5 digit DMM to measure the voltage
  */
 
-#define UREF_25           2500
+#define UREF_25           2498
 
 
 /*
@@ -1235,7 +1235,9 @@
  *  - Schottky diode about 200mV / PNP BJT about 100mV.
  */  
 
-#define BAT_OFFSET       0
+#define BAT_OFFSET       31
+#define USB_OFFSET       183
+#define BATT_USB_BORDER       4400
 
 
 /*
@@ -1274,7 +1276,7 @@
  *  ADC voltage reference based on Vcc (in mV). 
  */
 
-#define UREF_VCC         5000
+#define UREF_VCC         4997
 
 
 /*
@@ -1328,7 +1330,7 @@
  *  - uncomment to enable
  */
 
-//#define R_MULTIOFFSET
+#define R_MULTIOFFSET
 
 
 /* 
@@ -1353,7 +1355,7 @@
  *  - uncomment to enable
  */
 
-//#define CAP_MULTIOFFSET
+#define CAP_MULTIOFFSET
 
 
 /*

@@ -2445,11 +2445,8 @@ void Flashlight(void)
 
 void VoltageCurrentMeasure(void)
 {
-  // toggle ON Flashlight to power ON I sense IC
-  Flashlight();
-
   int32_t          Isensitivity = 400;    // I sense IC sensitivity mV/A
-  int32_t          VI_offset = 95;        // Offset in VIsense measured experimentally
+  int32_t          VI_offset = 45;        // Offset in VIsense measured experimentally
   
   uint8_t           Flag;               /* loop control */
   uint8_t           Test;               /* user feedback */
@@ -2470,10 +2467,16 @@ void VoltageCurrentMeasure(void)
   ADC_DDR &= ~(1 << TP_VOUT);          /* set pin to HiZ */
   ADC_DDR &= ~(1 << TP_LOGIC);          /* set pin to HiZ */
   ADC_DDR &= ~(1 << TP_I_MEASURE);          /* set pin to HiZ */
-  Cfg.Samples = 100;                      /* do just 5 samples to be fast */
+
+  const uint8_t samples_fast = 5, samples_averaged = 255;
+  Cfg.Samples = samples_averaged;        /* do just 5 samples to be fast */
   Flag = RUN_FLAG;                      /* enter processing loop */
 
   LCD_Clear();
+
+  LCD_ClearLine(1);
+  LCD_CharPos(1, 1);
+  Display_EEString_Center(averaged_str);
 
   /*
    *  processing loop
@@ -2496,6 +2499,10 @@ void VoltageCurrentMeasure(void)
     Value = (((uint32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
     Value *= Vin;                   /* Uin (0.001 mV) */
     Value /= 1000;                    /* Uin (mV) */
+    if (Value > BATT_USB_BORDER)
+      Value += USB_OFFSET;             /* add offset for voltage drop */
+    else
+      Value += BAT_OFFSET;             /* add offset for voltage drop */
     Vin = (uint16_t)Value;          /* keep 2 bytes */
     /* VOUT consider voltage divider */
     Value = (((uint32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
@@ -2510,7 +2517,7 @@ void VoltageCurrentMeasure(void)
     /* I SENSE consider sensitivity and 0 value */
     Isense = ((int32_t)VIsense - (int32_t)Cfg.Vcc / 2);  /* factor (0.001) */
     Isense += VI_offset;                                  /* add offset */
-    Isense = Isense * 1000 / Isensitivity;                 /* divide by sensitivity and scale to mA */
+    Isense = (int32_t)(Isense * 1000) / Isensitivity;                 /* divide by sensitivity and scale to mA */
     
 
     /* display values */
@@ -2520,16 +2527,18 @@ void VoltageCurrentMeasure(void)
 
     LCD_ClearLine(lineNo);
     LCD_CharPos(1, lineNo);
-    Display_EEString(Vin_str);
+    if(Vin > 4500)
+      Display_EEString(Usb_str);
+    else
+      Display_EEString(Battery_str);
     Display_Space();
     Display_Value(Vin / 10, -2, 'V');
 
     //LCD_ClearLine(3);
     //LCD_CharPos(1, 3);
-    //Display_Char('V');
-    //Display_EEString(Isense_str);
+    //Display_EEString(Vcc_str);
     //Display_Space();
-    //Display_Value(VIsense / 10, -2, 'V');
+    //Display_SignedValue(Cfg.Vcc, -3, 'V');
 
     lineNo += lineIncrement;
     LCD_ClearLine(lineNo);
@@ -2540,9 +2549,10 @@ void VoltageCurrentMeasure(void)
 
     //LCD_ClearLine(5);
     //LCD_CharPos(1, 5);
+    //Display_Char('V');
     //Display_EEString(Isense_str);
     //Display_Space();
-    //Display_SignedValue(Isense / 10, -2, 'A');
+    //Display_Value(VIsense, -3, 'V');
 
     lineNo += lineIncrement;
     LCD_ClearLine(lineNo);
@@ -2554,9 +2564,8 @@ void VoltageCurrentMeasure(void)
     //LCD_ClearLine(7);
     //LCD_CharPos(1, 7);
     //Display_EEString(Isense_str);
-    //Display_Char('2');
     //Display_Space();
-    //Display_SignedValue(Isense2 / 10, -2, 'A');
+    //Display_SignedValue(Isense, -3, 'A');
 
     lineNo += lineIncrement;
     LCD_ClearLine(lineNo);
@@ -2576,6 +2585,23 @@ void VoltageCurrentMeasure(void)
     {
       Flag = 0;                    /* end loop */
     }
+    if (Test == KEY_SHORT)
+    {
+      if (Cfg.Samples == samples_averaged)
+      {
+        Cfg.Samples = samples_fast;
+        LCD_ClearLine(1);
+        LCD_CharPos(1, 1);
+        Display_EEString_Center(fast_str);
+      }
+      else
+      {
+        Cfg.Samples = samples_averaged;
+        LCD_ClearLine(1);
+        LCD_CharPos(1, 1);
+        Display_EEString_Center(averaged_str);
+      }
+    }
   }
 
 
@@ -2585,8 +2611,6 @@ void VoltageCurrentMeasure(void)
 
    /* global settings */
   Cfg.Samples = ADC_SAMPLES;            /* set ADC samples back to default */
-  // toggle OFF Flashlight to power OFF I sense IC
-  Flashlight();
 
   /* local constants for Flag */
 #undef RUN_FLAG

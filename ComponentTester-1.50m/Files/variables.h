@@ -912,12 +912,15 @@
     extern const unsigned char Flashlight_str[];
   #endif
   
+  extern const unsigned char Usb_str[];
   #ifdef HW_V_I_MEASURE
     extern const unsigned char V_I_Measure_str[];
-    extern const unsigned char Vin_str[];
+    extern const unsigned char Battery_str[];
     extern const unsigned char Vout_str[];
     extern const unsigned char Vlogic_str[];
     extern const unsigned char Isense_str[];
+    extern const unsigned char averaged_str[];
+    extern const unsigned char fast_str[];
   #endif
 
   #ifdef SW_PHOTODIODE

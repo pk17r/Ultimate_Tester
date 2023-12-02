@@ -481,7 +481,6 @@ typedef struct
   uint16_t          Vcc;           /* voltage of Vcc (mV) */
   #ifndef BAT_NONE
   uint16_t          Vbat;          /* battery voltage (mV) */
-  uint16_t          Vout;          /* battery voltage (mV) */
   uint8_t           BatTimer;      /* timer for battery check (100ms) */
   #endif
   #ifdef SW_DISPLAY_ID

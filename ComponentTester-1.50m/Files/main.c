@@ -2273,8 +2273,15 @@ void ShowBattery(void)
     }
 
   /* display small battery symbol */
-  Display_Char(Char1);             /* display left part of symbol */
-  Display_Char(Char2);             /* display right part of symbol */
+  if (Cfg.Vbat > BATT_USB_BORDER)
+  {
+    Display_EEString(Usb_str);
+  }
+  else
+  {
+    Display_Char(Char1);             /* display left part of symbol */
+    Display_Char(Char2);             /* display right part of symbol */
+  }
   Display_Space();                 /* display space */
 
     #ifdef LCD_COLOR
@@ -2295,12 +2302,24 @@ void ShowBattery(void)
 
       /* display battery voltage */
       Display_Value(Cfg.Vbat / 10, -2, 'V');
+
+      /* Find Vout */
+      uint16_t          U_Vout;         /* Vout voltage */
+
+      U_Vout = ReadU(TP_VOUT);           /* read voltage (mV) */
+
+      uint32_t          Temp;          /* temporary value */
+      Temp = (((uint32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
+      Temp *= U_Vout;                   /* Uin (0.001 mV) */
+      Temp /= 1000;                    /* Uin (mV) */
+      U_Vout = (uint16_t)Temp;          /* keep 2 bytes */
+
       /* display Vout voltage */
       Display_NextLine();
       Display_NextLine();
       Display_EEString(Vout_str);
       Display_Space();
-      Display_Value(Cfg.Vout / 10, -2, 'V');
+      Display_Value(U_Vout / 10, -2, 'V');
 
     #ifdef BAT_EXT_UNMONITORED
     }
@@ -2320,11 +2339,9 @@ void ShowBattery(void)
 void CheckBattery(void)
 {
   uint16_t          U_Bat;         /* battery voltage */
-  uint16_t          U_Vout;         /* Vout voltage */
 
   /* get current battery voltage */
   U_Bat = ReadU(TP_BAT);           /* read voltage (mV) */
-  U_Vout = ReadU(TP_VOUT);           /* read voltage (mV) */
 
   #ifdef BAT_DIVIDER
   uint32_t          Temp;          /* temporary value */
@@ -2339,15 +2356,12 @@ void CheckBattery(void)
   Temp *= U_Bat;                   /* Uin (0.001 mV) */
   Temp /= 1000;                    /* Uin (mV) */
   U_Bat = (uint16_t)Temp;          /* keep 2 bytes */
-  Temp = (((uint32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
-  Temp *= U_Vout;                   /* Uin (0.001 mV) */
-  Temp /= 1000;                    /* Uin (mV) */
-  U_Vout = (uint16_t)Temp;          /* keep 2 bytes */
   #endif
-
-  U_Bat += BAT_OFFSET;             /* add offset for voltage drop */
+  if(U_Bat > BATT_USB_BORDER)
+    U_Bat += USB_OFFSET;             /* add offset for voltage drop */
+  else
+    U_Bat += BAT_OFFSET;             /* add offset for voltage drop */
   Cfg.Vbat = U_Bat;                /* save battery voltage */
-  Cfg.Vout = U_Vout;                /* save battery voltage */
   Cfg.BatTimer = 100;              /* reset timer for next battery check (in 100ms) */
                                    /* about 10s */
 
