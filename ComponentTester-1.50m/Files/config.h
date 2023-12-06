@@ -31,9 +31,14 @@
 /*
  *  Current Sense IC
  *  - ADC Pin TP_I_MEASURE
+ *  - VI_OFFSET in mV
  */
 
 #define HW_V_I_MEASURE
+
+#ifdef HW_V_I_MEASURE
+#define VI_OFFSET			45
+#endif
 
 
 /*
@@ -1166,8 +1171,8 @@
  *  - uncomment one
  */ 
 
-//#define DATA_EEPROM           /* store data in EEPROM */
-#define DATA_FLASH            /* store data in Flash */
+#define DATA_EEPROM           /* store data in EEPROM */
+//#define DATA_FLASH            /* store data in Flash */
 
 
 

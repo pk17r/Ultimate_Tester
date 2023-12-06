@@ -56,6 +56,7 @@
   const unsigned char Isense_str[] MEM_TYPE = "Isense";
   const unsigned char averaged_str[] MEM_TYPE = "AVERAGED";
   const unsigned char fast_str[] MEM_TYPE = "FAST";
+  const unsigned char VIoffset_str[] MEM_TYPE = "VIoffset";
 #endif
 
   /* units */

@@ -115,6 +115,11 @@ void SetAdjustmentDefaults(void)
   Touch.Y_Stop = 0;
   /* this triggers the touch adjustment at startup */
   #endif
+
+  #ifdef HW_V_I_MEASURE
+  NV.VIoffset = VI_OFFSET;
+  #endif
+
 }
 
 
@@ -492,6 +497,10 @@ void ShowAdjustmentValues(void)
   Display_NL_EEString_Space(CompOffset_str);      /* display: AComp */
   Display_SignedValue(NV.CompOffset, -3, 'V');    /* display offset */
 
+  /* display offset of analog comparator (value is in mV) */
+  Display_NL_EEString_Space(VIoffset_str);        /* display: VIoffset */
+  Display_SignedValue(NV.VIoffset, -3, 'V');    /* display offset */
+  
   WaitKey();                  /* let the user read */
 }
 
@@ -543,12 +552,16 @@ uint8_t SelfAdjustment(void)
   uint8_t           RefCounter = 0;     /* number of ref/offset runs */
   #endif
 
+  #ifdef HW_V_I_MEASURE
+  uint16_t          VIsense;
+  int32_t           VIoffsetSum = 0;   /* sum of Offset in VIsense IC output */
+  #endif
+
   #ifdef HW_ADJUST_CAP
     Step = 1;            /* start with step #1 */
   #else
     Step = 2;            /* start with step #2 */
   #endif
-
 
   /*
    *  measurements
@@ -561,7 +574,7 @@ uint8_t SelfAdjustment(void)
     Step = 10;                /* skip adjustment */
   }
 
-  while (Step <= 6)      /* loop through steps */
+  while (Step <= 7)      /* loop through steps */
   {
     Flag = 1;            /* reset loop counter */
 
@@ -778,6 +791,13 @@ uint8_t SelfAdjustment(void)
           }
 
           break;
+
+        case 7:     /* VI sense IC output offset */
+          Display_EEString_Space(VIoffset_str);
+          VIsense = ReadU_20ms(TP_I_MEASURE);          /* read voltage */
+          Display_Value(VIsense, -3, 'V');
+          VIoffsetSum += ((int32_t)Cfg.Vcc / 2 - (int32_t)VIsense);  /* factor (0.001) */
+          break;
       }
 
       /* reset ports to defaults */
@@ -890,6 +910,10 @@ uint8_t SelfAdjustment(void)
       Flag++;                 /* adjustment done */
     }
   }
+
+  #ifdef HW_V_I_MEASURE
+  NV.VIoffset = VIoffsetSum / 5;
+  #endif
 
   #ifdef HW_ADJUST_CAP
   if (RefCounter != 5)        /* we expect 5 successful runs */

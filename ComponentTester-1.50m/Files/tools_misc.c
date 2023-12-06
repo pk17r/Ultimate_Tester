@@ -2446,7 +2446,6 @@ void Flashlight(void)
 void VoltageCurrentMeasure(void)
 {
   int32_t          Isensitivity = 400;    // I sense IC sensitivity mV/A
-  int32_t          VI_offset = 45;        // Offset in VIsense measured experimentally
   
   uint8_t           Flag;               /* loop control */
   uint8_t           Test;               /* user feedback */
@@ -2454,7 +2453,7 @@ void VoltageCurrentMeasure(void)
   uint16_t          Vout;
   uint16_t          Vlogic;
   uint16_t          VIsense;
-  int32_t           Isense; // , Isense2, Isense3;
+  int32_t           Isense;// , Isense2, Isense3;
   uint32_t          Value;              /* temporary value */
 
   /* local constants for Flag (bitfield) */
@@ -2494,7 +2493,7 @@ void VoltageCurrentMeasure(void)
     Vout = ReadU(TP_VOUT);          /* read voltage */
     Vlogic = ReadU(TP_LOGIC);          /* read voltage */
     VIsense = ReadU(TP_I_MEASURE);          /* read voltage */
-
+    
     /* VIN consider voltage divider */
     Value = (((uint32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
     Value *= Vin;                   /* Uin (0.001 mV) */
@@ -2516,7 +2515,7 @@ void VoltageCurrentMeasure(void)
     Vlogic = (uint16_t)Value;          /* keep 2 bytes */
     /* I SENSE consider sensitivity and 0 value */
     Isense = ((int32_t)VIsense - (int32_t)Cfg.Vcc / 2);  /* factor (0.001) */
-    Isense += VI_offset;                                  /* add offset */
+    Isense += NV.VIoffset;                                  /* add offset */
     Isense = (int32_t)(Isense * 1000) / Isensitivity;                 /* divide by sensitivity and scale to mA */
     
 
@@ -2549,10 +2548,9 @@ void VoltageCurrentMeasure(void)
 
     //LCD_ClearLine(5);
     //LCD_CharPos(1, 5);
-    //Display_Char('V');
-    //Display_EEString(Isense_str);
+    //Display_EEString(VIoffset_str);
     //Display_Space();
-    //Display_Value(VIsense, -3, 'V');
+    //Display_Value(NV.VIoffset, -3, 'V');
 
     lineNo += lineIncrement;
     LCD_ClearLine(lineNo);
@@ -2564,8 +2562,9 @@ void VoltageCurrentMeasure(void)
     //LCD_ClearLine(7);
     //LCD_CharPos(1, 7);
     //Display_EEString(Isense_str);
+    //Display_Char('2');
     //Display_Space();
-    //Display_SignedValue(Isense, -3, 'A');
+    //Display_SignedValue(Isense2, -3, 'A');
 
     lineNo += lineIncrement;
     LCD_ClearLine(lineNo);

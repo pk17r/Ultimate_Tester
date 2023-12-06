@@ -921,6 +921,7 @@
     extern const unsigned char Isense_str[];
     extern const unsigned char averaged_str[];
     extern const unsigned char fast_str[];
+    extern const unsigned char VIoffset_str[];
   #endif
 
   #ifdef SW_PHOTODIODE

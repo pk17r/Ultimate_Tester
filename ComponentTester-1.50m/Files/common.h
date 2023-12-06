@@ -510,6 +510,11 @@ typedef struct
   int8_t            RefOffset;     /* voltage offset of bandgap reference (mV) */
   int8_t            CompOffset;    /* voltage offset of analog comparator (mV) */
   uint8_t           Contrast;      /* contrast value of display */
+
+  #ifdef HW_V_I_MEASURE
+  int32_t         VIoffset;     /* sum of Offset in VIsense IC output */
+  #endif
+
   uint8_t           CheckSum;      /* checksum for stored values */
 } Adjust_Type;
 

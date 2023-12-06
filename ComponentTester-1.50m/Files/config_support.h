@@ -611,7 +611,7 @@
 #ifdef LCD_CONTRAST
   #define SW_CONTRAST
 #else
-  #define LCD_CONTRAST        0
+  #define LCD_CONTRAST        100
 #endif
 
 
