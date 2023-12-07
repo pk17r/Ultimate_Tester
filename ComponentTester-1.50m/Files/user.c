@@ -2109,6 +2109,20 @@ uint8_t PresentMainMenu(void)
   n++;
   #endif
 
+#ifdef HW_FLASHLIGHT
+  /* flashlight / general purpose switched output */
+  Item_Str[n] = (void*)Flashlight_str;
+  Item_ID[n] = MENUITEM_FLASHLIGHT;
+  n++;
+#endif
+
+#ifdef SW_CONTINUITY_CHECK
+  /* continuity check */
+  Item_Str[n] = (void*)ContinuityCheck_str;
+  Item_ID[n] = MENUITEM_CONTINUITY;
+  n++;
+#endif
+
   #if defined (SW_PWM_SIMPLE) || defined (SW_PWM_PLUS)
   /* PWM tool */
   Item_Str[n] = (void *)PWM_str;
@@ -2134,20 +2148,6 @@ uint8_t PresentMainMenu(void)
   /* logic probe */
   Item_Str[n] = (void *)LogicProbe_str;
   Item_ID[n] = MENUITEM_LOGIC_PROBE;  
-  n++;
-  #endif
-
-  #ifdef HW_FLASHLIGHT
-  /* flashlight / general purpose switched output */
-  Item_Str[n] = (void*)Flashlight_str;
-  Item_ID[n] = MENUITEM_FLASHLIGHT;
-  n++;
-  #endif
-
-  #ifdef SW_CONTINUITY_CHECK
-  /* continuity check */
-  Item_Str[n] = (void *)ContinuityCheck_str;
-  Item_ID[n] = MENUITEM_CONTINUITY;  
   n++;
   #endif
 

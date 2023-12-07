@@ -567,7 +567,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_SERVO
+#define SW_SERVO
 
 
 /*
@@ -618,7 +618,7 @@
  *  - uncomment to enable
  */
 
-#define SW_CAP_LEAKAGE
+//#define SW_CAP_LEAKAGE
 
 
 /*
@@ -648,11 +648,11 @@
  *  - uncomment to enable (one or more)
  */
 
-//#define SW_MONITOR_R          /* just R */
-//#define SW_MONITOR_C          /* just C plus ESR */
-//#define SW_MONITOR_L          /* just L */
-//#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
-//#define SW_MONITOR_RL         /* R plus L */
+#define SW_MONITOR_R          /* just R */
+#define SW_MONITOR_C          /* just C plus ESR */
+#define SW_MONITOR_L          /* just L */
+#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
+#define SW_MONITOR_RL         /* R plus L */
 
 
 /*
@@ -724,7 +724,7 @@
  *  - uncomment to enable
  */
 
-#define SW_R_TRIMMER
+//#define SW_R_TRIMMER
 
 
 /*
