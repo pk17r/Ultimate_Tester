@@ -21,6 +21,7 @@
 
 
   /* firmware */
+  const unsigned char UltimateTester_str[] MEM_TYPE = "ULTIMATE TESTER!";
   const unsigned char Tester_str[] MEM_TYPE = "Component Tester";
 
 
@@ -54,9 +55,9 @@
   const unsigned char Usb_str[] MEM_TYPE = "USB";
   const unsigned char Vlogic_str[] MEM_TYPE = "Vlogic";
   const unsigned char Isense_str[] MEM_TYPE = "Isense";
-  const unsigned char averaged_str[] MEM_TYPE = "AVERAGED";
-  const unsigned char fast_str[] MEM_TYPE = "FAST";
+  const unsigned char Power_str[] MEM_TYPE = "Power";
   const unsigned char VIoffset_str[] MEM_TYPE = "VIoffset";
+  const unsigned char UnderVoltage_str[] MEM_TYPE = "UNDER VOLTAGE!";
 #endif
 
   /* units */

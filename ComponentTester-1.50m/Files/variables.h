@@ -155,7 +155,7 @@
 
 
   /* firmware */
-  const unsigned char Version_str[] MEM_TYPE = "v1.50m";
+  const unsigned char Version_str[] MEM_TYPE = "v1.50m++";
 
 
   /* common terms and texts */
@@ -919,9 +919,9 @@
     extern const unsigned char Vout_str[];
     extern const unsigned char Vlogic_str[];
     extern const unsigned char Isense_str[];
-    extern const unsigned char averaged_str[];
-    extern const unsigned char fast_str[];
+    extern const unsigned char Power_str[];
     extern const unsigned char VIoffset_str[];
+    extern const unsigned char UnderVoltage_str[];
   #endif
 
   #ifdef SW_PHOTODIODE

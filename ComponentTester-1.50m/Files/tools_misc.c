@@ -2453,7 +2453,7 @@ void VoltageCurrentMeasure(void)
   uint16_t          Vout;
   uint16_t          Vlogic;
   uint16_t          VIsense;
-  int32_t           Isense;// , Isense2, Isense3;
+  int32_t           Isense, Power;
   uint32_t          Value;              /* temporary value */
 
   /* local constants for Flag (bitfield) */
@@ -2467,15 +2467,14 @@ void VoltageCurrentMeasure(void)
   ADC_DDR &= ~(1 << TP_LOGIC);          /* set pin to HiZ */
   ADC_DDR &= ~(1 << TP_I_MEASURE);          /* set pin to HiZ */
 
-  const uint8_t samples_fast = 5, samples_averaged = 255;
-  Cfg.Samples = samples_averaged;        /* do just 5 samples to be fast */
+  Cfg.Samples = 255;        /* do 255 samples to be averaged */
   Flag = RUN_FLAG;                      /* enter processing loop */
 
   LCD_Clear();
 
   LCD_ClearLine(1);
   LCD_CharPos(1, 1);
-  Display_EEString_Center(averaged_str);
+  Display_EEString_Center(V_I_Measure_str);
 
   /*
    *  processing loop
@@ -2517,15 +2516,13 @@ void VoltageCurrentMeasure(void)
     Isense = ((int32_t)VIsense - (int32_t)Cfg.Vcc / 2);  /* factor (0.001) */
     Isense += NV.VIoffset;                                  /* add offset */
     Isense = (int32_t)(Isense * 1000) / Isensitivity;                 /* divide by sensitivity and scale to mA */
+    Power = (int32_t)(Vout)*Isense / 1000;      /* Power in mW */
     
 
     /* display values */
 
-    uint8_t lineNo = 2;
-    uint8_t lineIncrement = 2;
-
-    LCD_ClearLine(lineNo);
-    LCD_CharPos(1, lineNo);
+    LCD_ClearLine(2);
+    LCD_CharPos(1, 2);
     if(Vin > 4500)
       Display_EEString(Usb_str);
     else
@@ -2539,39 +2536,44 @@ void VoltageCurrentMeasure(void)
     //Display_Space();
     //Display_SignedValue(Cfg.Vcc, -3, 'V');
 
-    lineNo += lineIncrement;
-    LCD_ClearLine(lineNo);
-    LCD_CharPos(1, lineNo);
+    LCD_ClearLine(4);
+    LCD_CharPos(1, 4);
     Display_EEString(Vout_str);
     Display_Space();
     Display_Value(Vout / 10, -2, 'V');
 
-    //LCD_ClearLine(5);
-    //LCD_CharPos(1, 5);
+    if (Vout > 5800)
+    {
+      LCD_ClearLine(5);
+      LCD_CharPos(1, 5);
+      Display_EEString(Isense_str);
+      Display_Space();
+      Display_SignedValue(Isense / 10, -2, 'A');
+
+      LCD_ClearLine(6);
+      LCD_CharPos(1, 6);
+      Display_EEString(Power_str);
+      Display_Space();
+      Display_SignedValue(Power / 10, -2, 'W');
+    }
+    else
+    {
+      LCD_ClearLine(5);
+      LCD_ClearLine(6);
+      LCD_CharPos(1, 6);
+      Display_EEString_Center(UnderVoltage_str);
+    }
+    //LCD_ClearLine(7);
+    //LCD_CharPos(1, 7);
     //Display_EEString(VIoffset_str);
     //Display_Space();
     //Display_Value(NV.VIoffset, -3, 'V');
 
-    lineNo += lineIncrement;
-    LCD_ClearLine(lineNo);
-    LCD_CharPos(1, lineNo);
+    LCD_ClearLine(8);
+    LCD_CharPos(1, 8);
     Display_EEString(Vlogic_str);
     Display_Space();
     Display_Value(Vlogic / 10, -2, 'V');
-
-    //LCD_ClearLine(7);
-    //LCD_CharPos(1, 7);
-    //Display_EEString(Isense_str);
-    //Display_Char('2');
-    //Display_Space();
-    //Display_SignedValue(Isense2, -3, 'A');
-
-    lineNo += lineIncrement;
-    LCD_ClearLine(lineNo);
-    LCD_CharPos(1, lineNo);
-    Display_EEString(Isense_str);
-    Display_Space();
-    Display_SignedValue(Isense / 10, -2, 'A');
 
     /*
      *  user feedback
@@ -2583,23 +2585,6 @@ void VoltageCurrentMeasure(void)
     if (Test == KEY_TWICE)         /* two short key presses */
     {
       Flag = 0;                    /* end loop */
-    }
-    if (Test == KEY_SHORT)
-    {
-      if (Cfg.Samples == samples_averaged)
-      {
-        Cfg.Samples = samples_fast;
-        LCD_ClearLine(1);
-        LCD_CharPos(1, 1);
-        Display_EEString_Center(fast_str);
-      }
-      else
-      {
-        Cfg.Samples = samples_averaged;
-        LCD_ClearLine(1);
-        LCD_CharPos(1, 1);
-        Display_EEString_Center(averaged_str);
-      }
     }
   }
 

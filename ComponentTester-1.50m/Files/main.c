@@ -2684,8 +2684,10 @@ int main(void)
   #endif
 
   #ifdef UI_CENTER_ALIGN
-    Display_CenterLine(2);                   /* center block: 2 lines */
-    Display_EEString_Center(Tester_str);     /* display: Component Tester */
+    Display_CenterLine(4);                   /* center block: 4 lines */
+    Display_EEString_Center(UltimateTester_str);     /* display: Component Tester */
+    Display_NextLine();
+    Display_NL_EEString_Center(Tester_str);     /* display: Component Tester */
     Display_NL_EEString_Center(Version_str); /* display firmware version */
   #else
     Display_EEString(Tester_str);       /* display: Component Tester */
