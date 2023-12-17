@@ -912,7 +912,7 @@
     extern const unsigned char Flashlight_str[];
   #endif
   
-  extern const unsigned char Usb_str[];
+  extern const unsigned char Vin_str[];
   #ifdef HW_V_I_MEASURE
     extern const unsigned char V_I_Measure_str[];
     extern const unsigned char Battery_str[];
@@ -921,7 +921,7 @@
     extern const unsigned char Isense_str[];
     extern const unsigned char Power_str[];
     extern const unsigned char VIoffset_str[];
-    extern const unsigned char UnderVoltage_str[];
+    extern const unsigned char UnderVoltageCurrentLimit_str[];
   #endif
 
   #ifdef SW_PHOTODIODE

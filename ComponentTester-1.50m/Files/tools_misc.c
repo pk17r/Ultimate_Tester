@@ -2523,10 +2523,7 @@ void VoltageCurrentMeasure(void)
 
     LCD_ClearLine(2);
     LCD_CharPos(1, 2);
-    if(Vin > 4500)
-      Display_EEString(Usb_str);
-    else
-      Display_EEString(Battery_str);
+    Display_EEString(Vin_str);
     Display_Space();
     Display_Value(Vin / 10, -2, 'V');
 
@@ -2542,7 +2539,7 @@ void VoltageCurrentMeasure(void)
     Display_Space();
     Display_Value(Vout / 10, -2, 'V');
 
-    if (Vout > 5800)
+    if (Vout > 5300)
     {
       LCD_ClearLine(5);
       LCD_CharPos(1, 5);
@@ -2561,7 +2558,7 @@ void VoltageCurrentMeasure(void)
       LCD_ClearLine(5);
       LCD_ClearLine(6);
       LCD_CharPos(1, 6);
-      Display_EEString_Center(UnderVoltage_str);
+      Display_EEString_Center(UnderVoltageCurrentLimit_str);
     }
     //LCD_ClearLine(7);
     //LCD_CharPos(1, 7);

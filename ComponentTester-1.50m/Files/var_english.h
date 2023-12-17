@@ -52,12 +52,12 @@
   const unsigned char Vout_str[] MEM_TYPE = "VOUT";
 
 #ifdef HW_V_I_MEASURE
-  const unsigned char Usb_str[] MEM_TYPE = "USB";
+  const unsigned char Vin_str[] MEM_TYPE = "VIN";
   const unsigned char Vlogic_str[] MEM_TYPE = "Vlogic";
   const unsigned char Isense_str[] MEM_TYPE = "Isense";
   const unsigned char Power_str[] MEM_TYPE = "Power";
   const unsigned char VIoffset_str[] MEM_TYPE = "VIoffset";
-  const unsigned char UnderVoltage_str[] MEM_TYPE = "UNDER VOLTAGE!";
+  const unsigned char UnderVoltageCurrentLimit_str[] MEM_TYPE = "<V / I LIMIT!!";
 #endif
 
   /* units */
@@ -65,8 +65,8 @@
 
 
   /* options */
-  const unsigned char Battery_str[] MEM_TYPE = "BATT";
   #if ! defined (BAT_NONE) && ! defined (UI_BATTERY)
+    const unsigned char Battery_str[] MEM_TYPE = "Bat";
     const unsigned char OK_str[] MEM_TYPE = "ok";
     const unsigned char Weak_str[] MEM_TYPE = "weak";
     const unsigned char Low_str[] MEM_TYPE = "low";

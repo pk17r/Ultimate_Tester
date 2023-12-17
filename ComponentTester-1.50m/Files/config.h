@@ -1241,7 +1241,7 @@
  */  
 
 #define BAT_OFFSET       31
-#define USB_OFFSET       183
+#define USB_OFFSET       150
 #define BATT_USB_BORDER       4400
 
 

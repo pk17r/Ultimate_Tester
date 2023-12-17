@@ -2275,7 +2275,7 @@ void ShowBattery(void)
   /* display small battery symbol */
   if (Cfg.Vbat > BATT_USB_BORDER)
   {
-    Display_EEString(Usb_str);
+    Display_EEString(Vin_str);
   }
   else
   {
