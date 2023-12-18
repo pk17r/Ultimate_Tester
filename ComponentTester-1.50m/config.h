@@ -27,6 +27,20 @@
  * ************************************************************************ */
 
 
+
+/*
+ *  Current Sense IC
+ *  - ADC Pin TP_I_MEASURE
+ *  - VI_OFFSET in mV
+ */
+
+#define HW_V_I_MEASURE
+
+#ifdef HW_V_I_MEASURE
+#define VI_OFFSET			45
+#endif
+
+
 /*
  *  rotary encoder for user interface
  *  - default pins: PD2 & PD3 (ATmega 328)
@@ -89,7 +103,7 @@
  *  - or use >= 5.5 digit DMM to measure the voltage
  */
 
-#define UREF_25           2500
+#define UREF_25           2498
 
 
 /*
@@ -553,7 +567,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_SERVO
+#define SW_SERVO
 
 
 /*
@@ -604,7 +618,7 @@
  *  - uncomment to enable
  */
 
-#define SW_CAP_LEAKAGE
+//#define SW_CAP_LEAKAGE
 
 
 /*
@@ -634,11 +648,11 @@
  *  - uncomment to enable (one or more)
  */
 
-//#define SW_MONITOR_R          /* just R */
-//#define SW_MONITOR_C          /* just C plus ESR */
-//#define SW_MONITOR_L          /* just L */
-//#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
-//#define SW_MONITOR_RL         /* R plus L */
+#define SW_MONITOR_R          /* just R */
+#define SW_MONITOR_C          /* just C plus ESR */
+#define SW_MONITOR_L          /* just L */
+#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
+#define SW_MONITOR_RL         /* R plus L */
 
 
 /*
@@ -710,7 +724,7 @@
  *  - uncomment to enable
  */
 
-#define SW_R_TRIMMER
+//#define SW_R_TRIMMER
 
 
 /*
@@ -1157,8 +1171,8 @@
  *  - uncomment one
  */ 
 
-//#define DATA_EEPROM           /* store data in EEPROM */
-#define DATA_FLASH            /* store data in Flash */
+#define DATA_EEPROM           /* store data in EEPROM */
+//#define DATA_FLASH            /* store data in Flash */
 
 
 
@@ -1226,7 +1240,9 @@
  *  - Schottky diode about 200mV / PNP BJT about 100mV.
  */  
 
-#define BAT_OFFSET       0
+#define BAT_OFFSET       31
+#define USB_OFFSET       150
+#define BATT_USB_BORDER       4400
 
 
 /*
@@ -1265,7 +1281,7 @@
  *  ADC voltage reference based on Vcc (in mV). 
  */
 
-#define UREF_VCC         5000
+#define UREF_VCC         4997
 
 
 /*
@@ -1319,7 +1335,7 @@
  *  - uncomment to enable
  */
 
-//#define R_MULTIOFFSET
+#define R_MULTIOFFSET
 
 
 /* 
@@ -1344,7 +1360,7 @@
  *  - uncomment to enable
  */
 
-//#define CAP_MULTIOFFSET
+#define CAP_MULTIOFFSET
 
 
 /*

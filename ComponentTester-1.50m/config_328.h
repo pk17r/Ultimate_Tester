@@ -401,7 +401,7 @@
 #define LCD_FLIP_X                      /* enable horizontal flip */
 #define LCD_FLIP_Y                      /* enable vertical flip */
 //#define LCD_COM_SEQ                     /* COM pin layout: sequential */
-#define LCD_CONTRAST     255            /* default contrast (0-255) */
+#define LCD_CONTRAST     250            /* default contrast (0-255) */
 /* font and symbols: vertically aligned & flipped, bank-wise grouping */
 #define FONT_8X8_VF                     /* 8x8 font */
 #define SYMBOLS_24X24_VFP               /* 24x24 symbols */
@@ -414,8 +414,8 @@
 #define I2C_PORT         PORTD          /* I2C port data register */
 #define I2C_DDR          DDRD           /* I2C port data direction register */
 #define I2C_PIN          PIND           /* I2C port input pins register */
-#define I2C_SDA          PD1            /* port pin used for SDA */
-#define I2C_SCL          PD2            /* port pin used for SCL */
+#define I2C_SDA          PD6            /* port pin used for SDA */
+#define I2C_SCL          PD7            /* port pin used for SCL */
 #endif
 
 
@@ -885,15 +885,17 @@
 #define ADC_PORT         PORTC     /* port data register */
 #define ADC_DDR          DDRC      /* port data direction register */
 #define ADC_PIN          PINC      /* port input pins register */
-#define TP1              PC0       /* test pin / probe #1 */
-#define TP2              PC1       /* test pin / probe #2 */
-#define TP3              PC2       /* test pin / probe #3 */
+#define TP1              PC1       /* test pin / probe #1 */
+#define TP2              PC2       /* test pin / probe #2 */
+#define TP3              PC3       /* test pin / probe #3 */
 
 #define TP_ZENER         PC9       /* test pin for for Zener check (10:1 voltage divider) */
-#define TP_REF           PC5       /* test pin for 2.5V reference and relay */ 								//ADC6 ((1<<MUX2)|(1<<MUX1))
-#define TP_BAT           PC4       /* test pin for battery (4:1 voltage divider) */							//ADC7 ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))
+#define TP_REF           PC5       /* test pin for 2.5V reference and relay */
+#define TP_BAT           ((1<<MUX2)|(1<<MUX1))       /* test pin for battery (4:1 voltage divider) */  //ADC6
 #define TP_CAP           PC9       /* test pin for self-adjustment cap */
-#define TP_LOGIC         PC3       /* test pin for Logic Probe (4:1 voltage divider) */
+#define TP_LOGIC         PC4       /* test pin for Logic Probe (4:1 voltage divider) */
+#define TP_I_MEASURE     ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))		//ADC7
+#define TP_VOUT          PC0       /* test pin for VOUT measurement (4:1 voltage divider) */
 
 
 /*
@@ -904,12 +906,12 @@
 
 #define R_PORT           PORTB     /* port data register */
 #define R_DDR            DDRB      /* port data direction register */
-#define R_RL_1           PB0       /* Rl (680R) for test pin #1 */
-#define R_RH_1           PB1       /* Rh (470k) for test pin #1 */
+#define R_RL_1           PB4       /* Rl (680R) for test pin #1 */
+#define R_RH_1           PB5       /* Rh (470k) for test pin #1 */
 #define R_RL_2           PB2       /* Rl (680R) for test pin #2 */
 #define R_RH_2           PB3       /* Rh (470k) for test pin #2 */
-#define R_RL_3           PB4       /* Rl (680R) for test pin #3 */
-#define R_RH_3           PB5       /* Rh (470k) for test pin #3 */
+#define R_RL_3           PB0       /* Rl (680R) for test pin #3 */
+#define R_RH_3           PB1       /* Rh (470k) for test pin #3 */
 
 
 /*
@@ -929,7 +931,7 @@
 
 #define POWER_PORT       PORTD     /* port data register */
 #define POWER_DDR        DDRD      /* port data direction register */
-#define POWER_CTRL       PD3       /* control pin (1: on / 0: off) */
+#define POWER_CTRL       PD0       /* control pin (1: on / 0: off) */
 
 
 /*
@@ -940,7 +942,7 @@
 #define BUTTON_PORT      PORTD     /* port data register */
 #define BUTTON_DDR       DDRD      /* port data direction register */
 #define BUTTON_PIN       PIND      /* port input pins register */
-#define TEST_BUTTON      PD5       /* test/start push button (low active) */
+#define TEST_BUTTON      PD3       /* test/start push button (low active) */
 
 
 /*
@@ -950,8 +952,8 @@
 #define ENCODER_PORT     PORTD     /* port data register */
 #define ENCODER_DDR      DDRD      /* port data direction register */
 #define ENCODER_PIN      PIND      /* port input pins register */
-#define ENCODER_A        PD6       /* rotary encoder A signal */
-#define ENCODER_B        PD7       /* rotary encoder B signal */
+#define ENCODER_A        PD2       /* rotary encoder A signal */
+#define ENCODER_B        PD1       /* rotary encoder B signal */
 
 
 /*
@@ -961,8 +963,8 @@
 #define KEY_PORT         PORTD     /* port data register */
 #define KEY_DDR          DDRD      /* port data direction register */
 #define KEY_PIN          PIND      /* port input pins register */
-#define KEY_INC          PD6       /* increase push button (low active) */
-#define KEY_DEC          PD7       /* decrease push button (low active) */
+#define KEY_INC          PD2       /* increase push button (low active) */
+#define KEY_DEC          PD1       /* decrease push button (low active) */
 
 
 /*
@@ -1121,7 +1123,7 @@
 
 #define FLASHLIGHT_PORT  PORTD     /* port data register */
 #define FLASHLIGHT_DDR   DDRD      /* port data direction register */
-#define FLASHLIGHT_CTRL  PD0       /* control pin */
+#define FLASHLIGHT_CTRL  PD5       /* control pin */
 
 
 
