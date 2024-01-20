@@ -921,7 +921,6 @@
     extern const unsigned char Isense_str[];
     extern const unsigned char Power_str[];
     extern const unsigned char VIoffset_str[];
-    extern const unsigned char UnderVoltageCurrentLimit_str[];
   #endif
 
   #ifdef SW_PHOTODIODE

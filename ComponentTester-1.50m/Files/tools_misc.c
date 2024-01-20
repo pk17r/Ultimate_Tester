@@ -2539,27 +2539,18 @@ void VoltageCurrentMeasure(void)
     Display_Space();
     Display_Value(Vout / 10, -2, 'V');
 
-    if (Vout > 5300)
-    {
-      LCD_ClearLine(5);
-      LCD_CharPos(1, 5);
-      Display_EEString(Isense_str);
-      Display_Space();
-      Display_SignedValue(Isense / 10, -2, 'A');
+    LCD_ClearLine(5);
+    LCD_CharPos(1, 5);
+    Display_EEString(Isense_str);
+    Display_Space();
+    Display_SignedValue(Isense / 10, -2, 'A');
 
-      LCD_ClearLine(6);
-      LCD_CharPos(1, 6);
-      Display_EEString(Power_str);
-      Display_Space();
-      Display_SignedValue(Power / 10, -2, 'W');
-    }
-    else
-    {
-      LCD_ClearLine(5);
-      LCD_ClearLine(6);
-      LCD_CharPos(1, 6);
-      Display_EEString_Center(UnderVoltageCurrentLimit_str);
-    }
+    LCD_ClearLine(6);
+    LCD_CharPos(1, 6);
+    Display_EEString(Power_str);
+    Display_Space();
+    Display_SignedValue(Power / 10, -2, 'W');
+
     //LCD_ClearLine(7);
     //LCD_CharPos(1, 7);
     //Display_EEString(VIoffset_str);

@@ -57,7 +57,6 @@
   const unsigned char Isense_str[] MEM_TYPE = "Isense";
   const unsigned char Power_str[] MEM_TYPE = "Power";
   const unsigned char VIoffset_str[] MEM_TYPE = "VIoffset";
-  const unsigned char UnderVoltageCurrentLimit_str[] MEM_TYPE = "<V / I LIMIT!!";
 #endif
 
   /* units */
