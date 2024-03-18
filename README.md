@@ -1,3 +1,16 @@
+# Ultimate Tester!
+
+Pocket Sized Component Tester + LiPo Charge Boost Protect / USB-C Power Supply
+
+Full Blog Entry & Details:
+https://pk17r.wordpress.com/2023/12/18/ultimate-tester-component-tester-lipo-charge-boost-protect/
+
+![Alt text](1.png?raw=true "LiPo Charge Boost Protect / USB-C Power Supply")
+<br>
+![Alt text](2.JPG?raw=true "Component Tester")
+
+<br>
+
 # Transistortester Warehouse
 
 The Transistortester is a device for identifying and checking electronic components.
