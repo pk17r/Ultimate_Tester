@@ -917,7 +917,7 @@
     extern const unsigned char Power_Meter_str[];
     extern const unsigned char Battery_str[];
     extern const unsigned char Out_str[];
-    extern const unsigned char Vlogic_str[];
+    extern const unsigned char VMeter_str[];
     extern const unsigned char Power_str[];
     extern const unsigned char Ioffset_str[];
   #endif

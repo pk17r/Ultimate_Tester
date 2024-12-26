@@ -53,7 +53,7 @@
 
 #ifdef HW_POWER_METER
   const unsigned char Vin_str[] MEM_TYPE = "VIN";
-  const unsigned char Vlogic_str[] MEM_TYPE = "Vlogic";
+  const unsigned char VMeter_str[] MEM_TYPE = "VMeter";
   const unsigned char Power_str[] MEM_TYPE = "Power";
   const unsigned char Ioffset_str[] MEM_TYPE = "Ioff";
 #endif

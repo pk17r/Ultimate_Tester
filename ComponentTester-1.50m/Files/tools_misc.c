@@ -2440,15 +2440,14 @@ void Flashlight(void)
 
  /*
   *  measures various voltages and current through INA226 Current Sensor or Current sense IC TMCS1108A4B
-  *  Vin, Vout, Iout, Power, Vlogic
+  *  Vout, Iout, Power, Vmeter
   */
 
 void PowerMeter(void)
 {
   uint8_t           Flag;               /* loop control */
   uint8_t           Test;               /* user feedback */
-  uint16_t          Vin = 0;
-  uint16_t          Vlogic = 0;
+  uint16_t          Vmeter = 0;
   int32_t           Vout_mV = 0, Isense = 0, Power = 0;
   unsigned char     Current_Unit = 'm', Power_Unit = 'm';
   uint8_t           x_start = 0;
@@ -2476,10 +2475,6 @@ void PowerMeter(void)
 
   LCD_Clear();
 
-  LCD_ClearLine(1);
-  LCD_CharPos(1, 1);
-  Display_EEString_Center(Power_Meter_str);
-
   /*
    *  processing loop
    */
@@ -2492,23 +2487,12 @@ void PowerMeter(void)
      */
 
      /* get voltage */
-    Vin = ReadU(TP_BAT);          /* read voltage */
-    Vlogic = ReadU(TP_LOGIC);          /* read voltage */
-
-    /* VIN consider voltage divider */
-    Value = (((int32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
-    Value *= Vin;                   /* Uin (0.001 mV) */
-    Value /= 1000;                    /* Uin (mV) */
-    if (Value > BATT_USB_BORDER)
-      Value += USB_OFFSET;             /* add offset for voltage drop */
-    else
-      Value += BAT_OFFSET;             /* add offset for voltage drop */
-    Vin = (uint16_t)Value;          /* keep 2 bytes */
     /* TP LOGIC consider voltage divider */
+    Vmeter = ReadU(TP_LOGIC);          /* read voltage */
     Value = (((int32_t)(LOGIC_PROBE_R1 + LOGIC_PROBE_R2) * 1000) / LOGIC_PROBE_R2);  /* factor (0.001) */
-    Value *= Vlogic;                   /* voltage (0.001 mV) */
+    Value *= Vmeter;                   /* voltage (0.001 mV) */
     Value /= 1000;                  /* scale to mV */
-    Vlogic = (uint16_t)Value;          /* keep 2 bytes */
+    Vmeter = (uint16_t)Value;          /* keep 2 bytes */
     #ifdef INA226_CURRENT_SENSOR
       if(power_read_delay_counter % 5 == 0) {
         // Voltage
@@ -2556,28 +2540,19 @@ void PowerMeter(void)
     #define SPACES_FROM_RIGHT       1
     #define REG_VAL_DISP_WIDTH       5
 
-    LCD_ClearLine(2);
-    LCD_CharPos(2, 2);
-    Display_EEString(Vin_str);
-    x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
-    if(Vin >= 10000) x_start++;
-    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 2);
-    Display_Value(Vin / 10, -2, 0);
-    Display_Space(); Display_Char('V');
 
-
-    LCD_ClearLine(4);
-    LCD_CharPos(2, 4);
+    LCD_ClearLine(1);
+    LCD_CharPos(2, 1);
     Display_Char('V'); Display_EEString(Out_str);
     x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
     if(abs(Vout_mV) >= 1e4 || Vout_mV < 0) x_start++;
-    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 4);
+    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 1);
     Display_SignedValue(Vout_mV / 10, -2, 0);
     Display_Space(); Display_Char('V');
 
 
-    LCD_ClearLine(5);
-    LCD_CharPos(2, 5);
+    LCD_ClearLine(2);
+    LCD_CharPos(2, 2);
     Display_Char('I'); Display_EEString(Out_str);
     x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
     if(abs(Isense) >= 1e5)
@@ -2585,7 +2560,7 @@ void PowerMeter(void)
     else if(abs(Isense) >= 1e4)
       x_start++;
     if(Isense < 0) x_start++;
-    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 5);
+    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 2);
     if(Current_Unit == 'm') {
       Display_SignedValue(Isense / 100, -1, 0);
       Display_Space(); Display_Char(Current_Unit);
@@ -2597,8 +2572,8 @@ void PowerMeter(void)
     }
     
 
-    LCD_ClearLine(6);
-    LCD_CharPos(1, 6);
+    LCD_ClearLine(3);
+    LCD_CharPos(1, 3);
     Display_EEString(Power_str);
     x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
     if(abs(Power) >= 1e5)
@@ -2606,7 +2581,7 @@ void PowerMeter(void)
     else if(abs(Power) >= 1e4)
       x_start++;
     if(Power < 0) x_start++;
-    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 6);
+    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 3);
     if(Power_Unit == 'm') {
       Display_SignedValue(Power / 100, -1, 0);
       Display_Space(); Display_Char(Power_Unit);
@@ -2618,26 +2593,13 @@ void PowerMeter(void)
     }
 
 
-    // LCD_ClearLine(7);
-    // LCD_CharPos(1, 7);
-    // if(test_I_1mA == 1) {
-    //   Display_Char('1');
-    // }
-    // else {
-    //   Display_Char('0');
-    // }
-    // Display_Space();
-    // Display_SignedValue((int32_t)Value_test_print, 0, 0);
-
-
-
-    LCD_ClearLine(8);
-    LCD_CharPos(1, 8);
-    Display_EEString(Vlogic_str);
+    LCD_ClearLine(4);
+    LCD_CharPos(1, 4);
+    Display_EEString(VMeter_str);
     x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
-    if(Vlogic >= 10000) x_start++;
-    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 8);
-    Display_Value(Vlogic / 10, -2, 0);
+    if(Vmeter >= 10000) x_start++;
+    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 4);
+    Display_Value(Vmeter / 10, -2, 0);
     Display_Space(); Display_Char('V');
 
     /*
