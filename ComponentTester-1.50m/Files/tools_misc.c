@@ -2452,7 +2452,6 @@ void PowerMeter(void)
   unsigned char     Current_Unit = 'm', Power_Unit = 'm';
   uint8_t           x_start = 0;
   int32_t           Value = 0;              /* temporary value */
-  uint8_t           power_read_delay_counter = 0;
 
   /* local constants for Flag (bitfield) */
   #define RUN_FLAG            0b00000001     /* run / otherwise end */
@@ -2475,6 +2474,17 @@ void PowerMeter(void)
 
   LCD_Clear();
 
+  // Print Left Side Row Labels
+  LCD_CharPos(2, 1);
+  Display_Char('V'); Display_EEString(Out_str);
+  LCD_CharPos(2, 2);
+  Display_Char('I'); Display_EEString(Out_str);
+  LCD_CharPos(1, 3);
+  Display_EEString(Power_str);
+  LCD_CharPos(1, 4);
+  Display_EEString(VMeter_str);
+
+
   /*
    *  processing loop
    */
@@ -2494,31 +2504,28 @@ void PowerMeter(void)
     Value /= 1000;                  /* scale to mV */
     Vmeter = (uint16_t)Value;          /* keep 2 bytes */
     #ifdef INA226_CURRENT_SENSOR
-      if(power_read_delay_counter % 5 == 0) {
-        // Voltage
-        Vout_mV = INA226_getLoadVoltage_mV();
-        // Current
-        Value = INA226_getCurrent_uA() + NV.Ioffset;
-        if(abs(Value) < 1e6) {
-          Current_Unit = 'm';
-          Isense = (int32_t)Value; // Isense in uA
-        }
-        else {
-          Current_Unit = 'A';
-          Isense = (int32_t)(Value / 1000);    // Isense in mA
-        }
-        // Power
-        Value = (Vout_mV) * (Value / 1000);
-        if(abs(Value) < 1e6) {
-          Power_Unit = 'm';
-          Power = (int32_t)Value;   // Power in uW
-        }
-        else {
-          Power_Unit = 'W';
-          Power = (int32_t)(Value / 1000);    // Power in mW
-        }
+      // Voltage
+      Vout_mV = INA226_getLoadVoltage_mV();
+      // Current
+      Value = INA226_getCurrent_uA() + NV.Ioffset;
+      if(abs(Value) < 1e6) {
+        Current_Unit = 'm';
+        Isense = (int32_t)Value; // Isense in uA
       }
-      power_read_delay_counter++;
+      else {
+        Current_Unit = 'A';
+        Isense = (int32_t)(Value / 1000);    // Isense in mA
+      }
+      // Power
+      Value = (Vout_mV) * (Value / 1000);
+      if(abs(Value) < 1e6) {
+        Power_Unit = 'm';
+        Power = (int32_t)Value;   // Power in uW
+      }
+      else {
+        Power_Unit = 'W';
+        Power = (int32_t)(Value / 1000);    // Power in mW
+      }
     #else // HALL EFFECT CURRENT SENSOR TMCS1108A4B
       Vout = ReadU(TP_VOUT);          /* read voltage */
       /* VOUT consider voltage divider */
@@ -2541,9 +2548,7 @@ void PowerMeter(void)
     #define REG_VAL_DISP_WIDTH       5
 
 
-    LCD_ClearLine(1);
-    LCD_CharPos(2, 1);
-    Display_Char('V'); Display_EEString(Out_str);
+    LCD_CharPos(6, 1); Display_Space(); Display_Space(); Display_Space(); Display_Space(); Display_Space();
     x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
     if(abs(Vout_mV) >= 1e4 || Vout_mV < 0) x_start++;
     LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 1);
@@ -2551,9 +2556,7 @@ void PowerMeter(void)
     Display_Space(); Display_Char('V');
 
 
-    LCD_ClearLine(2);
-    LCD_CharPos(2, 2);
-    Display_Char('I'); Display_EEString(Out_str);
+    LCD_CharPos(6, 2); Display_Space(); Display_Space(); Display_Space(); Display_Space(); Display_Space();
     x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
     if(abs(Isense) >= 1e5)
       x_start += 2;
@@ -2572,9 +2575,7 @@ void PowerMeter(void)
     }
     
 
-    LCD_ClearLine(3);
-    LCD_CharPos(1, 3);
-    Display_EEString(Power_str);
+    LCD_CharPos(6, 3); Display_Space(); Display_Space(); Display_Space(); Display_Space(); Display_Space();
     x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
     if(abs(Power) >= 1e5)
       x_start += 2;
@@ -2593,9 +2594,7 @@ void PowerMeter(void)
     }
 
 
-    LCD_ClearLine(4);
-    LCD_CharPos(1, 4);
-    Display_EEString(VMeter_str);
+    LCD_CharPos(7, 4); Display_Space(); Display_Space(); Display_Space(); Display_Space(); Display_Space();
     x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
     if(Vmeter >= 10000) x_start++;
     LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 4);
@@ -2607,7 +2606,7 @@ void PowerMeter(void)
      */
 
      /* check for user feedback and slow down update rate */
-    Test = TestKey(50, CHECK_KEY_TWICE | CHECK_BAT);
+    Test = TestKey(300, CHECK_KEY_TWICE | CHECK_BAT);
 
     if (Test == KEY_TWICE)         /* two short key presses */
     {
