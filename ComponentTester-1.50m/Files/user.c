@@ -295,11 +295,11 @@ int32_t RoundSignedValue(int32_t Value, uint8_t Scale, uint8_t RoundScale)
  *  convert temperature value from Celcius to Fahrenheit
  *
  *  requires:
- *  - Value: temperature in °C
+ *  - Value: temperature in ï¿½C
  *  - Scale: number of decimal places (0 = none)
  *
  *  returns:
- *  - temperature in °F
+ *  - temperature in ï¿½F
  */
 
 int32_t Celsius2Fahrenheit(int32_t Value, uint8_t Scale)
@@ -307,8 +307,8 @@ int32_t Celsius2Fahrenheit(int32_t Value, uint8_t Scale)
   int32_t           Offset = 32;   /* offset */
 
   /*
-   *  convert °C to °F
-   *  - T[°F] = T[°C] * 9/5 + 32
+   *  convert ï¿½C to ï¿½F
+   *  - T[ï¿½F] = T[ï¿½C] * 9/5 + 32
    */
 
   /* scale offset to match temperature's scale */
@@ -385,12 +385,12 @@ uint8_t EEStringLength(const unsigned char *String)
 void PassiveBuzzer(uint8_t Mode)
 {
   uint8_t           n = 200;       /* counter for half cycles */
-                                   /* 200 * 100µs = 20ms */
+                                   /* 200 * 100ï¿½s = 20ms */
 
   /* compensate tone duration */
   if (Mode == BUZZER_FREQ_LOW)     /* low frequency */
   {
-    /* 100 * 200µs = 20ms */
+    /* 100 * 200ï¿½s = 20ms */
     n >>= 1;                       /* halve half cycles */
   }
   
@@ -1111,7 +1111,7 @@ uint8_t TestKey(uint16_t Timeout, uint8_t Mode)
           Test = UI.EncTicks / Steps;        /* ticks per step */
           Timeout2 += Test;                  /* add to timeout */
           Timeout2 += 3 * ENCODER_PULSES;    /* add some buffer */
-          /* adjustment for steps/360°: *(steps/16) */
+          /* adjustment for steps/360ï¿½: *(steps/16) */
           Temp = Test * ENCODER_STEPS;
           Temp /= 16;
           Test = (uint8_t)Temp;
@@ -2068,7 +2068,7 @@ uint8_t PresentMainMenu(void)
     #define ITEM_34      0
   #endif
 
-  #ifdef HW_V_I_MEASURE
+  #ifdef HW_POWER_METER
     #define ITEM_35      1
   #else
     #define ITEM_35      0
@@ -2102,9 +2102,9 @@ uint8_t PresentMainMenu(void)
    *  test/check/signal features
    */
 
-  #ifdef HW_V_I_MEASURE
+  #ifdef HW_POWER_METER
    /* voltage current measure */
-  Item_Str[n] = (void*)V_I_Measure_str;
+  Item_Str[n] = (void*)Power_Meter_str;
   Item_ID[n] = MENUITEM_V_I_MEASURE;
   n++;
   #endif
@@ -2756,10 +2756,10 @@ uint8_t MainMenu(void)
       break;
     #endif
     
-    #ifdef HW_V_I_MEASURE
+    #ifdef HW_POWER_METER
     /* voltage current measure */
     case MENUITEM_V_I_MEASURE:
-      VoltageCurrentMeasure();
+      PowerMeter();
       break;
     #endif
 

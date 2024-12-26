@@ -1045,15 +1045,15 @@ void OptoCoupler_Tool(void)
         CTR = (uint32_t)U3;
         CTR *= 10000;                   /* scale to 0.0001 mV */
         U4 = NV.RiH + (R_LOW * 10);     /* RiH + Rl (0.1 Ohms) */
-        CTR /= U4;                      /* If = U/R in µA */
-        U3 = (uint16_t)CTR;             /* If in µA */
+        CTR /= U4;                      /* If = U/R in ï¿½A */
+        U3 = (uint16_t)CTR;             /* If in ï¿½A */
 
         /* calculate BJT's Ie */
         /* Ie = I_total - If = (U2 / RiL) - If */
         CTR = (uint32_t)U2;             /* U2 (mV) */
         CTR *= 10000;                   /* scale to 0.0001 mV */
-        CTR /= NV.RiL;                  /* /RiL in 0.1 Ohms -> I_total (µA) */ 
-        CTR -= U3;                      /* Ie = I_total - If (µA) */
+        CTR /= NV.RiL;                  /* /RiL in 0.1 Ohms -> I_total (ï¿½A) */ 
+        CTR -= U3;                      /* Ie = I_total - If (ï¿½A) */
 
         /* calculate CTR */
         /* CTR = Ie / If */
@@ -1107,7 +1107,7 @@ void OptoCoupler_Tool(void)
           if (Run <= 250)          /* no overrun */
           {
             U1 = Run * 70;                   /* delay (0.1 MCU cycles) */
-            U1 /= MCU_CYCLES_PER_US;         /* delay (0.1 µs) */
+            U1 /= MCU_CYCLES_PER_US;         /* delay (0.1 ï¿½s) */
           }
 
 
@@ -1132,7 +1132,7 @@ void OptoCoupler_Tool(void)
           if (Run <= 250)          /* no overrun */
           {
             U2 = Run * 70;                   /* delay (0.1 MCU cycles) */
-            U2 /= MCU_CYCLES_PER_US;         /* delay (0.1 µs) */
+            U2 /= MCU_CYCLES_PER_US;         /* delay (0.1 ï¿½s) */
           }
 
           Run = 1;            /* reset value */
@@ -1158,10 +1158,10 @@ void OptoCoupler_Tool(void)
         if (U1 < UINT16_MAX)       /* valid t_on */
         {
           Display_NL_EEString_Space(t_on_str);    /* display: t_on */
-          if (U1 < 10)        /* < 1µs */
+          if (U1 < 10)        /* < 1ï¿½s */
           {
             Display_Char('<');
-            U1 = 10;          /* 1µs */
+            U1 = 10;          /* 1ï¿½s */
           }
           Display_Value(U1, -7, 's');
         }
@@ -1169,10 +1169,10 @@ void OptoCoupler_Tool(void)
         if (U2 < UINT16_MAX)       /* valid t_off */
         {
           Display_NL_EEString_Space(t_off_str);   /* display: t_off */
-          if (U2 < 10)        /* < 1µs */
+          if (U2 < 10)        /* < 1ï¿½s */
           {
             Display_Char('<');
-            U2 = 10;          /* 1µs */
+            U2 = 10;          /* 1ï¿½s */
           }
           Display_Value(U2, -7, 's');
         }
@@ -1285,7 +1285,7 @@ void Cap_Leakage(void)
           break;
 
         case MODE_LOW:             /* charge cap with low current (Rh) */
-          /* max. charge current I = 5V/Rh = 10.6µA */
+          /* max. charge current I = 5V/Rh = 10.6ï¿½A */
           Display_EEString_Space(CapCharge_str);
           Display_EEString(CapLow_str);
 
@@ -1325,12 +1325,12 @@ void Cap_Leakage(void)
 
           /* calculate current: I = U / R (ignore R_Zero) */
           Value = U1;                        /* U across Rl and RiL in mV */
-          Value *= 100000;                   /* scale to 0.01 µV */
-          Value /= ((R_LOW * 10) + NV.RiL);  /* 0.01 µV / 0.1 Ohms = 0.1 µA */
+          Value *= 100000;                   /* scale to 0.01 ï¿½V */
+          Value /= ((R_LOW * 10) + NV.RiL);  /* 0.01 ï¿½V / 0.1 Ohms = 0.1 ï¿½A */
           Display_Value(Value, -7, 'A');     /* display current */
 
           /* change to low current mode when current is quite low */
-          if (U1 <= 3)                       /* I <= 4.2µA */
+          if (U1 <= 3)                       /* I <= 4.2ï¿½A */
           {
             Mode = MODE_LOW;                 /* low current mode */
             Flag |= CHANGED_MODE;            /* set flag for changed mode */
@@ -1345,8 +1345,8 @@ void Cap_Leakage(void)
           {
             /* calculate current: I = U / R */
             Value = U1;                        /* in mV */
-            Value *= 10000;                    /* scale to 0.1 µV */
-            Value /= (R_HIGH / 1000);          /* 0.1 µV / kOhms = 0.1 nA */
+            Value *= 10000;                    /* scale to 0.1 ï¿½V */
+            Value /= (R_HIGH / 1000);          /* 0.1 ï¿½V / kOhms = 0.1 nA */
             Display_Value(Value, -10, 'A');    /* display current */
           }
           else                          /* in the noise floor */
@@ -2436,25 +2436,24 @@ void Flashlight(void)
  * ************************************************************************ */
 
 
-#ifdef HW_V_I_MEASURE
+#ifdef HW_POWER_METER
 
  /*
-  *  measures various voltages and current through I sense IC TMCS1108A4B
-  *  Vin, Vout, Vlogic
+  *  measures various voltages and current through INA226 Current Sensor or Current sense IC TMCS1108A4B
+  *  Vin, Vout, Iout, Power, Vlogic
   */
 
-void VoltageCurrentMeasure(void)
+void PowerMeter(void)
 {
-  int32_t          Isensitivity = 400;    // I sense IC sensitivity mV/A
-  
   uint8_t           Flag;               /* loop control */
   uint8_t           Test;               /* user feedback */
-  uint16_t          Vin;
-  uint16_t          Vout;
-  uint16_t          Vlogic;
-  uint16_t          VIsense;
-  int32_t           Isense, Power;
-  uint32_t          Value;              /* temporary value */
+  uint16_t          Vin = 0;
+  uint16_t          Vlogic = 0;
+  int32_t           Vout_mV = 0, Isense = 0, Power = 0;
+  unsigned char     Current_Unit = 'm', Power_Unit = 'm';
+  uint8_t           x_start = 0;
+  int32_t           Value = 0;              /* temporary value */
+  uint8_t           power_read_delay_counter = 0;
 
   /* local constants for Flag (bitfield) */
   #define RUN_FLAG            0b00000001     /* run / otherwise end */
@@ -2463,9 +2462,14 @@ void VoltageCurrentMeasure(void)
    *  init
    */
   ADC_DDR &= ~(1 << TP_BAT);          /* set pin to HiZ */
-  ADC_DDR &= ~(1 << TP_VOUT);          /* set pin to HiZ */
   ADC_DDR &= ~(1 << TP_LOGIC);          /* set pin to HiZ */
-  ADC_DDR &= ~(1 << TP_I_MEASURE);          /* set pin to HiZ */
+  #ifdef INA226_CURRENT_SENSOR
+    I2C_Setup();
+    INA226_setup();
+  #else      // HALL EFFECT CURRENT SENSOR
+    ADC_DDR &= ~(1 << TP_VOUT);          /* set pin to HiZ */
+    ADC_DDR &= ~(1 << TP_I_MEASURE);          /* set pin to HiZ */
+  #endif
 
   Cfg.Samples = 255;        /* do 255 samples to be averaged */
   Flag = RUN_FLAG;                      /* enter processing loop */
@@ -2474,7 +2478,7 @@ void VoltageCurrentMeasure(void)
 
   LCD_ClearLine(1);
   LCD_CharPos(1, 1);
-  Display_EEString_Center(V_I_Measure_str);
+  Display_EEString_Center(Power_Meter_str);
 
   /*
    *  processing loop
@@ -2489,12 +2493,10 @@ void VoltageCurrentMeasure(void)
 
      /* get voltage */
     Vin = ReadU(TP_BAT);          /* read voltage */
-    Vout = ReadU(TP_VOUT);          /* read voltage */
     Vlogic = ReadU(TP_LOGIC);          /* read voltage */
-    VIsense = ReadU(TP_I_MEASURE);          /* read voltage */
-    
+
     /* VIN consider voltage divider */
-    Value = (((uint32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
+    Value = (((int32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
     Value *= Vin;                   /* Uin (0.001 mV) */
     Value /= 1000;                    /* Uin (mV) */
     if (Value > BATT_USB_BORDER)
@@ -2502,66 +2504,141 @@ void VoltageCurrentMeasure(void)
     else
       Value += BAT_OFFSET;             /* add offset for voltage drop */
     Vin = (uint16_t)Value;          /* keep 2 bytes */
-    /* VOUT consider voltage divider */
-    Value = (((uint32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
-    Value *= Vout;                   /* Uin (0.001 mV) */
-    Value /= 1000;                    /* Uin (mV) */
-    Vout = (uint16_t)Value;          /* keep 2 bytes */
     /* TP LOGIC consider voltage divider */
-    Value = (((uint32_t)(LOGIC_PROBE_R1 + LOGIC_PROBE_R2) * 1000) / LOGIC_PROBE_R2);  /* factor (0.001) */
+    Value = (((int32_t)(LOGIC_PROBE_R1 + LOGIC_PROBE_R2) * 1000) / LOGIC_PROBE_R2);  /* factor (0.001) */
     Value *= Vlogic;                   /* voltage (0.001 mV) */
     Value /= 1000;                  /* scale to mV */
     Vlogic = (uint16_t)Value;          /* keep 2 bytes */
-    /* I SENSE consider sensitivity and 0 value */
-    Isense = ((int32_t)VIsense - (int32_t)Cfg.Vcc / 2);  /* factor (0.001) */
-    Isense += NV.VIoffset;                                  /* add offset */
-    Isense = (int32_t)(Isense * 1000) / Isensitivity;                 /* divide by sensitivity and scale to mA */
-    Power = (int32_t)(Vout)*Isense / 1000;      /* Power in mW */
+    #ifdef INA226_CURRENT_SENSOR
+      if(power_read_delay_counter % 5 == 0) {
+        // Voltage
+        Vout_mV = INA226_getLoadVoltage_mV();
+        // Current
+        Value = INA226_getCurrent_uA() + NV.Ioffset;
+        if(abs(Value) < 1e6) {
+          Current_Unit = 'm';
+          Isense = (int32_t)Value; // Isense in uA
+        }
+        else {
+          Current_Unit = 'A';
+          Isense = (int32_t)(Value / 1000);    // Isense in mA
+        }
+        // Power
+        Value = (Vout_mV) * (Value / 1000);
+        if(abs(Value) < 1e6) {
+          Power_Unit = 'm';
+          Power = (int32_t)Value;   // Power in uW
+        }
+        else {
+          Power_Unit = 'W';
+          Power = (int32_t)(Value / 1000);    // Power in mW
+        }
+      }
+      power_read_delay_counter++;
+    #else // HALL EFFECT CURRENT SENSOR TMCS1108A4B
+      Vout = ReadU(TP_VOUT);          /* read voltage */
+      /* VOUT consider voltage divider */
+      Value = (((uint32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
+      Value *= Vout;                   /* Uin (0.001 mV) */
+      Value /= 1000;                    /* Uin (mV) */
+      Vout = (uint16_t)Value;          /* keep 2 bytes */
+      /* I SENSE consider sensitivity and 0 value */
+      Value = ReadU(TP_I_MEASURE);          /* read voltage */
+      Isense = ((int32_t)Value - (int32_t)Cfg.Vcc / 2);  /* factor (0.001) */
+      Isense += NV.Ioffset / 1000;                                  /* add offset */
+      Isense = (int32_t)(Isense * 1000) / Isensitivity;                 /* divide by sensitivity and scale to mA */
+      Power = (int32_t)(Vout)*Isense / 1000;      /* Power in mW */
+    #endif
     
 
     /* display values */
+    #define DISP_CHARS_PER_ROW       16       // from SH1106.c   ->   LCD_CHAR_X
+    #define SPACES_FROM_RIGHT       1
+    #define REG_VAL_DISP_WIDTH       5
 
     LCD_ClearLine(2);
-    LCD_CharPos(1, 2);
+    LCD_CharPos(2, 2);
     Display_EEString(Vin_str);
-    Display_Space();
-    Display_Value(Vin / 10, -2, 'V');
+    x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
+    if(Vin >= 10000) x_start++;
+    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 2);
+    Display_Value(Vin / 10, -2, 0);
+    Display_Space(); Display_Char('V');
 
-    //LCD_ClearLine(3);
-    //LCD_CharPos(1, 3);
-    //Display_EEString(Vcc_str);
-    //Display_Space();
-    //Display_SignedValue(Cfg.Vcc, -3, 'V');
 
     LCD_ClearLine(4);
-    LCD_CharPos(1, 4);
-    Display_EEString(Vout_str);
-    Display_Space();
-    Display_Value(Vout / 10, -2, 'V');
+    LCD_CharPos(2, 4);
+    Display_Char('V'); Display_EEString(Out_str);
+    x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
+    if(abs(Vout_mV) >= 1e4 || Vout_mV < 0) x_start++;
+    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 4);
+    Display_SignedValue(Vout_mV / 10, -2, 0);
+    Display_Space(); Display_Char('V');
+
 
     LCD_ClearLine(5);
-    LCD_CharPos(1, 5);
-    Display_EEString(Isense_str);
-    Display_Space();
-    Display_SignedValue(Isense / 10, -2, 'A');
+    LCD_CharPos(2, 5);
+    Display_Char('I'); Display_EEString(Out_str);
+    x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
+    if(abs(Isense) >= 1e5)
+      x_start += 2;
+    else if(abs(Isense) >= 1e4)
+      x_start++;
+    if(Isense < 0) x_start++;
+    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 5);
+    if(Current_Unit == 'm') {
+      Display_SignedValue(Isense / 100, -1, 0);
+      Display_Space(); Display_Char(Current_Unit);
+      Display_Char('A');
+    }
+    else {
+      Display_SignedValue(Isense / 10, -2, 0);
+      Display_Space(); Display_Char(Current_Unit);
+    }
+    
 
     LCD_ClearLine(6);
     LCD_CharPos(1, 6);
     Display_EEString(Power_str);
-    Display_Space();
-    Display_SignedValue(Power / 10, -2, 'W');
+    x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
+    if(abs(Power) >= 1e5)
+      x_start += 2;
+    else if(abs(Power) >= 1e4)
+      x_start++;
+    if(Power < 0) x_start++;
+    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 6);
+    if(Power_Unit == 'm') {
+      Display_SignedValue(Power / 100, -1, 0);
+      Display_Space(); Display_Char(Power_Unit);
+      Display_Char('W');
+    }
+    else {
+      Display_SignedValue(Power / 10, -2, 0);
+      Display_Space(); Display_Char(Power_Unit);
+    }
 
-    //LCD_ClearLine(7);
-    //LCD_CharPos(1, 7);
-    //Display_EEString(VIoffset_str);
-    //Display_Space();
-    //Display_Value(NV.VIoffset, -3, 'V');
+
+    // LCD_ClearLine(7);
+    // LCD_CharPos(1, 7);
+    // if(test_I_1mA == 1) {
+    //   Display_Char('1');
+    // }
+    // else {
+    //   Display_Char('0');
+    // }
+    // Display_Space();
+    // Display_SignedValue((int32_t)Value_test_print, 0, 0);
+
+
 
     LCD_ClearLine(8);
     LCD_CharPos(1, 8);
     Display_EEString(Vlogic_str);
-    Display_Space();
-    Display_Value(Vlogic / 10, -2, 'V');
+    x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
+    if(Vlogic >= 10000) x_start++;
+    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 8);
+    Display_Value(Vlogic / 10, -2, 0);
+    Display_Space(); Display_Char('V');
 
     /*
      *  user feedback
@@ -2707,8 +2784,8 @@ void PhotodiodeCheck(void)
     }
 
     /* calculate I_P (= U / R) */
-    I = U * 100000;                /* scale voltage to 0.01 µV */
-    I /= R;                        /* / R (in 0.1 Ohms) -> I in 0.1 µA */ 
+    I = U * 100000;                /* scale voltage to 0.01 ï¿½V */
+    I /= R;                        /* / R (in 0.1 Ohms) -> I in 0.1 ï¿½A */ 
 
     /* display I_P */
     LCD_ClearLine2();              /* line #2 */

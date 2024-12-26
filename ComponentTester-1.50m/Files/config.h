@@ -3,7 +3,7 @@
  *   global configuration, setup and settings
  *
  *   (c) 2012-2023 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz Kübbeler
+ *   based on code from Markus Frejek and Karl-Heinz Kï¿½bbeler
  *
  * ************************************************************************ */
 
@@ -31,13 +31,17 @@
 /*
  *  Current Sense IC
  *  - ADC Pin TP_I_MEASURE
- *  - VI_OFFSET in mV
+ *  - I_OFFSET in uA for Shunt Resistor Current Sensor INA226 or mV for Hall Effect Current sense IC TMCS1108A4B
  */
 
-#define HW_V_I_MEASURE
+#define HW_POWER_METER
 
-#ifdef HW_V_I_MEASURE
-#define VI_OFFSET			45
+#ifdef HW_POWER_METER
+  #ifdef INA226_CURRENT_SENSOR
+    #define I_OFFSET			200
+  #else
+    #define I_OFFSET			45
+  #endif
 #endif
 
 
@@ -278,7 +282,7 @@
  *  - uncomment to enable
  */
 
-//#define HW_ADJUST_CAP
+#define HW_ADJUST_CAP
 
 
 /*
@@ -373,7 +377,23 @@
  *  - uncomment to enable
  */
 
-#define HW_FLASHLIGHT
+// #define HW_FLASHLIGHT
+
+
+
+/*
+ *  INA226 Current Sensor
+ *  - requires I2C bus
+ *  - uncomment to enable
+ */
+#define INA226_CURRENT_SENSOR
+#ifdef INA226_CURRENT_SENSOR
+  #define INA226_I2C_ADDR     0x40      /* A0=GND, A1=GND */
+  #define INA_226_MICRO_CURRENT_LSB   100     /*   current_LSB = 100.0 uA / bit   */
+  #define INA_226_CALIBRATION_VAL   2438    /*   Computed using INA226_setMaxCurrentShunt()   */
+  #define I2C_RW
+#endif
+
 
 
 
@@ -398,7 +418,7 @@
  *  - uncomment to enable
  */
 
-#define SW_PWM_PLUS
+//#define SW_PWM_PLUS
 
 
 /*
@@ -407,7 +427,7 @@
  *  - uncomment to enable
  */
 
-#define PWM_SHOW_DURATION
+//#define PWM_SHOW_DURATION
 
 
 /*
@@ -415,7 +435,7 @@
  *  - uncomment to enable
  */
 
-#define SW_INDUCTOR
+//#define SW_INDUCTOR
 
 
 /*
@@ -425,7 +445,7 @@
  *  - uncomment to enable
  */
 
-#define SW_ESR
+//#define SW_ESR
 //#define SW_OLD_ESR
 
 
@@ -453,7 +473,7 @@
  *  - uncomment to enable
  */
 
-#define SW_SQUAREWAVE
+//#define SW_SQUAREWAVE
 
 
 /*
@@ -557,7 +577,7 @@
  *  - uncomment to enable
  */
 
-#define SW_SCHOTTKY_BJT
+//#define SW_SCHOTTKY_BJT
 
 
 /*
@@ -567,7 +587,7 @@
  *  - uncomment to enable
  */
 
-#define SW_SERVO
+// #define SW_SERVO
 
 
 /*
@@ -582,14 +602,14 @@
 
 /*
  *  DS18S20 - OneWire temperature sensor
- *  - DS18S20_HIGHRES: enable high resolution (0.01°C)
- *    normal resolution is 0.5°C
+ *  - DS18S20_HIGHRES: enable high resolution (0.01ï¿½C)
+ *    normal resolution is 0.5ï¿½C
  *  - uncomment to enable
  *  - also enable ONEWIRE_PROBES or ONEWIRE_IO_PIN (see section 'Busses')
  */
 
 //#define SW_DS18S20
-//#define DS18S20_HIGHRES       /* high resolution (0.01°C) */
+//#define DS18S20_HIGHRES       /* high resolution (0.01ï¿½C) */
 
 
 /*
@@ -627,7 +647,7 @@
  *  - uncomment to enable
  */
 
-#define SW_REVERSE_HFE
+//#define SW_REVERSE_HFE
 
 
 /*
@@ -637,7 +657,7 @@
  *  - uncomment to enable
  */
 
-#define SW_HFE_CURRENT
+//#define SW_HFE_CURRENT
 
 
 /*
@@ -648,11 +668,11 @@
  *  - uncomment to enable (one or more)
  */
 
-#define SW_MONITOR_R          /* just R */
-#define SW_MONITOR_C          /* just C plus ESR */
-#define SW_MONITOR_L          /* just L */
-#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
-#define SW_MONITOR_RL         /* R plus L */
+//#define SW_MONITOR_R          /* just R */
+//#define SW_MONITOR_C          /* just C plus ESR */
+//#define SW_MONITOR_L          /* just L */
+//#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
+//#define SW_MONITOR_RL         /* R plus L */
 
 
 /*
@@ -715,7 +735,7 @@
  *  - uncomment to enable
  */
 
-#define SW_CONTINUITY_CHECK
+//#define SW_CONTINUITY_CHECK
 
 
 /*
@@ -732,7 +752,7 @@
  *  - uncomment to enable
  */ 
 
-#define SW_C_VLOSS
+//#define SW_C_VLOSS
 
 
 /*
@@ -740,7 +760,7 @@
  *  - uncomment to enable
  */
 
-#define SW_PHOTODIODE
+// #define SW_PHOTODIODE
 
 
 
@@ -957,7 +977,7 @@
  *  - uncomment to enable
  */
 
-#define SW_SYMBOLS
+//#define SW_SYMBOLS
 
 
 /*
@@ -966,7 +986,7 @@
  *  - uncomment to enable
  */
 
-#define UI_PINOUT_ALT
+//#define UI_PINOUT_ALT
 
 
 /*
@@ -975,7 +995,7 @@
  *  - uncomment to enable
  */
 
-#define UI_QUESTION_MARK
+//#define UI_QUESTION_MARK
 
 
 /*
@@ -1030,7 +1050,7 @@
  *  - uncomment to enable
  */
 
-#define UI_BATTERY
+//#define UI_BATTERY
 
 
 /*
@@ -1116,7 +1136,7 @@
  *  - uncomment to enable
  */
 
-#define SW_POWER_OFF
+//#define SW_POWER_OFF
 
 
 /*
@@ -1139,7 +1159,7 @@
 /*
  *  Round some values if appropriate.
  *  - for
- *    - DS18B20 (0.1 °C/F)
+ *    - DS18B20 (0.1 ï¿½C/F)
  *  - uncomment to enable
  */
 
@@ -1171,8 +1191,8 @@
  *  - uncomment one
  */ 
 
-#define DATA_EEPROM           /* store data in EEPROM */
-//#define DATA_FLASH            /* store data in Flash */
+// #define DATA_EEPROM           /* store data in EEPROM */
+#define DATA_FLASH            /* store data in Flash */
 
 
 
@@ -1191,8 +1211,8 @@
  *  - enable one
  */
 
-#define POWER_SWITCH_SOFT
-//#define POWER_SWITCH_MANUAL
+// #define POWER_SWITCH_SOFT
+#define POWER_SWITCH_MANUAL
 
 
 /*
@@ -1260,7 +1280,7 @@
  *  - Voltage drop BAT_OFFSET is considered in calculation.
  */
 
-#define BAT_LOW          3000 
+#define BAT_LOW          0 
 
 
 /*
@@ -1375,9 +1395,9 @@
  *  Correction factors for capacitors (in 0.1%)
  *  - positive factor increases capacitance value
  *    negative factor decreases capacitance value
- *  - CAP_FACTOR_SMALL for caps < 4.7µF
- *  - CAP_FACTOR_MID for caps 4.7 - 47µF
- *  - CAP_FACTOR_LARGE for caps > 47µF
+ *  - CAP_FACTOR_SMALL for caps < 4.7ï¿½F
+ *  - CAP_FACTOR_MID for caps 4.7 - 47ï¿½F
+ *  - CAP_FACTOR_LARGE for caps > 47ï¿½F
  */
 
 #define CAP_FACTOR_SMALL      0      /* no correction */ 
@@ -1499,11 +1519,11 @@
  *  - uncomment one of the bus speed modes
  */
 
-//#define I2C_BITBANG                /* bit-bang I2C */
+#define I2C_BITBANG                /* bit-bang I2C */
 //#define I2C_HARDWARE               /* MCU's hardware TWI */
 //#define I2C_STANDARD_MODE          /* 100kHz bus speed */
 //#define I2C_FAST_MODE              /* 400kHz bus speed */
-//#define I2C_RW                     /* enable I2C read support (untested) */
+#define I2C_RW                     /* enable I2C read support (untested) */
 
 
 /*

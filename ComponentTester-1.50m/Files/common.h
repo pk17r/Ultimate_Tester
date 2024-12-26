@@ -3,7 +3,7 @@
  *   common header file
  *
  *   (c) 2012-2023 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz Kübbeler
+ *   based on code from Markus Frejek and Karl-Heinz Kï¿½bbeler
  *
  * ************************************************************************ */
 
@@ -361,7 +361,7 @@
 #define LCD_CHAR_DIODE_CA     2	   /* diode icon '|<' */
 #define LCD_CHAR_CAP          3    /* capacitor icon '||' */
 #define LCD_CHAR_OMEGA        4    /* omega */
-#define LCD_CHAR_MICRO        5    /* µ (micro) */
+#define LCD_CHAR_MICRO        5    /* ï¿½ (micro) */
 #define LCD_CHAR_RESISTOR_L   6    /* resistor icon left part '[' */
 #define LCD_CHAR_RESISTOR_R   7    /* resistor icon right part ']' */
 
@@ -511,8 +511,8 @@ typedef struct
   int8_t            CompOffset;    /* voltage offset of analog comparator (mV) */
   uint8_t           Contrast;      /* contrast value of display */
 
-  #ifdef HW_V_I_MEASURE
-  int32_t         VIoffset;     /* sum of Offset in VIsense IC output */
+  #ifdef HW_POWER_METER
+  int32_t           Ioffset;     /* sum of Offset in Isense IC output */
   #endif
 
   uint8_t           CheckSum;      /* checksum for stored values */
@@ -718,8 +718,8 @@ typedef struct
   B        Collector    Drain        Anode        MT2          Collector
   C        Emitter      Source       Cathode      MT1          Emitter
   U_1      V_BE (mV)    R_DS (0.01)  V_GT (mV)    V_GT (mV)
-  U_2      I_E (µA)     V_th (mV)                              V_th (mV)
-  U_3      I_C/E (µA)   V_GS(off)
+  U_2      I_E (ï¿½A)     V_th (mV)                              V_th (mV)
+  U_3      I_C/E (ï¿½A)   V_GS(off)
   F_1      hFE                                    MT2 (mV)
   F_2      hFEr
   I_value  I_CEO        I_DSS
@@ -751,7 +751,7 @@ typedef struct
   A       Gate        Emitter
   B       Anode       B2
   C       Cathode     B1
-  U_1     V_f
+  U_1ï¿½    V_f
   U_2     V_T
 */
 
@@ -790,7 +790,7 @@ typedef struct
 typedef struct
 {
   uint8_t           Byte;          /* address/data byte */
-  uint8_t           Timeout;       /* ACK timeout in 10µs */
+  uint8_t           Timeout;       /* ACK timeout in 10ï¿½s */
 } I2C_Type;
 
 

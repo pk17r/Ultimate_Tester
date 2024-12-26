@@ -3,7 +3,7 @@
  *   global variables
  *
  *   (c) 2012-2023 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz Kübbeler
+ *   based on code from Markus Frejek and Karl-Heinz Kï¿½bbeler
  *
  * ************************************************************************ */
 
@@ -214,7 +214,7 @@
       const unsigned char IR_RCA_str[] MEM_TYPE = "RCA";
       const unsigned char IR_RECS80_str[] MEM_TYPE = "RECS80";
       const unsigned char IR_Sanyo_str[] MEM_TYPE = "Sanyo";
-      const unsigned char IR_uPD1986C_str[] MEM_TYPE = "µPD1986C";
+      const unsigned char IR_uPD1986C_str[] MEM_TYPE = "ï¿½PD1986C";
     #endif
   #endif
 
@@ -439,7 +439,7 @@
    *  - stored in EEPROM/Flash
    */
 
-  /* unit prefixes: f, p, n, µ, m, 0, k, M (used by value display) */
+  /* unit prefixes: f, p, n, ï¿½, m, 0, k, M (used by value display) */
   const unsigned char Prefix_table[NUM_PREFIXES] MEM_TYPE = {'f', 'p', 'n', LCD_CHAR_MICRO, 'm', 0, 'k', 'M'};
 
   /* voltage based factors for large caps (using Rl) */
@@ -913,14 +913,13 @@
   #endif
   
   extern const unsigned char Vin_str[];
-  #ifdef HW_V_I_MEASURE
-    extern const unsigned char V_I_Measure_str[];
+  #ifdef HW_POWER_METER
+    extern const unsigned char Power_Meter_str[];
     extern const unsigned char Battery_str[];
-    extern const unsigned char Vout_str[];
+    extern const unsigned char Out_str[];
     extern const unsigned char Vlogic_str[];
-    extern const unsigned char Isense_str[];
     extern const unsigned char Power_str[];
-    extern const unsigned char VIoffset_str[];
+    extern const unsigned char Ioffset_str[];
   #endif
 
   #ifdef SW_PHOTODIODE
@@ -1000,7 +999,7 @@
    *  - stored in EEPROM/Flash
    */
 
-  /* unit prefixes: p, n, µ, m, 0, k, M (used by value display) */
+  /* unit prefixes: p, n, ï¿½, m, 0, k, M (used by value display) */
   extern const unsigned char Prefix_table[];
 
   /* voltage based factors for large caps (using Rl) */

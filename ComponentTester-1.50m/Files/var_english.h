@@ -3,7 +3,7 @@
  *   language specific global variables: English (ISO 8859-1)
  *
  *   (c) 2012-2023 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz Kübbeler
+ *   based on code from Markus Frejek and Karl-Heinz Kï¿½bbeler
  *
  * ************************************************************************ */
 
@@ -49,14 +49,13 @@
   const unsigned char Triac_str[] MEM_TYPE = "Triac";
   const unsigned char PUT_str[] MEM_TYPE = "PUT";
   const unsigned char Bye_str[] MEM_TYPE = "Bye!";
-  const unsigned char Vout_str[] MEM_TYPE = "VOUT";
+  const unsigned char Out_str[] MEM_TYPE = "OUT";
 
-#ifdef HW_V_I_MEASURE
+#ifdef HW_POWER_METER
   const unsigned char Vin_str[] MEM_TYPE = "VIN";
   const unsigned char Vlogic_str[] MEM_TYPE = "Vlogic";
-  const unsigned char Isense_str[] MEM_TYPE = "Isense";
   const unsigned char Power_str[] MEM_TYPE = "Power";
-  const unsigned char VIoffset_str[] MEM_TYPE = "VIoffset";
+  const unsigned char Ioffset_str[] MEM_TYPE = "Ioff";
 #endif
 
   /* units */
@@ -227,8 +226,8 @@
     const unsigned char ReverseBias_str[] MEM_TYPE = "rev";
   #endif
 
-  #ifdef HW_V_I_MEASURE
-    const unsigned char V_I_Measure_str[] MEM_TYPE = "V I Measure";
+  #ifdef HW_POWER_METER
+    const unsigned char Power_Meter_str[] MEM_TYPE = "Power Meter";
   #endif
 
 #endif

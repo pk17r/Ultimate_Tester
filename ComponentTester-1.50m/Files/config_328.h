@@ -3,7 +3,7 @@
  *   ATmega 328 specific global configuration, setup and settings
  *
  *   (c) 2012-2023 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz Kübbeler
+ *   based on code from Markus Frejek and Karl-Heinz Kï¿½bbeler
  *
  * ************************************************************************ */
 
@@ -129,7 +129,7 @@
 #define LCD_OFFSET_X      32            /* x offset of 32 dots (160-128) */
 //#define LCD_FLIP_X                      /* enable horizontal flip */
 #define LCD_FLIP_Y                      /* enable vertical flip */
-#define LCD_ROTATE                      /* switch X and Y (rotate by 90°) */
+#define LCD_ROTATE                      /* switch X and Y (rotate by 90ï¿½) */
 #define LCD_BGR                         /* reverse red and blue color channels */
 //#define LCD_LATE_ON                     /* turn on LCD after clearing it */
 /* font and symbols: horizonally aligned & flipped */
@@ -181,7 +181,7 @@
 #define LCD_DOTS_Y       240            /* number of vertical dots */
 //#define LCD_FLIP_X                      /* enable horizontal flip */
 //#define LCD_FLIP_Y                      /* enable vertical flip */
-//#define LCD_ROTATE                      /* switch X and Y (rotate by 90°) */
+//#define LCD_ROTATE                      /* switch X and Y (rotate by 90ï¿½) */
 //#define LCD_BGR                         /* reverse red and blue color channels */
 //#define LCD_EXT_CMD_OFF                 /* extended commands disabled */
 /* font and symbols: horizontally aligned & flipped */
@@ -205,7 +205,7 @@
 /*
  *  PCD8544
  *  - SPI interface using bit-bang SPI
- *  - for a 180° rotated display (LCD_ROT180)
+ *  - for a 180ï¿½ rotated display (LCD_ROT180)
  *    - comment out "_VF" font and "_VFP" symbols
  *    - uncomment "_V_F" font and "_VP_F" symbols
  */
@@ -232,7 +232,7 @@
 #define SYMBOLS_24X24_VFP               /* 24x24 symbols */
 //#define SYMBOLS_24X24_ALT1_VFP          /* 24x24 alternative symbols #1 */
 //#define SYMBOLS_24X24_ALT2_VFP          /* 24x24 alternative symbols #2 */
-//#define LCD_ROT180                      /* rotate output by 180° (not supported yet) */
+//#define LCD_ROT180                      /* rotate output by 180ï¿½ (not supported yet) */
 /* font and symbols: vertically aligned, bank-wise grouping, hor. flipped */
 //#define FONT_6X8_V_F                    /* 6x8 font */
 //#define FONT_6X8_ISO8859_2_V_F          /* 6x8 Central Euopean font */
@@ -411,11 +411,11 @@
 #define I2C_BITBANG                     /* bit-bang I2C */
 #define I2C_FAST_MODE                   /* 400kHz bus speed */
 //#define I2C_STANDARD_MODE
-#define I2C_PORT         PORTD          /* I2C port data register */
-#define I2C_DDR          DDRD           /* I2C port data direction register */
-#define I2C_PIN          PIND           /* I2C port input pins register */
-#define I2C_SDA          PD6            /* port pin used for SDA */
-#define I2C_SCL          PD7            /* port pin used for SCL */
+#define I2C_PORT         PORTB          /* I2C port data register */
+#define I2C_DDR          DDRB           /* I2C port data direction register */
+#define I2C_PIN          PINB           /* I2C port input pins register */
+#define I2C_SDA          PB4            /* port pin used for SDA */
+#define I2C_SCL          PB5            /* port pin used for SCL */
 #endif
 
 
@@ -699,7 +699,7 @@
 //#define LCD_OFFSET_Y     2               /* enable y offset of 1 or 2 dots */
 //#define LCD_FLIP_X                      /* enable horizontal flip */
 #define LCD_FLIP_Y                      /* enable vertical flip */
-#define LCD_ROTATE                      /* switch X and Y (rotate by 90°) */
+#define LCD_ROTATE                      /* switch X and Y (rotate by 90ï¿½) */
 //#define LCD_BGR                         /* reverse red and blue color channels */
 //#define LCD_LATE_ON                     /* turn on LCD after clearing it */
 /* font and symbols: horizontally aligned & flipped */
@@ -730,7 +730,7 @@
 /*
  *  ST7920
  *  - SPI interface using bit-bang SPI
- *  - for a 180° rotated display (LCD_ROT180)
+ *  - for a 180ï¿½ rotated display (LCD_ROT180)
  *    - comment out "_H" font and symbols
  *    - uncomment "_HF" font and symbols
  */
@@ -755,7 +755,7 @@
 #define SYMBOLS_24X24_H                 /* 24x24 symbols */
 //#define SYMBOLS_24X24_ALT1_H            /* alternative 24x24 symbols #1 */
 //#define SYMBOLS_24X24_ALT2_H            /* alternative 24x24 symbols #2 */
-//#define LCD_ROT180                      /* rotate output by 180° */
+//#define LCD_ROT180                      /* rotate output by 180ï¿½ */
 /* font and symbols: horizonally aligned & flipped */
 //#define FONT_8X8_HF                     /* 8x8 font */
 //#define FONT_8X8_ISO8859_2_HF           /* 8x8 Central European font */
@@ -776,7 +776,7 @@
  *  ST7920
  *  - 4 bit parallel interface
  *  - if you change LCD_DB4/5/6/7 comment out LCD_DB_STD!
- *  - for a 180° rotated display (LCD_ROT180)
+ *  - for a 180ï¿½ rotated display (LCD_ROT180)
  *    - comment out "_H" font and symbol
  *    - uncomment "_HF" font and symbol
  */
@@ -805,7 +805,7 @@
 #define SYMBOLS_24X24_H                 /* 24x24 symbols */
 //#define SYMBOLS_24X24_ALT1_H            /* alternative 24x24 symbols #1 */
 //#define SYMBOLS_24X24_ALT2_H            /* alternative 24x24 symbols #2 */
-//#define LCD_ROT180                      /* rotate output by 180° */
+//#define LCD_ROT180                      /* rotate output by 180ï¿½ */
 /* font and symbols: horizonally aligned & flipped */
 //#define FONT_8X8_HF                     /* 8x8 font */
 //#define SYMBOLS_24X24_HF                /* 24x24 symbols */
@@ -890,12 +890,12 @@
 #define TP3              PC3       /* test pin / probe #3 */
 
 #define TP_ZENER         PC9       /* test pin for for Zener check (10:1 voltage divider) */
-#define TP_REF           PC5       /* test pin for 2.5V reference and relay */
-#define TP_BAT           ((1<<MUX2)|(1<<MUX1))       /* test pin for battery (4:1 voltage divider) */  //ADC6
-#define TP_CAP           PC9       /* test pin for self-adjustment cap */
-#define TP_LOGIC         PC4       /* test pin for Logic Probe (4:1 voltage divider) */
+#define TP_REF           ((1<<MUX2)|(1<<MUX1))       /* test pin for battery (4:1 voltage divider) */  //ADC6
+#define TP_BAT           ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))		//ADC7       /* test pin for 2.5V reference and relay */
+#define TP_CAP           PC0       /* test pin for self-adjustment cap */
+#define TP_LOGIC         PC5       /* test pin for Logic Probe (4:1 voltage divider) */
 #define TP_I_MEASURE     ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))		//ADC7
-#define TP_VOUT          PC0       /* test pin for VOUT measurement (4:1 voltage divider) */
+#define TP_VOUT          ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))		//ADC7       /* test pin for VOUT measurement (4:1 voltage divider) */
 
 
 /*
@@ -904,14 +904,14 @@
  *  - Don't share this port with POWER_CTRL or TEST_BUTTON!
  */
 
-#define R_PORT           PORTB     /* port data register */
-#define R_DDR            DDRB      /* port data direction register */
-#define R_RL_1           PB4       /* Rl (680R) for test pin #1 */
-#define R_RH_1           PB5       /* Rh (470k) for test pin #1 */
-#define R_RL_2           PB2       /* Rl (680R) for test pin #2 */
-#define R_RH_2           PB3       /* Rh (470k) for test pin #2 */
-#define R_RL_3           PB0       /* Rl (680R) for test pin #3 */
-#define R_RH_3           PB1       /* Rh (470k) for test pin #3 */
+#define R_PORT           PORTD     /* port data register */
+#define R_DDR            DDRD      /* port data direction register */
+#define R_RL_1           PD0       /* Rl (680R) for test pin #1 */
+#define R_RH_1           PD1       /* Rh (470k) for test pin #1 */
+#define R_RL_2           PD2       /* Rl (680R) for test pin #2 */
+#define R_RH_2           PD3       /* Rh (470k) for test pin #2 */
+#define R_RL_3           PD4       /* Rl (680R) for test pin #3 */
+#define R_RH_3           PD5       /* Rh (470k) for test pin #3 */
 
 
 /*
@@ -929,9 +929,9 @@
  *  - can't be same port as ADC_PORT or R_PORT
  */
 
-#define POWER_PORT       PORTD     /* port data register */
-#define POWER_DDR        DDRD      /* port data direction register */
-#define POWER_CTRL       PD0       /* control pin (1: on / 0: off) */
+#define POWER_PORT       PORTB     /* port data register */
+#define POWER_DDR        DDRB      /* port data direction register */
+#define POWER_CTRL       PB3       /* control pin (1: on / 0: off) */
 
 
 /*
@@ -939,10 +939,10 @@
  *  - can't be same port as ADC_PORT or R_PORT
  */
 
-#define BUTTON_PORT      PORTD     /* port data register */
-#define BUTTON_DDR       DDRD      /* port data direction register */
-#define BUTTON_PIN       PIND      /* port input pins register */
-#define TEST_BUTTON      PD3       /* test/start push button (low active) */
+#define BUTTON_PORT      PORTB     /* port data register */
+#define BUTTON_DDR       DDRB      /* port data direction register */
+#define BUTTON_PIN       PINB      /* port input pins register */
+#define TEST_BUTTON      PB0       /* test/start push button (low active) */
 
 
 /*
@@ -952,8 +952,8 @@
 #define ENCODER_PORT     PORTD     /* port data register */
 #define ENCODER_DDR      DDRD      /* port data direction register */
 #define ENCODER_PIN      PIND      /* port input pins register */
-#define ENCODER_A        PD2       /* rotary encoder A signal */
-#define ENCODER_B        PD1       /* rotary encoder B signal */
+#define ENCODER_A        PD6       /* rotary encoder A signal */
+#define ENCODER_B        PD7       /* rotary encoder B signal */
 
 
 /*
@@ -963,8 +963,8 @@
 #define KEY_PORT         PORTD     /* port data register */
 #define KEY_DDR          DDRD      /* port data direction register */
 #define KEY_PIN          PIND      /* port input pins register */
-#define KEY_INC          PD2       /* increase push button (low active) */
-#define KEY_DEC          PD1       /* decrease push button (low active) */
+#define KEY_INC          PD6       /* increase push button (low active) */
+#define KEY_DEC          PD7       /* decrease push button (low active) */
 
 
 /*
@@ -1033,11 +1033,11 @@
 
 /* I2C not set yet (for bit-bang I2C) */
 #ifndef I2C_PORT
-  #define I2C_PORT       PORTD     /* port data register */
-  #define I2C_DDR        DDRD      /* port data direction register */
-  #define I2C_PIN        PIND      /* port input pins register */
-  #define I2C_SDA        PD2       /* pin for SDA */
-  #define I2C_SCL        PD1       /* pin for SCL */
+  #define I2C_PORT       PORTB     /* port data register */
+  #define I2C_DDR        DDRB      /* port data direction register */
+  #define I2C_PIN        PINB      /* port input pins register */
+  #define I2C_SDA        PB4       /* pin for SDA */
+  #define I2C_SCL        PB5       /* pin for SCL */
 #endif
 
 
@@ -1085,9 +1085,9 @@
  *  buzzer
  */
 
-#define BUZZER_PORT      PORTD     /* port data register */
-#define BUZZER_DDR       DDRD      /* port data direction register */
-#define BUZZER_CTRL      PD4       /* control pin (low: off / high: on) */
+#define BUZZER_PORT      PORTB     /* port data register */
+#define BUZZER_DDR       DDRB      /* port data direction register */
+#define BUZZER_CTRL      PB1       /* control pin (low: off / high: on) */
 
 
 /*

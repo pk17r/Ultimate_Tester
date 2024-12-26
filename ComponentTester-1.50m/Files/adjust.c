@@ -3,7 +3,7 @@
  *   self-adjustment functions
  *
  *   (c) 2012-2023 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz Kübbeler
+ *   based on code from Markus Frejek and Karl-Heinz Kï¿½bbeler
  *
  * ************************************************************************ */
 
@@ -116,8 +116,8 @@ void SetAdjustmentDefaults(void)
   /* this triggers the touch adjustment at startup */
   #endif
 
-  #ifdef HW_V_I_MEASURE
-  NV.VIoffset = VI_OFFSET;
+  #ifdef HW_POWER_METER
+  NV.Ioffset = I_OFFSET;
   #endif
 
 }
@@ -497,9 +497,11 @@ void ShowAdjustmentValues(void)
   Display_NL_EEString_Space(CompOffset_str);      /* display: AComp */
   Display_SignedValue(NV.CompOffset, -3, 'V');    /* display offset */
 
-  /* display offset of analog comparator (value is in mV) */
-  Display_NL_EEString_Space(VIoffset_str);        /* display: VIoffset */
-  Display_SignedValue(NV.VIoffset, -3, 'V');    /* display offset */
+  #ifdef HW_POWER_METER
+  /* display offset of analog comparator (value is in uA) */
+  Display_NL_EEString_Space(Ioffset_str);        /* display: Ioffset */
+  Display_SignedValue(NV.Ioffset / 100, -1, 'm'); Display_Char('A');    /* display offset */
+  #endif
   
   WaitKey();                  /* let the user read */
 }
@@ -552,9 +554,18 @@ uint8_t SelfAdjustment(void)
   uint8_t           RefCounter = 0;     /* number of ref/offset runs */
   #endif
 
-  #ifdef HW_V_I_MEASURE
-  uint16_t          VIsense;
-  int32_t           VIoffsetSum = 0;   /* sum of Offset in VIsense IC output */
+  #ifdef HW_POWER_METER
+  const uint8_t MaxStep = 7;
+  int32_t           Isense;
+  int32_t           IoffsetSum = 0;   /* sum of Offset in Isense IC output */
+  #ifdef INA226_CURRENT_SENSOR
+    I2C_Setup();
+    INA226_setup();
+  #else      // HALL EFFECT CURRENT SENSOR
+    ADC_DDR &= ~(1 << TP_I_MEASURE);          /* set pin to HiZ */
+  #endif
+  #else
+  const uint8_t MaxStep = 6;
   #endif
 
   #ifdef HW_ADJUST_CAP
@@ -574,7 +585,7 @@ uint8_t SelfAdjustment(void)
     Step = 10;                /* skip adjustment */
   }
 
-  while (Step <= 7)      /* loop through steps */
+  while (Step <= MaxStep)      /* loop through steps */
   {
     Flag = 1;            /* reset loop counter */
 
@@ -793,10 +804,14 @@ uint8_t SelfAdjustment(void)
           break;
 
         case 7:     /* VI sense IC output offset */
-          Display_EEString_Space(VIoffset_str);
-          VIsense = ReadU_20ms(TP_I_MEASURE);          /* read voltage */
-          Display_Value(VIsense, -3, 'V');
-          VIoffsetSum += ((int32_t)Cfg.Vcc / 2 - (int32_t)VIsense);  /* factor (0.001) */
+          Display_EEString_Space(Ioffset_str);
+          #ifdef INA226_CURRENT_SENSOR
+            Isense = INA226_getCurrent_uA();
+          #else   // Hall Effect Sensor -> 0A is at middle = 2.5V
+            Isense = (int32_t)Cfg.Vcc / 2 - (int32_t)ReadU_20ms(TP_I_MEASURE);          /* read voltage */
+          #endif
+          Display_SignedValue(Isense / 100, -1, 'm'); Display_Char('A');
+          IoffsetSum -= Isense;  /* factor (0.001) */
           break;
       }
 
@@ -911,8 +926,8 @@ uint8_t SelfAdjustment(void)
     }
   }
 
-  #ifdef HW_V_I_MEASURE
-  NV.VIoffset = VIoffsetSum / 5;
+  #ifdef HW_POWER_METER
+  NV.Ioffset = IoffsetSum / 5;
   #endif
 
   #ifdef HW_ADJUST_CAP

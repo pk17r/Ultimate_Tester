@@ -3,7 +3,7 @@
  *   global functions
  *
  *   (c) 2012-2023 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz Kübbeler
+ *   based on code from Markus Frejek and Karl-Heinz Kï¿½bbeler
  *
  * ************************************************************************ */
 
@@ -221,6 +221,20 @@
   #endif
 
 #endif
+
+
+/* ************************************************************************
+ *   functions from INA226.c
+ * ************************************************************************ */
+
+#ifdef INA226_CURRENT_SENSOR
+
+extern uint8_t INA226_setup();
+extern int32_t INA226_getLoadVoltage_mV(void);
+extern int32_t INA226_getCurrent_uA(void);
+
+#endif
+
 
 
 /* ************************************************************************
@@ -534,8 +548,8 @@
   extern void PhotodiodeCheck(void);
   #endif
 
-  #ifdef HW_V_I_MEASURE
-  extern void VoltageCurrentMeasure(void);
+  #ifdef HW_POWER_METER
+  extern void PowerMeter(void);
   #endif
 
 #endif
