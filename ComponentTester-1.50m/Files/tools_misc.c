@@ -2544,11 +2544,11 @@ void PowerMeter(void)
 
     /* display values */
     #define DISP_CHARS_PER_ROW       16       // from SH1106.c   ->   LCD_CHAR_X
-    #define SPACES_FROM_RIGHT       1
+    #define SPACES_FROM_RIGHT        0
     #define REG_VAL_DISP_WIDTH       5
 
 
-    LCD_CharPos(6, 1); Display_Space(); Display_Space(); Display_Space(); Display_Space(); Display_Space();
+    LCD_CharPos(10, 1); Display_Space();
     x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
     if(abs(Vout_mV) >= 1e4 || Vout_mV < 0) x_start++;
     LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 1);
@@ -2556,7 +2556,7 @@ void PowerMeter(void)
     Display_Space(); Display_Char('V');
 
 
-    LCD_CharPos(6, 2); Display_Space(); Display_Space(); Display_Space(); Display_Space(); Display_Space();
+    LCD_CharPos(8, 2); Display_Space(); Display_Space(); Display_Space();
     x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
     if(abs(Isense) >= 1e5)
       x_start += 2;
@@ -2575,7 +2575,7 @@ void PowerMeter(void)
     }
     
 
-    LCD_CharPos(6, 3); Display_Space(); Display_Space(); Display_Space(); Display_Space(); Display_Space();
+    LCD_CharPos(8, 3); Display_Space(); Display_Space(); Display_Space();
     x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
     if(abs(Power) >= 1e5)
       x_start += 2;
@@ -2594,7 +2594,7 @@ void PowerMeter(void)
     }
 
 
-    LCD_CharPos(7, 4); Display_Space(); Display_Space(); Display_Space(); Display_Space(); Display_Space();
+    LCD_CharPos(10, 4); Display_Space();
     x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
     if(Vmeter >= 10000) x_start++;
     LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 4);
@@ -2606,7 +2606,7 @@ void PowerMeter(void)
      */
 
      /* check for user feedback and slow down update rate */
-    Test = TestKey(300, CHECK_KEY_TWICE | CHECK_BAT);
+    Test = TestKey(250, CHECK_KEY_TWICE | CHECK_BAT);
 
     if (Test == KEY_TWICE)         /* two short key presses */
     {
