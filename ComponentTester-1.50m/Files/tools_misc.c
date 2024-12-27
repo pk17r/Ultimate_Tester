@@ -2465,6 +2465,7 @@ void PowerMeter(void)
     I2C_Setup();
     INA226_setup();
   #else      // HALL EFFECT CURRENT SENSOR
+	int32_t          Isensitivity = 400;    // I sense IC sensitivity mV/A
     ADC_DDR &= ~(1 << TP_VOUT);          /* set pin to HiZ */
     ADC_DDR &= ~(1 << TP_I_MEASURE);          /* set pin to HiZ */
   #endif
@@ -2527,18 +2528,18 @@ void PowerMeter(void)
         Power = (int32_t)(Value / 1000);    // Power in mW
       }
     #else // HALL EFFECT CURRENT SENSOR TMCS1108A4B
-      Vout = ReadU(TP_VOUT);          /* read voltage */
+      Vout_mV = ReadU(TP_VOUT);          /* read voltage */
       /* VOUT consider voltage divider */
       Value = (((uint32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
-      Value *= Vout;                   /* Uin (0.001 mV) */
+      Value *= Vout_mV;                   /* Uin (0.001 mV) */
       Value /= 1000;                    /* Uin (mV) */
-      Vout = (uint16_t)Value;          /* keep 2 bytes */
+      Vout_mV = (uint16_t)Value;          /* keep 2 bytes */
       /* I SENSE consider sensitivity and 0 value */
       Value = ReadU(TP_I_MEASURE);          /* read voltage */
       Isense = ((int32_t)Value - (int32_t)Cfg.Vcc / 2);  /* factor (0.001) */
       Isense += NV.Ioffset / 1000;                                  /* add offset */
       Isense = (int32_t)(Isense * 1000) / Isensitivity;                 /* divide by sensitivity and scale to mA */
-      Power = (int32_t)(Vout)*Isense / 1000;      /* Power in mW */
+      Power = (int32_t)(Vout_mV)*Isense / 1000;      /* Power in mW */
     #endif
     
 

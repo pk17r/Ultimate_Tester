@@ -3,6 +3,7 @@
         "ina226.h": "c",
         "common.h": "c",
         "font_8x8_win1251_vf.h": "c",
-        "font_8x16_vfp.h": "c"
+        "font_8x16_vfp.h": "c",
+        "variables.h": "c"
     }
 }
