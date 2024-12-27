@@ -2452,6 +2452,7 @@ void PowerMeter(void)
   unsigned char     Current_Unit = 'm', Power_Unit = 'm';
   uint8_t           x_start = 0;
   int32_t           Value = 0;              /* temporary value */
+  uint8_t           counter = 0;
 
   /* local constants for Flag (bitfield) */
   #define RUN_FLAG            0b00000001     /* run / otherwise end */
@@ -2557,7 +2558,13 @@ void PowerMeter(void)
     Display_Space(); Display_Char('V');
 
 
-    LCD_CharPos(8, 2); Display_Space(); Display_Space(); Display_Space();
+    LCD_CharPos(7, 2);
+    if((Isense > 1000) && (counter % 4 < 2))      
+      Display_Char('*');
+    else
+      Display_Space();
+    counter++;
+    Display_Space(); Display_Space(); Display_Space();
     x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
     if(abs(Isense) >= 1e5)
       x_start += 2;
