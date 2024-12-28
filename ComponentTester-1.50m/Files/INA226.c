@@ -83,8 +83,8 @@ uint16_t INA226__readRegister(uint8_t reg)
     Serial_print("INA226__readRegister I2C_WriteByte2 Error\n");
     return I2C_ERROR;
   }
-  I2C_Stop();
-  if(I2C_Start(I2C_START) == I2C_ERROR) {
+  /* repeated start condition */
+  if(I2C_Start(I2C_REPEATED_START) == I2C_ERROR) {
     Serial_print("INA226__readRegister I2C_Start2 Error\n");
     return I2C_ERROR;
   }

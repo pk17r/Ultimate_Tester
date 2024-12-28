@@ -164,6 +164,54 @@ uint8_t I2C_Setup(void)
 
 
 /*
+ *  create stop condition
+ */
+
+void I2C_Stop(void)
+{
+  // A LOW to HIGH transition on the SDA line while SCL is HIGH defines a STOP condition.
+
+  /*
+   *  expected state:
+   *  - SDA undefined
+   *  - SCL low
+   */
+
+  BIT_BANG_QUARTER_DELAY;
+
+  // check and set I2C state
+  uint8_t i = 10;
+  while(((BIT_BANG_READ_SDA == 1) || (BIT_BANG_READ_SCL == 1)) && (i > 0)) {
+
+    // set I2C lines
+    BIT_BANG_SDA_LOW;
+    BIT_BANG_SCL_LOW;
+
+    BIT_BANG_HALF_DELAY;
+
+    i--;
+  }
+
+  // create stop condition
+
+  BIT_BANG_SCL_HIGH_Z;
+
+  BIT_BANG_HALF_DELAY;
+
+  BIT_BANG_SDA_HIGH_Z;
+
+  BIT_BANG_HALF_DELAY;
+
+  /*
+   *  current state:
+   *  - SDA high
+   *  - SCL high
+   */
+}
+
+
+
+/*
  *  create start condition
  *  - Type
  *    I2C_START for start condition
@@ -178,8 +226,6 @@ uint8_t I2C_Start(uint8_t Type)
 {
   uint8_t           Flag = I2C_OK;      /* return value */
 
-  // A HIGH to LOW transition on the SDA line while SCL is HIGH defines a START condition
-
   if (Type == I2C_START)      /* start */
   {
     /*
@@ -189,6 +235,25 @@ uint8_t I2C_Start(uint8_t Type)
      */
 
     // check I2C state
+    if((BIT_BANG_READ_SDA == 0) || (BIT_BANG_READ_SCL == 0))
+      I2C_Stop();
+
+    /* follow common start condition */
+  }
+  else                        /* repeated start */
+  {
+    /*
+     *  expected state:
+     *  - SDA undefined
+     *  - SCL low
+     */
+
+    /*  desired state:
+     * - SDA high 
+     * - SCL high
+     */
+
+    // set I2C desired state
     uint8_t i = 10;
     while(((BIT_BANG_READ_SDA == 0) || (BIT_BANG_READ_SCL == 0)) && (i > 0)) {
 
@@ -203,56 +268,30 @@ uint8_t I2C_Start(uint8_t Type)
         return I2C_ERROR;
     }
 
-    BIT_BANG_SDA_LOW;
-
-    /* SCL will follow after t_HD;STA */
-    BIT_BANG_HALF_DELAY;
-
-    BIT_BANG_SCL_LOW;
-
-    /*
-     *  current state:
-     *  - SDA low
-     *  - SCL low
-     */
-  }
-#if 0
-  else                        /* repeated start */
-  {
-    /*
-     *  expected state:
-     *  - SDA undefined
-     *  - SCL low
-     */
-
-    /* release SDA (SDA high) */
-    BIT_BANG_SDA_HIGH_Z
-
-    /* SCL has to stay low for t_LOW */
-    BIT_BANG_HALF_DELAY
-
-    /* release SCL (SCL high) */
-    BIT_BANG_SCL_HIGH_Z
-
-    /* SDA has to stay high for t_SU;STA after SCL rises */
-    BIT_BANG_HALF_DELAY
-
     /* follow common start condition */
-    
-    BIT_BANG_SDA_LOW;
-
-    /* SCL will follow after t_HD;STA */
-    BIT_BANG_HALF_DELAY;
-
-    BIT_BANG_SCL_LOW;
-
-    /*
-     *  current state:
-     *  - SDA low
-     *  - SCL low
-     */
   }
-#endif
+
+  /* current state:
+   * - SDA high 
+   * - SCL high
+   */
+
+  // issue start condition
+
+  // A HIGH to LOW transition on the SDA line while SCL is HIGH defines a START condition
+
+  /* SCL has to stay low and SDA high for t_HD;STA */
+  BIT_BANG_HALF_DELAY;
+
+  BIT_BANG_SDA_LOW;
+
+  /* SCL will follow after t_HD;STA */
+  BIT_BANG_HALF_DELAY;
+
+  BIT_BANG_SCL_LOW;
+
+  /* SCL will stay low for t_HD;STA */
+  BIT_BANG_HALF_DELAY;
 
   /* current state:
    * - SDA low 
@@ -412,6 +451,13 @@ uint8_t I2C_ReadByte(uint8_t Type)
   BIT_BANG_QUARTER_DELAY;
 
   // check SCL is not controlled by slave
+  /*  3.1.9 Clock stretching    https://www.nxp.com/docs/en/user-guide/UM10204.pdf
+  On the byte level, a device may be able to receive bytes of data at a fast rate, but needs
+  more time to store a received byte or prepare another byte to be transmitted. Targets can
+  then hold the SCL line LOW after reception and acknowledgment of a byte to force the
+  controller into a wait state until the target is ready for the next byte transfer in a type of
+  handshake procedure (see Figure 7).
+  */
   uint8_t i = 10;
   while((BIT_BANG_READ_SCL != 0) && (i > 0)) {
 
@@ -480,54 +526,6 @@ uint8_t I2C_ReadByte(uint8_t Type)
 
 #endif
 
-
-
-/*
- *  create stop condition
- */
-
-void I2C_Stop(void)
-{
-  // A LOW to HIGH transition on the SDA line while SCL is HIGH defines a STOP condition.
-
-  /*
-   *  expected state:
-   *  - SDA undefined
-   *  - SCL low
-   */
-
-  // release (high) I2C lines
-  BIT_BANG_SDA_HIGH_Z;
-  BIT_BANG_SCL_HIGH_Z;
-
-  // check I2C state
-  uint8_t i = 10;
-  while(((BIT_BANG_READ_SDA == 0) || (BIT_BANG_READ_SCL == 0)) && (i > 0)) {
-
-    BIT_BANG_HALF_DELAY;
-
-    i--;
-  }
-
-  // create stop condition
-  BIT_BANG_SDA_LOW;
-
-  BIT_BANG_HALF_DELAY;
-
-  BIT_BANG_SCL_HIGH_Z;
-
-  BIT_BANG_HALF_DELAY;
-
-  BIT_BANG_SDA_HIGH_Z;
-
-  BIT_BANG_HALF_DELAY;
-
-  /*
-   *  current state:
-   *  - SDA high
-   *  - SCL high
-   */
-}
 
 
 #undef BIT_BANG_SDA_LOW
