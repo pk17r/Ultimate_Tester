@@ -304,6 +304,40 @@ uint8_t I2C_Start(uint8_t Type)
 
 
 /*
+ *  check SCL is not controlled by slave
+ *  3.1.9 Clock stretching    https://www.nxp.com/docs/en/user-guide/UM10204.pdf
+ *  On the byte level, a device may be able to receive bytes of data at a fast rate, but needs
+ *  more time to store a received byte or prepare another byte to be transmitted. Targets can
+ *  then hold the SCL line LOW after reception and acknowledgment of a byte to force the
+ *  controller into a wait state until the target is ready for the next byte transfer in a type of
+ *  handshake procedure.
+ *
+ *  when to check:
+ *  - should be checked after Master releases SCL and quarter cycle has passed
+ *
+ *  returns:
+ *  - I2C_ERROR for bus error
+ *  - I2C_OK for bus okay
+ */
+
+uint8_t I2C_Check_Slave_SCL_Control(void)
+{
+  // check SCL is not controlled by slave
+  uint8_t i = 10;
+  while((BIT_BANG_READ_SCL == 0) && (i > 0)) {
+
+    BIT_BANG_QUARTER_DELAY;
+
+    i--;
+    if(i == 0)
+      return I2C_ERROR;
+  }
+  return I2C_OK;
+}
+
+
+
+/*
  *  write byte (master to slave)
  *  - send byte (address or data) to slave
  *    bit-bang 8 bits, MSB first, LSB last
@@ -332,20 +366,6 @@ uint8_t I2C_WriteByte(uint8_t Type)
    *  - SCL low
    */
 
-  // check I2C state
-  uint8_t n = 10;
-  while(((BIT_BANG_READ_SDA == 0) || (BIT_BANG_READ_SCL != 0)) && (n > 0))
-  {
-    BIT_BANG_SDA_HIGH_Z;
-    BIT_BANG_SCL_LOW;
-
-    BIT_BANG_QUARTER_DELAY;
-    n--;
-
-    if(n == 0)
-      return I2C_ERROR;
-  }
-
   /*
    *  send byte
    */
@@ -353,7 +373,7 @@ uint8_t I2C_WriteByte(uint8_t Type)
   Byte = I2C.Byte;            /* get byte */
 
   /* bit-bang 8 bits */
-  n = 8;
+  uint8_t n = 8;
   while (n > 0)               /* 8 bits */
   {
     /*
@@ -373,7 +393,16 @@ uint8_t I2C_WriteByte(uint8_t Type)
      */
     BIT_BANG_SCL_HIGH_Z;
 
-    BIT_BANG_HALF_DELAY;
+    BIT_BANG_QUARTER_DELAY;
+
+    // check SCL is not controlled by slave
+    if(I2C_Check_Slave_SCL_Control() == I2C_ERROR)
+    {
+      I2C_Stop();
+      return I2C_ERROR;
+    }
+
+    BIT_BANG_QUARTER_DELAY;
 
     BIT_BANG_SCL_LOW;
 
@@ -443,45 +472,47 @@ uint8_t I2C_WriteByte(uint8_t Type)
 uint8_t I2C_ReadByte(uint8_t Type)
 {
   uint8_t           Byte = 0;               /* byte */
+  uint8_t           i = 8;                  /* counter */
 
-  // release (high) data line and make clock low
-  BIT_BANG_SDA_HIGH_Z;
-  BIT_BANG_SCL_LOW;
+  /*
+   *  expected state:
+   *  - SDA undefined
+   *  - SCL low
+   */
 
   BIT_BANG_QUARTER_DELAY;
 
-  // check SCL is not controlled by slave
-  /*  3.1.9 Clock stretching    https://www.nxp.com/docs/en/user-guide/UM10204.pdf
-  On the byte level, a device may be able to receive bytes of data at a fast rate, but needs
-  more time to store a received byte or prepare another byte to be transmitted. Targets can
-  then hold the SCL line LOW after reception and acknowledgment of a byte to force the
-  controller into a wait state until the target is ready for the next byte transfer in a type of
-  handshake procedure (see Figure 7).
-  */
-  uint8_t i = 10;
-  while((BIT_BANG_READ_SCL != 0) && (i > 0)) {
+  /*
+   *  read byte
+   */
 
-    BIT_BANG_HALF_DELAY;
-
-    i--;
-    if(i == 0)
-      return I2C_ERROR;
-  }
-
-  // read byte
-  for (i=0; i<8; i++)
+  while (i > 0)
   {
-    // high clock
+    /*
+     *  run SCL cycle
+     */
+
     BIT_BANG_SCL_HIGH_Z;
 
-    BIT_BANG_HALF_DELAY;
+    BIT_BANG_QUARTER_DELAY;
+
+    // check SCL is not controlled by slave
+    if(I2C_Check_Slave_SCL_Control() == I2C_ERROR)
+    {
+      I2C_Stop();
+      return I2C_ERROR;
+    }
+
+    BIT_BANG_QUARTER_DELAY;
 
     // read bit info
     if(BIT_BANG_READ_SDA)
       Byte |= 1;
 
+    i--;    // decrease counter
+
     // shift only first 7 read bits
-    if(i < 7)
+    if(i > 0)
       Byte <<= 1;
 
     // low clock
