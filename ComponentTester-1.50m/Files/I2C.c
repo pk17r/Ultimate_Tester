@@ -286,7 +286,6 @@ uint8_t I2C_WriteByte(uint8_t Type)
 {
   uint8_t           Flag = I2C_NACK;   /* return value */
   uint8_t           Byte;               /* byte */
-  uint8_t           n = 8;              /* counter */
 
   /*
    *  expected state:
@@ -295,7 +294,7 @@ uint8_t I2C_WriteByte(uint8_t Type)
    */
 
   // check I2C state
-  n = 10;
+  uint8_t n = 10;
   while(((BIT_BANG_READ_SDA == 0) || (BIT_BANG_READ_SCL != 0)) && (n > 0))
   {
     BIT_BANG_SDA_HIGH_Z;
@@ -305,10 +304,7 @@ uint8_t I2C_WriteByte(uint8_t Type)
     n--;
 
     if(n == 0)
-    {
-      Flag = I2C_ERROR;
-      return Flag;
-    }
+      return I2C_ERROR;
   }
 
   /*
@@ -407,24 +403,24 @@ uint8_t I2C_WriteByte(uint8_t Type)
 
 uint8_t I2C_ReadByte(uint8_t Type)
 {
+  uint8_t           Byte = 0;               /* byte */
 
   // release (high) data line and make clock low
   BIT_BANG_SDA_HIGH_Z;
   BIT_BANG_SCL_LOW;
 
-  BIT_BANG_HALF_DELAY;
+  BIT_BANG_QUARTER_DELAY;
 
   // check SCL is not controlled by slave
   uint8_t i = 10;
   while((BIT_BANG_READ_SCL != 0) && (i > 0)) {
+
     BIT_BANG_HALF_DELAY;
+
     i--;
     if(i == 0)
       return I2C_ERROR;
   }
-
-  // initialize read byte variable
-  I2C.Byte = 0;
 
   // read byte
   for (i=0; i<8; i++)
@@ -436,17 +432,20 @@ uint8_t I2C_ReadByte(uint8_t Type)
 
     // read bit info
     if(BIT_BANG_READ_SDA)
-      I2C.Byte |= 1;
+      Byte |= 1;
 
     // shift only first 7 read bits
     if(i < 7)
-      I2C.Byte <<= 1;
+      Byte <<= 1;
 
     // low clock
     BIT_BANG_SCL_LOW;
 
     BIT_BANG_HALF_DELAY;
   }
+
+  // save read byte
+  I2C.Byte = Byte;
 
   // send ACK bit if asked by user
   if(Type == I2C_ACK)
