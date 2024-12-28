@@ -29,17 +29,31 @@
 
 
 /*
- *  Current Sense IC
- *  - ADC Pin TP_I_MEASURE
- *  - I_OFFSET in uA for Shunt Resistor Current Sensor INA226 or mV for Hall Effect Current sense IC TMCS1108A4B
+ *  Power Meter
+ *  - Measure Out Voltage, Current and Power
  */
 
 #define HW_POWER_METER
+#define INA226_CURRENT_SENSOR
 
 #ifdef HW_POWER_METER
   #ifdef INA226_CURRENT_SENSOR
+    /*
+    *  INA226 Current Sensor
+    *  - requires I2C bus
+    *  - uncomment to enable
+    */
+    #define INA226_I2C_ADDR               0x40      /* A0=GND, A1=GND */
+    #define INA_226_MICRO_CURRENT_LSB     100     /*   current_LSB = 100.0 uA / bit   */
+    #define INA_226_CALIBRATION_VAL       2438    /*   Computed using INA226_setMaxCurrentShunt()   */
+    #define I2C_RW
     #define I_OFFSET			300
   #else
+    /*
+    *  Current Sense IC
+    *  - ADC Pin TP_I_MEASURE
+    *  - I_OFFSET in uA for Shunt Resistor Current Sensor INA226 or mV for Hall Effect Current sense IC TMCS1108A4B
+    */
     #define I_OFFSET			45
   #endif
 #endif
@@ -378,21 +392,6 @@
  */
 
 // #define HW_FLASHLIGHT
-
-
-
-/*
- *  INA226 Current Sensor
- *  - requires I2C bus
- *  - uncomment to enable
- */
-#define INA226_CURRENT_SENSOR
-#ifdef INA226_CURRENT_SENSOR
-  #define INA226_I2C_ADDR     0x40      /* A0=GND, A1=GND */
-  #define INA_226_MICRO_CURRENT_LSB   100     /*   current_LSB = 100.0 uA / bit   */
-  #define INA_226_CALIBRATION_VAL   2438    /*   Computed using INA226_setMaxCurrentShunt()   */
-  #define I2C_RW
-#endif
 
 
 

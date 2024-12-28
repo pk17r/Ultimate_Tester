@@ -2432,7 +2432,7 @@ void Flashlight(void)
 
 
 /* ************************************************************************
- *   voltage current measure
+ *   out voltage current power measure
  * ************************************************************************ */
 
 
@@ -2445,6 +2445,20 @@ void Flashlight(void)
 
 void DisplayDashValue() {
   Display_Char('-'); Display_Space(); Display_Space(); Display_Space(); Display_Space(); Display_Space();
+}
+
+void DisplayPMVoltageValue(uint16_t Value, uint8_t row) {
+  LCD_CharPos(X_START_VALUE - 1, row); Display_Space();
+  if(Value > 10) {
+    uint8_t x_start = X_START_VALUE;
+    if(Value >= 1e4) x_start--;    // Voltage is 2 byte unsigned int, always positive
+    LCD_CharPos(x_start, row);
+    Display_Value(Value / 10, -2, 0);
+    Display_Space(); Display_Char('V');
+  }
+  else {
+    DisplayDashValue();
+  }
 }
 
 void DisplaySignedPMValue(int32_t Value, unsigned char Unit_first_letter, unsigned char Unit_second_letter, uint8_t row) {
@@ -2482,15 +2496,17 @@ void PowerMeter(void)
 {
   uint8_t           Flag;               /* loop control */
   uint8_t           Test;               /* user feedback */
-  uint16_t          Vmeter = 0;
-  int32_t           Vout_mV = 0, Isense = 0, Power = 0;
+  uint16_t          Vout_mV = 0, Vmeter = 0;
+  int32_t           Isense = 0, Power = 0;
   unsigned char     Current_Unit = 'm', Power_Unit = 'm';
-  uint8_t           x_start = 0;
   int32_t           Value = 0;              /* temporary value */
   uint8_t           counter = 0;
 
   /* local constants for Flag (bitfield) */
   #define RUN_FLAG            0b00000001     /* run / otherwise end */
+
+  Cfg.Samples = 255;        /* do 255 samples to be averaged */
+  Flag = RUN_FLAG;                      /* enter processing loop */
 
   /*
    *  init
@@ -2498,15 +2514,12 @@ void PowerMeter(void)
   ADC_DDR &= ~(1 << TP_BAT);          /* set pin to HiZ */
   ADC_DDR &= ~(1 << TP_LOGIC);          /* set pin to HiZ */
   #ifdef INA226_CURRENT_SENSOR
-    INA226_setup();
+    Flag = INA226_setup();    //  INA226 setup error is 0 and setup good is 1.
   #else      // HALL EFFECT CURRENT SENSOR
 	int32_t          Isensitivity = 400;    // I sense IC sensitivity mV/A
     ADC_DDR &= ~(1 << TP_VOUT);          /* set pin to HiZ */
     ADC_DDR &= ~(1 << TP_I_MEASURE);          /* set pin to HiZ */
   #endif
-
-  Cfg.Samples = 255;        /* do 255 samples to be averaged */
-  Flag = RUN_FLAG;                      /* enter processing loop */
 
   LCD_Clear();
 
@@ -2533,9 +2546,9 @@ void PowerMeter(void)
      /* get voltage */
     /* TP LOGIC consider voltage divider */
     Vmeter = ReadU(TP_LOGIC);          /* read voltage */
-    Value = (((int32_t)(LOGIC_PROBE_R1 + LOGIC_PROBE_R2) * 1000) / LOGIC_PROBE_R2);  /* factor (0.001) */
+    Value = (((int32_t)(LOGIC_PROBE_R1 + LOGIC_PROBE_R2) * 10000) / (LOGIC_PROBE_R2));  /* factor (0.0001) */
     Value *= Vmeter;                   /* voltage (0.001 mV) */
-    Value /= 1000;                  /* scale to mV */
+    Value /= 10000;                       /* scale to mV */
     Vmeter = (uint16_t)Value;          /* keep 2 bytes */
     #ifdef INA226_CURRENT_SENSOR
       // Voltage
@@ -2550,17 +2563,17 @@ void PowerMeter(void)
       }
       else {
         Current_Unit = 'A';
-        Isense = (int32_t)(Value / 1000);    // Isense in mA
+        Isense = Value / 1000;    // Isense in mA
       }
       // Power
-      Value = (Vout_mV) * (Value / 1000);
+      Value = (int32_t)(Vout_mV / 10) * (Value / 100);
       if(labs(Value) < 1e6) {
         Power_Unit = 'm';
-        Power = (int32_t)Value;   // Power in uW
+        Power = Value;   // Power in uW
       }
       else {
         Power_Unit = 'W';
-        Power = (int32_t)(Value / 1000);    // Power in mW
+        Power = Value / 1000;    // Power in mW
       }
     #else // HALL EFFECT CURRENT SENSOR TMCS1108A4B
       Vout_mV = ReadU(TP_VOUT);          /* read voltage */
@@ -2580,36 +2593,21 @@ void PowerMeter(void)
 
     /* display values */
 
-    LCD_CharPos(X_START_VALUE - 1, 1); Display_Space();
-    x_start = X_START_VALUE;
-    if(labs(Vout_mV) >= 1e4 || Vout_mV < 0) x_start--;
-    LCD_CharPos(x_start, 1);
-    Display_SignedValue(Vout_mV / 10, -2, 0);
-    Display_Space(); Display_Char('V');
+    DisplayPMVoltageValue(Vout_mV, 1);
 
-
+    // display active current output sign
     LCD_CharPos(X_START_VALUE - 5, 2);
-    if((Isense > 1000) && (counter % 4 < 2))      
+    if((Isense != 0) && (counter % 4 < 2))
       Display_Char('*');
     else
       Display_Space();
     counter++;
+
     DisplaySignedPMValue(Isense, Current_Unit, 'A', 2);    
 
     DisplaySignedPMValue(Power, Power_Unit, 'W', 3);
 
-
-    LCD_CharPos(X_START_VALUE - 1, 4); Display_Space();
-    if(Vmeter > 10) {
-      x_start = X_START_VALUE;
-      if(Vmeter >= 1e4) x_start--;    // Vmeter is 2 byte unsigned int, always positive
-      LCD_CharPos(x_start, 4);
-      Display_Value(Vmeter / 10, -2, 0);
-      Display_Space(); Display_Char('V');
-    }
-    else {
-      DisplayDashValue();
-    }
+    DisplayPMVoltageValue(Vmeter, 4);
 
     /*
      *  user feedback
@@ -2636,8 +2634,11 @@ void PowerMeter(void)
 #undef RUN_FLAG
 }
 
+#undef DISP_CHARS_PER_ROW
+#undef REG_VAL_DISP_WIDTH
+#undef X_START_VALUE
 
-#endif
+#endif    // HW_POWER_METER
 
 
 

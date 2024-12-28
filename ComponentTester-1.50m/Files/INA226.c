@@ -127,22 +127,22 @@ uint8_t INA226__writeRegister(uint8_t reg, uint16_t value)
 //  CORE FUNCTIONS
 //
 
-int32_t INA226_getBusVoltage_mV(void)
+int16_t INA226_getBusVoltage_mV(void)
 {
   uint16_t val = INA226__readRegister(INA226_BUS_VOLTAGE);
   // Serial_print("INA226_getBusVoltage_V val = "); Serial_print(val); Serial_print("\n");
-  return ((int32_t)val) * 1.25;  //  LSB fixed 1.25 mV
+  return (int16_t)(val * 1.25);  //  LSB fixed 1.25 mV; Converting into int for lower flash memory consumption in INA226_getLoadVoltage_mV Function, somehow.
 }
 
-int32_t INA226_getShuntVoltage_mV(void)
+int16_t INA226_getShuntVoltage_mV(void)
 {
   int16_t val = INA226__readRegister(INA226_SHUNT_VOLTAGE);
-  return ((int32_t)val) * 2.5e-3;   //  LSB fixed 2.50 uV
+  return (int16_t)(val * 2.5e-3);   //  LSB fixed 2.50 uV
 }
 
-int32_t INA226_getLoadVoltage_mV(void)
+uint16_t INA226_getLoadVoltage_mV(void)
 {
-  return (INA226_getBusVoltage_mV() - INA226_getShuntVoltage_mV());
+  return (uint16_t)(INA226_getBusVoltage_mV() - INA226_getShuntVoltage_mV());
 }
 
 int32_t INA226_getCurrent_uA(void)
