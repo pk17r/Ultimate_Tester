@@ -82,6 +82,48 @@
 
 #ifdef I2C_BITBANG
 
+
+/* pull down SDA (SDA low) */
+#define BIT_BANG_SDA_LOW      (I2C_DDR |= (1 << I2C_SDA))
+
+/* pull down SCL (SCL low) */
+#define BIT_BANG_SCL_LOW      (I2C_DDR |= (1 << I2C_SCL))
+
+/* release SDA (SDA high) */
+/* set to HiZ (disable pull-down) */
+#define BIT_BANG_SDA_HIGH_Z   (I2C_DDR &= ~(1 << I2C_SDA))
+
+/* release SCL (SCL high) */
+/* set to HiZ (disable pull-down) */
+#define BIT_BANG_SCL_HIGH_Z   (I2C_DDR &= ~(1 << I2C_SCL))
+
+/* filter SDA pin */
+/* value is 0 for Low and >0 for High */
+#define BIT_BANG_READ_SDA     (I2C_PIN & (1 << I2C_SDA))
+
+/* filter SCL pin */
+/* value is 0 for Low and >0 for High */
+#define BIT_BANG_READ_SCL     (I2C_PIN & (1 << I2C_SCL))
+
+/* I2C Clock Half Time */
+/* Data on the I2C-bus can be transferred at rates of;
+ *   - up to 100 kbit/s in the Standard-mode = 1 bit in 10µs = 5µs half cycle delay
+ *   - up to 400 kbit/s in the Fast-mode = 1 bit in 2.5µs = 1.25µs half cycle delay  */
+#ifdef I2C_FAST_MODE
+  /* fast mode: 1µs */
+  #define BIT_BANG_HALF_DELAY      wait1us()
+  // #if CPU_FREQ >= 16000000
+    #define BIT_BANG_QUARTER_DELAY      wait500ns()
+  // #else
+  //   #define BIT_BANG_QUARTER_DELAY      wait1us()
+  // #endif
+#else
+  /* standard mode: 4µs */
+  #define BIT_BANG_HALF_DELAY      wait4us()
+  #define BIT_BANG_QUARTER_DELAY      wait1us()
+#endif
+
+
 /*
  *  set up SDA and SCL lines
  *
@@ -136,6 +178,8 @@ uint8_t I2C_Start(uint8_t Type)
 {
   uint8_t           Flag = I2C_OK;      /* return value */
 
+  // A HIGH to LOW transition on the SDA line while SCL is HIGH defines a START condition
+
   if (Type == I2C_START)      /* start */
   {
     /*
@@ -146,44 +190,25 @@ uint8_t I2C_Start(uint8_t Type)
 
     // check I2C state
     uint8_t i = 10;
-    while((((I2C_PIN & (1 << I2C_SCL)) == 0) || ((I2C_PIN & (1 << I2C_SDA)) == 0)) && (i > 0)) {
-      // high I2C lines
+    while(((BIT_BANG_READ_SDA == 0) || (BIT_BANG_READ_SCL == 0)) && (i > 0)) {
 
-      /* release SDA (SDA high) */
-      I2C_DDR &= ~(1 << I2C_SDA);     /* set to HiZ (disable pull-down) */
+      // release (high) I2C lines
+      BIT_BANG_SDA_HIGH_Z;
+      BIT_BANG_SCL_HIGH_Z;
 
-      /* release SCL (SCL high) */
-      I2C_DDR &= ~(1 << I2C_SCL);     /* set to HiZ (disable pull-down) */
-
-      /* I2C Clock Half Time */
-      #ifdef I2C_FAST_MODE
-        /* fast mode: min. 0.6us */
-        wait1us();
-      #else
-        /* standard mode: min. 4us */
-        wait4us();
-      #endif
+      BIT_BANG_HALF_DELAY;
 
       i--;
-
       if(i == 0)
         return I2C_ERROR;
     }
 
-    I2C_DDR |= (1 << I2C_SDA);    /* pull down SDA (SDA low) */
+    BIT_BANG_SDA_LOW;
 
     /* SCL will follow after t_HD;STA */
+    BIT_BANG_HALF_DELAY;
 
-    /* I2C Clock Half Time */
-    #ifdef I2C_FAST_MODE
-      /* fast mode: min. 0.6us */
-      wait1us();
-    #else
-      /* standard mode: min. 4us */
-      wait4us();
-    #endif
-
-    I2C_DDR |= (1 << I2C_SCL);    /* pull down SCL (SCL low) */
+    BIT_BANG_SCL_LOW;
 
     /*
      *  current state:
@@ -201,31 +226,25 @@ uint8_t I2C_Start(uint8_t Type)
      */
 
     /* release SDA (SDA high) */
-    I2C_DDR &= ~(1 << I2C_SDA);    /* set to HiZ (disable pull-down) */
+    BIT_BANG_SDA_HIGH_Z
 
     /* SCL has to stay low for t_LOW */
-    #ifdef I2C_FAST_MODE
-      /* fast mode: min. 1.3µs */
-      wait2us();
-    #else
-      /* standard mode: min. 4.7µs */
-      wait5us();
-    #endif
+    BIT_BANG_HALF_DELAY
 
     /* release SCL (SCL high) */
-    I2C_DDR &= ~(1 << I2C_SCL);    /* set to HiZ (disable pull-down) */
+    BIT_BANG_SCL_HIGH_Z
 
     /* SDA has to stay high for t_SU;STA after SCL rises */
-    #ifdef I2C_FAST_MODE
-      /* fast mode: min. 0.6µs */
-      wait1us();
-    #else
-      /* standard mode: min. 4.7µs */
-      wait5us();
-    #endif
+    BIT_BANG_HALF_DELAY
 
     /* follow common start condition */
-    /* ... code from above (I2C_START) ... */
+    
+    BIT_BANG_SDA_LOW;
+
+    /* SCL will follow after t_HD;STA */
+    BIT_BANG_HALF_DELAY;
+
+    BIT_BANG_SCL_LOW;
 
     /*
      *  current state:
@@ -265,18 +284,9 @@ uint8_t I2C_Start(uint8_t Type)
 
 uint8_t I2C_WriteByte(uint8_t Type)
 {
-  // low I2C lines
-  I2C_DDR |= (1 << I2C_SDA);    /* pull down SDA (SDA low) */
-  I2C_DDR |= (1 << I2C_SCL);    /* pull down SCL (SCL low) */
-
-  /* I2C Clock Half Time */
-  #ifdef I2C_FAST_MODE
-    /* fast mode: min. 0.6us */
-    wait1us();
-  #else
-    /* standard mode: min. 4us */
-    wait4us();
-  #endif
+  uint8_t           Flag = I2C_NACK;   /* return value */
+  uint8_t           Byte;               /* byte */
+  uint8_t           n = 8;              /* counter */
 
   /*
    *  expected state:
@@ -285,92 +295,93 @@ uint8_t I2C_WriteByte(uint8_t Type)
    */
 
   // check I2C state
-  uint8_t i = 10;
-  while((((I2C_PIN & (1 << I2C_SCL)) == 1) || ((I2C_PIN & (1 << I2C_SDA)) == 1)) && (i > 0)) {
+  n = 10;
+  while(((BIT_BANG_READ_SDA == 0) || (BIT_BANG_READ_SCL != 0)) && (n > 0))
+  {
+    BIT_BANG_SDA_HIGH_Z;
+    BIT_BANG_SCL_LOW;
 
-    // low I2C lines
-    I2C_DDR |= (1 << I2C_SDA);    /* pull down SDA (SDA low) */
-    I2C_DDR |= (1 << I2C_SCL);    /* pull down SCL (SCL low) */
+    BIT_BANG_QUARTER_DELAY;
+    n--;
 
-    /* I2C Clock Half Time */
-    #ifdef I2C_FAST_MODE
-      /* fast mode: min. 0.6us */
-      wait1us();
-    #else
-      /* standard mode: min. 4us */
-      wait4us();
-    #endif
-
-    i--;
-
-    if(i == 0)
-      return I2C_ERROR;
+    if(n == 0)
+    {
+      Flag = I2C_ERROR;
+      return Flag;
+    }
   }
 
-  // write byte
-  for (i=0; i<8; i++) {
+  /*
+   *  send byte
+   */
 
-    // clock high, share bit info
-    if(I2C.Byte & 0x80) {
-      /* release SDA (SDA high) */
-      I2C_DDR &= ~(1 << I2C_SDA);     /* set to HiZ (disable pull-down) */
-    }
-    else {
-      I2C_DDR |= (1 << I2C_SDA);    /* pull down SDA (SDA low) */
-    }
+  Byte = I2C.Byte;            /* get byte */
 
-    /* release SCL (SCL high) */
-    I2C_DDR &= ~(1 << I2C_SCL);     /* set to HiZ (disable pull-down) */
+  /* bit-bang 8 bits */
+  n = 8;
+  while (n > 0)               /* 8 bits */
+  {
+    /*
+     *  set SDA
+     */
 
-    /* I2C Clock Half Time */
-    #ifdef I2C_FAST_MODE
-      /* fast mode: min. 0.6us */
-      wait1us();
-    #else
-      /* standard mode: min. 4us */
-      wait4us();
-    #endif
+    /* get current MSB and set SDA */
+    if(Byte & 0x80)
+      BIT_BANG_SDA_HIGH_Z;
+    else
+      BIT_BANG_SDA_LOW;
 
-    // clock low
-    I2C_DDR |= (1 << I2C_SCL);    /* pull down SCL (SCL low) */
+    BIT_BANG_QUARTER_DELAY;
 
-    I2C.Byte <<= 1;
+    /*
+     *  run SCL cycle
+     */
+    BIT_BANG_SCL_HIGH_Z;
 
-    /* I2C Clock Half Time */
-    #ifdef I2C_FAST_MODE
-      /* fast mode: min. 0.6us */
-      wait1us();
-    #else
-      /* standard mode: min. 4us */
-      wait4us();
-    #endif
+    BIT_BANG_HALF_DELAY;
+
+    BIT_BANG_SCL_LOW;
+
+    BIT_BANG_QUARTER_DELAY;
+
+    // move to next bit
+    Byte <<= 1;
+    n--;                      /* next bit */
   }
 
-  // read ACK bit
+  // ACK bit
 
-  /* release SDA (SDA high) */
-  I2C_DDR &= ~(1 << I2C_SDA);     /* set to HiZ (disable pull-down) */
+  // release SDA
+  BIT_BANG_SDA_HIGH_Z;
 
-  /* release SCL (SCL high) */
-  I2C_DDR &= ~(1 << I2C_SCL);     /* set to HiZ (disable pull-down) */
+  BIT_BANG_QUARTER_DELAY;
 
-  /* I2C Clock Half Time */
-  #ifdef I2C_FAST_MODE
-    /* fast mode: min. 0.6us */
-    wait1us();
-  #else
-    /* standard mode: min. 4us */
-    wait4us();
-  #endif
+  /*
+   *  run SCL cycle
+   */
+  BIT_BANG_SCL_HIGH_Z;
 
-  uint8_t sda_value = (I2C_PIN & (1 << I2C_SDA));    /* filter SDA pin */
+  BIT_BANG_HALF_DELAY;
 
-  I2C_DDR |= (1 << I2C_SCL);    /* pull down SCL (SCL low) */
+  // wait until ACK bit is received from slave
+  n = 10;
+  while(n > 0)
+  {
+    if(BIT_BANG_READ_SDA == 0)
+    {
+      // ACK received
+      Flag = I2C_ACK;
+      break;
+    }
+    BIT_BANG_QUARTER_DELAY;
+    n--;
+  }
 
-  if(sda_value == 0)
-    return I2C_ACK;
-  else
-    return I2C_NACK;
+  BIT_BANG_SCL_LOW;
+
+  BIT_BANG_HALF_DELAY;
+
+  return Flag;
 }
 
 
@@ -394,97 +405,57 @@ uint8_t I2C_WriteByte(uint8_t Type)
  *  - I2C_OK on success
  */
 
-uint8_t I2C_ReadByte(uint8_t Type) {
+uint8_t I2C_ReadByte(uint8_t Type)
+{
 
-  // release data line
+  // release (high) data line and make clock low
+  BIT_BANG_SDA_HIGH_Z;
+  BIT_BANG_SCL_LOW;
 
-  /* release SDA (SDA high) */
-  I2C_DDR &= ~(1 << I2C_SDA);     /* set to HiZ (disable pull-down) */
+  BIT_BANG_HALF_DELAY;
 
-  // make clock low
-  I2C_DDR |= (1 << I2C_SCL);    /* pull down SCL (SCL low) */
-
-  /* I2C Clock Half Time */
-  #ifdef I2C_FAST_MODE
-    /* fast mode: min. 0.6us */
-    wait1us();
-  #else
-    /* standard mode: min. 4us */
-    wait4us();
-  #endif
-
-  // check whether SCL is controlled by slave
+  // check SCL is not controlled by slave
   uint8_t i = 10;
-  while(((I2C_PIN & (1 << I2C_SCL)) == 1) && (i > 0)) {
-
-    /* I2C Clock Half Time */
-    #ifdef I2C_FAST_MODE
-      /* fast mode: min. 0.6us */
-      wait1us();
-    #else
-      /* standard mode: min. 4us */
-      wait4us();
-    #endif
-
+  while((BIT_BANG_READ_SCL != 0) && (i > 0)) {
+    BIT_BANG_HALF_DELAY;
     i--;
-
     if(i == 0)
       return I2C_ERROR;
   }
 
-  // read byte
+  // initialize read byte variable
   I2C.Byte = 0;
 
-  for (i=0; i<8; i++) {
+  // read byte
+  for (i=0; i<8; i++)
+  {
+    // high clock
+    BIT_BANG_SCL_HIGH_Z;
 
-    // clock high cycle half, read bit info
-    /* release SCL (SCL high) */
-    I2C_DDR &= ~(1 << I2C_SCL);     /* set to HiZ (disable pull-down) */
+    BIT_BANG_HALF_DELAY;
 
-    /* I2C Clock Half Time */
-    #ifdef I2C_FAST_MODE
-      /* fast mode: min. 0.6us */
-      wait1us();
-    #else
-      /* standard mode: min. 4us */
-      wait4us();
-    #endif
-
-    if((I2C_PIN & (1 << I2C_SDA)))    /* filter SDA pin */
+    // read bit info
+    if(BIT_BANG_READ_SDA)
       I2C.Byte |= 1;
 
+    // shift only first 7 read bits
     if(i < 7)
       I2C.Byte <<= 1;
 
-    // clock low cycle half
-    I2C_DDR |= (1 << I2C_SCL);    /* pull down SCL (SCL low) */
+    // low clock
+    BIT_BANG_SCL_LOW;
 
-    /* I2C Clock Half Time */
-    #ifdef I2C_FAST_MODE
-      /* fast mode: min. 0.6us */
-      wait1us();
-    #else
-      /* standard mode: min. 4us */
-      wait4us();
-    #endif
+    BIT_BANG_HALF_DELAY;
   }
 
-  if(Type == I2C_ACK) {
-
-    // send ACK bit
-
+  // send ACK bit if asked by user
+  if(Type == I2C_ACK)
+  {
     // check if SDA is released by slave
     i = 10;
-    /* filter SDA pin */
-    while(((I2C_PIN & (1 << I2C_SDA)) == 0) && (i > 0)) {
-      /* I2C Clock Half Time */
-      #ifdef I2C_FAST_MODE
-        /* fast mode: min. 0.6us */
-        wait1us();
-      #else
-        /* standard mode: min. 4us */
-        wait4us();
-      #endif
+    while((BIT_BANG_READ_SDA == 0) && (i > 0))
+    {
+      BIT_BANG_HALF_DELAY;
 
       i--;
       if(i == 0)
@@ -492,35 +463,17 @@ uint8_t I2C_ReadByte(uint8_t Type) {
     }
 
     // send acknowledgement bit
-    I2C_DDR |= (1 << I2C_SDA);    /* pull down SDA (SDA low) */
+    BIT_BANG_SDA_LOW;
+    BIT_BANG_SCL_HIGH_Z;
 
-    /* release SCL (SCL high) */
-    I2C_DDR &= ~(1 << I2C_SCL);     /* set to HiZ (disable pull-down) */
-
-    /* I2C Clock Half Time */
-    #ifdef I2C_FAST_MODE
-      /* fast mode: min. 0.6us */
-      wait1us();
-    #else
-      /* standard mode: min. 4us */
-      wait4us();
-    #endif
+    BIT_BANG_HALF_DELAY;
   }
 
   // prepare I2C Lines for next cycle
-  I2C_DDR |= (1 << I2C_SCL);    /* pull down SCL (SCL low) */
+  BIT_BANG_SCL_LOW;
+  BIT_BANG_SDA_HIGH_Z;
 
-  /* release SDA (SDA high) */
-  I2C_DDR &= ~(1 << I2C_SDA);     /* set to HiZ (disable pull-down) */
-
-  /* I2C Clock Half Time */
-  #ifdef I2C_FAST_MODE
-    /* fast mode: min. 0.6us */
-    wait1us();
-  #else
-    /* standard mode: min. 4us */
-    wait4us();
-  #endif
+  BIT_BANG_HALF_DELAY;
 
   return I2C_OK;
 }
@@ -536,82 +489,39 @@ uint8_t I2C_ReadByte(uint8_t Type) {
 
 void I2C_Stop(void)
 {
+  // A LOW to HIGH transition on the SDA line while SCL is HIGH defines a STOP condition.
+
   /*
    *  expected state:
    *  - SDA undefined
    *  - SCL low
    */
 
-
-  // high Z I2C lines
-
-  /* release SDA (SDA high) */
-  I2C_DDR &= ~(1 << I2C_SDA);     /* set to HiZ (disable pull-down) */
-
-  /* release SCL (SCL high) */
-  I2C_DDR &= ~(1 << I2C_SCL);     /* set to HiZ (disable pull-down) */
+  // release (high) I2C lines
+  BIT_BANG_SDA_HIGH_Z;
+  BIT_BANG_SCL_HIGH_Z;
 
   // check I2C state
   uint8_t i = 10;
-  while((((I2C_PIN & (1 << I2C_SCL)) == 0) || ((I2C_PIN & (1 << I2C_SDA)) == 0)) && (i > 0)) {
+  while(((BIT_BANG_READ_SDA == 0) || (BIT_BANG_READ_SCL == 0)) && (i > 0)) {
 
-    // high Z I2C lines
-
-    /* release SDA (SDA high) */
-    I2C_DDR &= ~(1 << I2C_SDA);     /* set to HiZ (disable pull-down) */
-
-    /* release SCL (SCL high) */
-    I2C_DDR &= ~(1 << I2C_SCL);     /* set to HiZ (disable pull-down) */
-
-    /* I2C Clock Half Time */
-    #ifdef I2C_FAST_MODE
-      /* fast mode: min. 0.6us */
-      wait1us();
-    #else
-      /* standard mode: min. 4us */
-      wait4us();
-    #endif
+    BIT_BANG_HALF_DELAY;
 
     i--;
   }
 
-
   // create stop condition
+  BIT_BANG_SDA_LOW;
 
-  I2C_DDR |= (1 << I2C_SDA);    /* pull down SDA (SDA low) */
+  BIT_BANG_HALF_DELAY;
 
-  /* I2C Clock Half Time */
-  #ifdef I2C_FAST_MODE
-    /* fast mode: min. 0.6us */
-    wait1us();
-  #else
-    /* standard mode: min. 4us */
-    wait4us();
-  #endif
+  BIT_BANG_SCL_HIGH_Z;
 
-  /* release SCL (SCL high) */
-  I2C_DDR &= ~(1 << I2C_SCL);     /* set to HiZ (disable pull-down) */
+  BIT_BANG_HALF_DELAY;
 
-  /* I2C Clock Half Time */
-  #ifdef I2C_FAST_MODE
-    /* fast mode: min. 0.6us */
-    wait1us();
-  #else
-    /* standard mode: min. 4us */
-    wait4us();
-  #endif
+  BIT_BANG_SDA_HIGH_Z;
 
-  /* release SDA (SDA high) */
-  I2C_DDR &= ~(1 << I2C_SDA);     /* set to HiZ (disable pull-down) */
-
-  /* I2C Clock Half Time */
-  #ifdef I2C_FAST_MODE
-    /* fast mode: min. 0.6us */
-    wait1us();
-  #else
-    /* standard mode: min. 4us */
-    wait4us();
-  #endif
+  BIT_BANG_HALF_DELAY;
 
   /*
    *  current state:
@@ -619,6 +529,16 @@ void I2C_Stop(void)
    *  - SCL high
    */
 }
+
+
+#undef BIT_BANG_SDA_LOW
+#undef BIT_BANG_SCL_LOW
+#undef BIT_BANG_SDA_HIGH_Z
+#undef BIT_BANG_SCL_HIGH_Z
+#undef BIT_BANG_READ_SDA
+#undef BIT_BANG_READ_SCL
+#undef BIT_BANG_HALF_DELAY
+#undef BIT_BANG_QUARTER_DELAY
 
 #endif
 
