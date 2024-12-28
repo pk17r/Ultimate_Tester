@@ -500,7 +500,7 @@ void ShowAdjustmentValues(void)
   #ifdef HW_POWER_METER
   /* display offset of analog comparator (value is in uA) */
   Display_NL_EEString_Space(Ioffset_str);        /* display: Ioffset */
-  Display_SignedValue(NV.Ioffset / 100, -1, 'm'); Display_Char('A');    /* display offset */
+  Display_SignedValue(NV.Ioffset, 0, 'u'); Display_Char('A');    /* display offset */
   #endif
   
   WaitKey();                  /* let the user read */
@@ -803,15 +803,22 @@ uint8_t SelfAdjustment(void)
 
           break;
 
-        case 7:     /* VI sense IC output offset */
+        case 7:     /* Power Meter Current Offset */
+          Display_EEString(Power_Meter_str);
+          Display_NextLine();
+
           Display_EEString_Space(Ioffset_str);
+
           #ifdef INA226_CURRENT_SENSOR
             Isense = INA226_getCurrent_uA();
           #else   // Hall Effect Sensor -> 0A is at middle = 2.5V
             Isense = (int32_t)Cfg.Vcc / 2 - (int32_t)ReadU_20ms(TP_I_MEASURE);          /* read voltage */
           #endif
-          Display_SignedValue(Isense / 100, -1, 'm'); Display_Char('A');
-          IoffsetSum -= Isense;  /* factor (0.001) */
+          Display_SignedValue(Isense, 0, 'u'); Display_Char('A');
+
+          IoffsetSum -= Isense;
+
+          DisplayFlag = 0;                   /* reset flag */
           break;
       }
 

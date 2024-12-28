@@ -49,13 +49,14 @@
   const unsigned char Triac_str[] MEM_TYPE = "Triac";
   const unsigned char PUT_str[] MEM_TYPE = "PUT";
   const unsigned char Bye_str[] MEM_TYPE = "Bye!";
-  const unsigned char Out_str[] MEM_TYPE = "OUT";
 
 #ifdef HW_POWER_METER
+  const unsigned char Power_Meter_str[] MEM_TYPE = "Power Meter";
   const unsigned char Vin_str[] MEM_TYPE = "VIN";
-  const unsigned char VMeter_str[] MEM_TYPE = "VMeter";
+  const unsigned char Out_str[] MEM_TYPE = "OUT";
   const unsigned char Power_str[] MEM_TYPE = "Power";
-  const unsigned char Ioffset_str[] MEM_TYPE = "Ioff";
+  const unsigned char VMeter_str[] MEM_TYPE = "VMeter";
+  const unsigned char Ioffset_str[] MEM_TYPE = "IOff";
 #endif
 
   /* units */
@@ -224,10 +225,6 @@
     const unsigned char Photodiode_str[] MEM_TYPE = "Photodiode";
     const unsigned char NoBias_str[] MEM_TYPE = "no";
     const unsigned char ReverseBias_str[] MEM_TYPE = "rev";
-  #endif
-
-  #ifdef HW_POWER_METER
-    const unsigned char Power_Meter_str[] MEM_TYPE = "Power Meter";
   #endif
 
 #endif

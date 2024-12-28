@@ -2438,6 +2438,41 @@ void Flashlight(void)
 
 #ifdef HW_POWER_METER
 
+
+#define DISP_CHARS_PER_ROW       16       // from SH1106.c   ->   LCD_CHAR_X
+#define REG_VAL_DISP_WIDTH       6
+#define X_START_VALUE           (DISP_CHARS_PER_ROW - REG_VAL_DISP_WIDTH + 1)
+
+void DisplayDashValue() {
+  Display_Char('-'); Display_Space(); Display_Space(); Display_Space(); Display_Space(); Display_Space();
+}
+
+void DisplaySignedPMValue(int32_t Value, unsigned char Unit_first_letter, unsigned char Unit_second_letter, uint8_t row) {
+  LCD_CharPos(X_START_VALUE - 3, row); Display_Space(); Display_Space(); Display_Space();
+  if(labs(Value) > 10) {
+    uint8_t x_start = X_START_VALUE;
+    if(labs(Value) >= 1e5)
+      x_start -= 2;
+    else if(labs(Value) >= 1e4)
+      x_start--;
+    if(Value < 0) x_start--;
+    LCD_CharPos(x_start, row);
+    if(Unit_first_letter == 'm') {
+      Display_SignedValue(Value / 100, -1, 0);
+      Display_Space(); Display_Char(Unit_first_letter);
+      Display_Char(Unit_second_letter);
+    }
+    else {
+      Display_SignedValue(Value / 10, -2, 0);
+      Display_Space(); Display_Char(Unit_first_letter);
+    }
+  }
+  else {
+    DisplayDashValue();
+  }
+}
+
+
  /*
   *  measures various voltages and current through INA226 Current Sensor or Current sense IC TMCS1108A4B
   *  Vout, Iout, Power, Vmeter
@@ -2463,7 +2498,6 @@ void PowerMeter(void)
   ADC_DDR &= ~(1 << TP_BAT);          /* set pin to HiZ */
   ADC_DDR &= ~(1 << TP_LOGIC);          /* set pin to HiZ */
   #ifdef INA226_CURRENT_SENSOR
-    I2C_Setup();
     INA226_setup();
   #else      // HALL EFFECT CURRENT SENSOR
 	int32_t          Isensitivity = 400;    // I sense IC sensitivity mV/A
@@ -2477,14 +2511,12 @@ void PowerMeter(void)
   LCD_Clear();
 
   // Print Left Side Row Labels
-  LCD_CharPos(2, 1);
+  LCD_CharPos(1, 1);
   Display_Char('V'); Display_EEString(Out_str);
-  LCD_CharPos(2, 2);
+  LCD_CharPos(1, 2);
   Display_Char('I'); Display_EEString(Out_str);
-  LCD_CharPos(1, 3);
-  Display_EEString(Power_str);
-  LCD_CharPos(1, 4);
-  Display_EEString(VMeter_str);
+  Display_NL_EEString(Power_str);
+  Display_NL_EEString(VMeter_str);
 
 
   /*
@@ -2510,9 +2542,11 @@ void PowerMeter(void)
       Vout_mV = INA226_getLoadVoltage_mV();
       // Current
       Value = INA226_getCurrent_uA() + NV.Ioffset;
-      if(abs(Value) < 1e6) {
+      if(labs(Value) < 300)
+        Value = 0;                // currents under 0.3mA are ignored to keep zero stable
+      if(labs(Value) < 1e6) {
         Current_Unit = 'm';
-        Isense = (int32_t)Value; // Isense in uA
+        Isense = Value; // Isense in uA
       }
       else {
         Current_Unit = 'A';
@@ -2520,7 +2554,7 @@ void PowerMeter(void)
       }
       // Power
       Value = (Vout_mV) * (Value / 1000);
-      if(abs(Value) < 1e6) {
+      if(labs(Value) < 1e6) {
         Power_Unit = 'm';
         Power = (int32_t)Value;   // Power in uW
       }
@@ -2545,69 +2579,37 @@ void PowerMeter(void)
     
 
     /* display values */
-    #define DISP_CHARS_PER_ROW       16       // from SH1106.c   ->   LCD_CHAR_X
-    #define SPACES_FROM_RIGHT        0
-    #define REG_VAL_DISP_WIDTH       5
 
-
-    LCD_CharPos(10, 1); Display_Space();
-    x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
-    if(abs(Vout_mV) >= 1e4 || Vout_mV < 0) x_start++;
-    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 1);
+    LCD_CharPos(X_START_VALUE - 1, 1); Display_Space();
+    x_start = X_START_VALUE;
+    if(labs(Vout_mV) >= 1e4 || Vout_mV < 0) x_start--;
+    LCD_CharPos(x_start, 1);
     Display_SignedValue(Vout_mV / 10, -2, 0);
     Display_Space(); Display_Char('V');
 
 
-    LCD_CharPos(7, 2);
+    LCD_CharPos(X_START_VALUE - 5, 2);
     if((Isense > 1000) && (counter % 4 < 2))      
       Display_Char('*');
     else
       Display_Space();
     counter++;
-    Display_Space(); Display_Space(); Display_Space();
-    x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
-    if(abs(Isense) >= 1e5)
-      x_start += 2;
-    else if(abs(Isense) >= 1e4)
-      x_start++;
-    if(Isense < 0) x_start++;
-    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 2);
-    if(Current_Unit == 'm') {
-      Display_SignedValue(Isense / 100, -1, 0);
-      Display_Space(); Display_Char(Current_Unit);
-      Display_Char('A');
+    DisplaySignedPMValue(Isense, Current_Unit, 'A', 2);    
+
+    DisplaySignedPMValue(Power, Power_Unit, 'W', 3);
+
+
+    LCD_CharPos(X_START_VALUE - 1, 4); Display_Space();
+    if(Vmeter > 10) {
+      x_start = X_START_VALUE;
+      if(Vmeter >= 1e4) x_start--;    // Vmeter is 2 byte unsigned int, always positive
+      LCD_CharPos(x_start, 4);
+      Display_Value(Vmeter / 10, -2, 0);
+      Display_Space(); Display_Char('V');
     }
     else {
-      Display_SignedValue(Isense / 10, -2, 0);
-      Display_Space(); Display_Char(Current_Unit);
+      DisplayDashValue();
     }
-    
-
-    LCD_CharPos(8, 3); Display_Space(); Display_Space(); Display_Space();
-    x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
-    if(abs(Power) >= 1e5)
-      x_start += 2;
-    else if(abs(Power) >= 1e4)
-      x_start++;
-    if(Power < 0) x_start++;
-    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 3);
-    if(Power_Unit == 'm') {
-      Display_SignedValue(Power / 100, -1, 0);
-      Display_Space(); Display_Char(Power_Unit);
-      Display_Char('W');
-    }
-    else {
-      Display_SignedValue(Power / 10, -2, 0);
-      Display_Space(); Display_Char(Power_Unit);
-    }
-
-
-    LCD_CharPos(10, 4); Display_Space();
-    x_start = SPACES_FROM_RIGHT + REG_VAL_DISP_WIDTH;
-    if(Vmeter >= 10000) x_start++;
-    LCD_CharPos(DISP_CHARS_PER_ROW - x_start, 4);
-    Display_Value(Vmeter / 10, -2, 0);
-    Display_Space(); Display_Char('V');
 
     /*
      *  user feedback

@@ -915,10 +915,9 @@
   extern const unsigned char Vin_str[];
   #ifdef HW_POWER_METER
     extern const unsigned char Power_Meter_str[];
-    extern const unsigned char Battery_str[];
     extern const unsigned char Out_str[];
-    extern const unsigned char VMeter_str[];
     extern const unsigned char Power_str[];
+    extern const unsigned char VMeter_str[];
     extern const unsigned char Ioffset_str[];
   #endif
 

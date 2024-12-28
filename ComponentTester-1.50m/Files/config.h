@@ -38,7 +38,7 @@
 
 #ifdef HW_POWER_METER
   #ifdef INA226_CURRENT_SENSOR
-    #define I_OFFSET			200
+    #define I_OFFSET			300
   #else
     #define I_OFFSET			45
   #endif

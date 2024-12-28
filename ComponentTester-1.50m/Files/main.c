@@ -2303,24 +2303,6 @@ void ShowBattery(void)
       /* display battery voltage */
       Display_Value(Cfg.Vbat / 10, -2, 'V');
 
-      /* Find Vout */
-      // uint16_t          U_Vout;         /* Vout voltage */
-
-      // U_Vout = ReadU(TP_VOUT);           /* read voltage (mV) */
-
-      // uint32_t          Temp;          /* temporary value */
-      // Temp = (((uint32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
-      // Temp *= U_Vout;                   /* Uin (0.001 mV) */
-      // Temp /= 1000;                    /* Uin (mV) */
-      // U_Vout = (uint16_t)Temp;          /* keep 2 bytes */
-
-      // /* display Vout voltage */
-      // Display_NextLine();
-      // Display_NextLine();
-      // Display_Char('V'); Display_EEString(Out_str);
-      // Display_Space();
-      // Display_Value(U_Vout / 10, -2, 'V');
-
     #ifdef BAT_EXT_UNMONITORED
     }
     #endif
