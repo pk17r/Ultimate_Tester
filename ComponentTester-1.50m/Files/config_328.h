@@ -75,7 +75,7 @@
 #define LCD_HD44780                     /* display controller HD44780 */
 #define LCD_TEXT                        /* character display */
 #define LCD_PCF8574                     /* PCF8574 backpack */
-#define LCD_I2C_ADDR     0x3f           /* PCF8574's I2C address */
+#define LCD_I2C_ADDR     0x27           /* PCF8574's I2C address (other one 0x3f) */
 /* control and data lines */
 #define LCD_DB_STD                      /* use standard pins 4-7 for DB4-7 */
 #define LCD_DB4          PCF8574_P4     /* port pin used for DB4 */
@@ -412,11 +412,11 @@
 #define I2C_BITBANG                     /* bit-bang I2C */
 #define I2C_FAST_MODE                   /* 400kHz bus speed */
 //#define I2C_STANDARD_MODE
-#define I2C_PORT         PORTB          /* I2C port data register */
-#define I2C_DDR          DDRB           /* I2C port data direction register */
-#define I2C_PIN          PINB           /* I2C port input pins register */
-#define I2C_SDA          PB4            /* port pin used for SDA */
-#define I2C_SCL          PB5            /* port pin used for SCL */
+#define I2C_PORT         PORTD          /* I2C port data register */
+#define I2C_DDR          DDRD           /* I2C port data direction register */
+#define I2C_PIN          PIND           /* I2C port input pins register */
+#define I2C_SDA          PD6            /* port pin used for SDA */
+#define I2C_SCL          PD7            /* port pin used for SCL */
 #endif
 
 
@@ -521,11 +521,11 @@
 #define LCD_SSD1306                     /* display controller SSD1306 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_I2C                         /* I2C interface */
-#define LCD_I2C_ADDR     0x3c           /* SSD1306's I2C address */
+#define LCD_I2C_ADDR     0x3C           /* SSD1306's I2C address */
 /* control lines */
-#define LCD_PORT         PORTD          /* port data register */
-#define LCD_DDR          DDRD           /* port data direction register */
-#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
+//#define LCD_PORT         PORTD          /* port data register */
+//#define LCD_DDR          DDRD           /* port data direction register */
+//#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
 #define LCD_DOTS_Y       64             /* number of vertical dots */
@@ -533,7 +533,7 @@
 #define LCD_FLIP_Y                      /* enable vertical flip */
 //#define LCD_COM_SEQ                     /* COM pin layout: sequential */
 //#define LCD_COM_REMAP                   /* COM pin mapping: reversed */
-#define LCD_CONTRAST     127            /* default contrast (0-255) */
+#define LCD_CONTRAST     250            /* default contrast (0-255) */
 /* font and symbols: vertically aligned & flipped, bank-wise grouping */
 #define FONT_8X8_VF                     /* 8x8 font */
 #define SYMBOLS_24X24_VFP               /* 24x24 symbols */
@@ -542,11 +542,11 @@
 /* I2C bus */
 #define I2C_BITBANG                     /* bit-bang I2C */
 #define I2C_FAST_MODE                   /* 400kHz bus speed */
-#define I2C_PORT         PORTD          /* I2C port data register */
-#define I2C_DDR          DDRD           /* I2C port data direction register */
-#define I2C_PIN          PIND           /* I2C port input pins register */
-#define I2C_SDA          PD0            /* port pin used for SDA */
-#define I2C_SCL          PD1            /* port pin used for SCL */
+#define I2C_PORT         PORTC          /* I2C port data register */
+#define I2C_DDR          DDRC           /* I2C port data direction register */
+#define I2C_PIN          PINC           /* I2C port input pins register */
+#define I2C_SDA          PC4            /* port pin used for SDA */
+#define I2C_SCL          PC5            /* port pin used for SCL */
 #endif
 
 
@@ -685,13 +685,13 @@
 #define LCD_COLOR                       /* color display */
 #define LCD_SPI                         /* SPI interface */
 /* control and data lines */
-#define LCD_PORT         PORTD          /* port data register */
-#define LCD_DDR          DDRD           /* port data direction register */
-#define LCD_RES          PD4            /* port pin used for /RESX (optional) */
-#define LCD_CS           PD5            /* port pin used for /CSX (optional) */
-#define LCD_DC           PD3            /* port pin used for D/CX */
-#define LCD_SCL          PD2            /* port pin used for SCL */
-#define LCD_SDA          PD1            /* port pin used for SDA */
+#define LCD_PORT         PORTB          /* port data register */
+#define LCD_DDR          DDRB           /* port data direction register */
+//#define LCD_RES          PB1            /* port pin used for /RESX (optional) */
+#define LCD_CS           PB2            /* port pin used for /CSX (optional) */
+#define LCD_DC           PB4            /* port pin used for D/CX */
+#define LCD_SCL          PB5            /* port pin used for SCL */
+#define LCD_SDA          PB3            /* port pin used for SDA */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
 #define LCD_DOTS_Y       160            /* number of vertical dots */
@@ -891,12 +891,12 @@
 #define TP3              PC3       /* test pin / probe #3 */
 
 #define TP_ZENER         PC9       /* test pin for for Zener check (10:1 voltage divider) */
-#define TP_REF           ((1<<MUX2)|(1<<MUX1))       /* test pin for battery (4:1 voltage divider) */  //ADC6
-#define TP_BAT           ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))		//ADC7       /* test pin for 2.5V reference and relay */
-#define TP_LOGIC         PC5       /* test pin for Logic Probe (4:1 voltage divider) */
-#define TP_CAP           PC0       /* test pin for self-adjustment cap */
+#define TP_REF           PC5       /* test pin for 2.5V reference and relay */
+#define TP_BAT           ((1<<MUX2)|(1<<MUX1))       /* test pin for battery (4:1 voltage divider) */  //ADC6
+#define TP_LOGIC         PC4       /* test pin for Logic Probe (4:1 voltage divider) */
+#define TP_CAP           PC9       /* test pin for self-adjustment cap */
 #define TP_I_MEASURE     ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))		//ADC7
-#define TP_VOUT          ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))		//ADC7       /* test pin for VOUT measurement (4:1 voltage divider) */
+#define TP_VOUT          PC0       /* test pin for VOUT measurement (4:1 voltage divider) */
 
 
 /*
@@ -905,14 +905,14 @@
  *  - Don't share this port with POWER_CTRL or TEST_BUTTON!
  */
 
-#define R_PORT           PORTD     /* port data register */
-#define R_DDR            DDRD      /* port data direction register */
-#define R_RL_1           PD0       /* Rl (680R) for test pin #1 */
-#define R_RH_1           PD1       /* Rh (470k) for test pin #1 */
-#define R_RL_2           PD2       /* Rl (680R) for test pin #2 */
-#define R_RH_2           PD3       /* Rh (470k) for test pin #2 */
-#define R_RL_3           PD4       /* Rl (680R) for test pin #3 */
-#define R_RH_3           PD5       /* Rh (470k) for test pin #3 */
+#define R_PORT           PORTB     /* port data register */
+#define R_DDR            DDRB      /* port data direction register */
+#define R_RL_1           PB4       /* Rl (680R) for test pin #1 */
+#define R_RH_1           PB5       /* Rh (470k) for test pin #1 */
+#define R_RL_2           PB2       /* Rl (680R) for test pin #2 */
+#define R_RH_2           PB3       /* Rh (470k) for test pin #2 */
+#define R_RL_3           PB0       /* Rl (680R) for test pin #3 */
+#define R_RH_3           PB1       /* Rh (470k) for test pin #3 */
 
 
 /*
@@ -930,9 +930,9 @@
  *  - can't be same port as ADC_PORT or R_PORT
  */
 
-#define POWER_PORT       PORTB     /* port data register */
-#define POWER_DDR        DDRB      /* port data direction register */
-#define POWER_CTRL       PB3       /* control pin (1: on / 0: off) */
+#define POWER_PORT       PORTD     /* port data register */
+#define POWER_DDR        DDRD      /* port data direction register */
+#define POWER_CTRL       PD0       /* control pin (1: on / 0: off) */
 
 
 /*
@@ -940,10 +940,10 @@
  *  - can't be same port as ADC_PORT or R_PORT
  */
 
-#define BUTTON_PORT      PORTB     /* port data register */
-#define BUTTON_DDR       DDRB      /* port data direction register */
-#define BUTTON_PIN       PINB      /* port input pins register */
-#define TEST_BUTTON      PB0       /* test/start push button (low active) */
+#define BUTTON_PORT      PORTD     /* port data register */
+#define BUTTON_DDR       DDRD      /* port data direction register */
+#define BUTTON_PIN       PIND      /* port input pins register */
+#define TEST_BUTTON      PD3       /* test/start push button (low active) */
 
 
 /*
@@ -953,8 +953,8 @@
 #define ENCODER_PORT     PORTD     /* port data register */
 #define ENCODER_DDR      DDRD      /* port data direction register */
 #define ENCODER_PIN      PIND      /* port input pins register */
-#define ENCODER_A        PD6       /* rotary encoder A signal */
-#define ENCODER_B        PD7       /* rotary encoder B signal */
+#define ENCODER_A        PD2       /* rotary encoder A signal */
+#define ENCODER_B        PD1       /* rotary encoder B signal */
 
 
 /*
@@ -964,8 +964,8 @@
 #define KEY_PORT         PORTD     /* port data register */
 #define KEY_DDR          DDRD      /* port data direction register */
 #define KEY_PIN          PIND      /* port input pins register */
-#define KEY_INC          PD6       /* increase push button (low active) */
-#define KEY_DEC          PD7       /* decrease push button (low active) */
+#define KEY_INC          PD2       /* increase push button (low active) */
+#define KEY_DEC          PD1       /* decrease push button (low active) */
 
 
 /*
@@ -1034,11 +1034,11 @@
 
 /* I2C not set yet (for bit-bang I2C) */
 #ifndef I2C_PORT
-  #define I2C_PORT       PORTB     /* port data register */
-  #define I2C_DDR        DDRB      /* port data direction register */
-  #define I2C_PIN        PINB      /* port input pins register */
-  #define I2C_SDA        PB4       /* pin for SDA */
-  #define I2C_SCL        PB5       /* pin for SCL */
+  #define I2C_PORT       PORTD     /* port data register */
+  #define I2C_DDR        DDRD      /* port data direction register */
+  #define I2C_PIN        PIND      /* port input pins register */
+  #define I2C_SDA        PD2       /* pin for SDA */
+  #define I2C_SCL        PD1       /* pin for SCL */
 #endif
 
 
@@ -1086,9 +1086,9 @@
  *  buzzer
  */
 
-#define BUZZER_PORT      PORTB     /* port data register */
-#define BUZZER_DDR       DDRB      /* port data direction register */
-#define BUZZER_CTRL      PB1       /* control pin (low: off / high: on) */
+#define BUZZER_PORT      PORTD     /* port data register */
+#define BUZZER_DDR       DDRD      /* port data direction register */
+#define BUZZER_CTRL      PD4       /* control pin (low: off / high: on) */
 
 
 /*

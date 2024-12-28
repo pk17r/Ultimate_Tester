@@ -2708,11 +2708,13 @@ int main(void)
   #endif
 
   #ifdef UI_CENTER_ALIGN
-    Display_CenterLine(4);                   /* center block: 4 lines */
-    Display_EEString_Center(UltimateTester_str);     /* display: Component Tester */
-    Display_NextLine();
+    // Display_CenterLine(4);                   /* center block: 4 lines */
+    // Display_NextLine();
+    Display_NL_EEString_Center(UltimateTester_str);     /* display: Component Tester */
+    // Display_NextLine();
     Display_NL_EEString_Center(Tester_str);     /* display: Component Tester */
-    Display_NL_EEString_Center(Version_str); /* display firmware version */
+    // LCD_CharPos(11, 4);
+    // Display_EEString(Version_str); /* display firmware version */
   #else
     Display_EEString(Tester_str);       /* display: Component Tester */
     Display_NL_EEString(Version_str);   /* display firmware version */

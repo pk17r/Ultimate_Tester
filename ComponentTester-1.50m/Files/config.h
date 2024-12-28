@@ -89,7 +89,7 @@
  *  - or use >= 5.5 digit DMM to measure the voltage
  */
 
-#define UREF_25           2495
+#define UREF_25           2498
 
 
 /*
@@ -264,7 +264,7 @@
  *  - uncomment to enable
  */
 
-#define HW_ADJUST_CAP
+//#define HW_ADJUST_CAP
 
 
 /*
@@ -359,7 +359,7 @@
  *  - uncomment to enable
  */
 
-// #define HW_FLASHLIGHT
+#define HW_FLASHLIGHT
 
 
 /*
@@ -424,7 +424,7 @@
  *  - uncomment to enable
  */
 
-#define SW_PWM_SIMPLE
+//#define SW_PWM_SIMPLE
 
 
 /*
@@ -434,7 +434,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_PWM_PLUS
+#define SW_PWM_PLUS
 
 
 /*
@@ -941,7 +941,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_AUTOHOLD
+#define UI_AUTOHOLD
 
 
 /*
