@@ -2,8 +2,8 @@
  *
  *   common header file
  *
- *   (c) 2012-2023 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz K�bbeler
+ *   (c) 2012-2024 by Markus Reschke
+ *   based on code from Markus Frejek and Karl-Heinz Kübbeler
  *
  * ************************************************************************ */
 
@@ -77,11 +77,12 @@
 #define OP_EXT_REF            0b00000100     /* external voltage reference used */
 #define OP_SPI                0b00001000     /* SPI is set up */
 #define OP_I2C                0b00010000     /* I2C is set up */
+#define OP_AUTOHOLD_TEMP      0b00100000     /* temporary auto-hold mode */
 
 
 /* operation control/signaling flags (bitfield) */
 #define OP_BREAK_KEY          0b00000001     /* exit key processing */
-#define OP_OUT_LCD            0b00000010     /* output to LCD display */
+#define OP_OUT_LCD            0b00000010     /* output to display */
 #define OP_OUT_SER            0b00000100     /* output to TTL serial */
 #define OP_RX_LOCKED          0b00001000     /* RX buffer locked */
 #define OP_RX_OVERFLOW        0b00010000     /* RX buffer overflow */
@@ -233,6 +234,7 @@
 #define CMD_V_Z               45   /* return V_Z */
 #define CMD_V_L               46   /* return V_loss */
 #define CMD_V_F_CLAMP         47   /* return V_f of clamping diode */
+#define CMD_C_BE              48   /* return C_BE */
 
 
 
@@ -324,10 +326,10 @@
 #define TYPE_STANDARD         0b00000001     /* standard diode */
 
 
-/* BJT flags (bitfield) */
+/* semiconductor flags (bitfield) */
 #define HFE_COMMON_EMITTER    0b00000001     /* hFE: common emitter circuit */
 #define HFE_COMMON_COLLECTOR  0b00000010     /* hFE: common collector circuit */
-#define HFE_CIRCUIT_MASK      0b00000011
+#define HFE_CIRCUIT_MASK      0b00000011     /* mask for hFE circuit flags */
 
 
 /* flags for semicondutor detection logic (bitfield) */
@@ -361,7 +363,7 @@
 #define LCD_CHAR_DIODE_CA     2	   /* diode icon '|<' */
 #define LCD_CHAR_CAP          3    /* capacitor icon '||' */
 #define LCD_CHAR_OMEGA        4    /* omega */
-#define LCD_CHAR_MICRO        5    /* � (micro) */
+#define LCD_CHAR_MICRO        5    /* µ (micro) */
 #define LCD_CHAR_RESISTOR_L   6    /* resistor icon left part '[' */
 #define LCD_CHAR_RESISTOR_R   7    /* resistor icon right part ']' */
 
@@ -577,6 +579,7 @@ typedef struct
 
   /* increase/decrease push buttons */
   #ifdef HW_INCDEC_KEYS
+  /* no additional variables needed */
   #endif
 
   /* touch screen */
@@ -718,8 +721,8 @@ typedef struct
   B        Collector    Drain        Anode        MT2          Collector
   C        Emitter      Source       Cathode      MT1          Emitter
   U_1      V_BE (mV)    R_DS (0.01)  V_GT (mV)    V_GT (mV)
-  U_2      I_E (�A)     V_th (mV)                              V_th (mV)
-  U_3      I_C/E (�A)   V_GS(off)
+  U_2      I_E (µA)     V_th (mV)                              V_th (mV)
+  U_3      I_C/E (µA)   V_GS(off)
   F_1      hFE                                    MT2 (mV)
   F_2      hFEr
   I_value  I_CEO        I_DSS
@@ -751,7 +754,7 @@ typedef struct
   A       Gate        Emitter
   B       Anode       B2
   C       Cathode     B1
-  U_1�    V_f
+  U_1     V_f
   U_2     V_T
 */
 
@@ -790,7 +793,7 @@ typedef struct
 typedef struct
 {
   uint8_t           Byte;          /* address/data byte */
-  uint8_t           Timeout;       /* ACK timeout in 10�s */
+  uint8_t           Timeout;       /* ACK timeout in 10µs */
 } I2C_Type;
 
 

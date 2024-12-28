@@ -2,7 +2,7 @@
  *
  *   SPI (bit-bang & hardware)
  *
- *   (c) 2017-2023 by Markus Reschke
+ *   (c) 2017-2024 by Markus Reschke
  *
  * ************************************************************************ */
 
@@ -126,10 +126,18 @@ void SPI_Write_Bit(uint8_t Bit)
   }
 
   /* start clock pulse (slave takes bit on rising edge) */
-  SPI_PORT |= (1 << SPI_SCK);         /* set SCK high */
+  #ifdef SPI_SLOWDOWN
+  /* tiny delay */
+  asm volatile("nop");
+  #endif
+  SPI_PORT |= (1 << SPI_SCK);           /* set SCK high */
 
   /* end clock pulse (falling edge) */
-  SPI_PORT &= ~(1 << SPI_SCK);        /* set SCK low */
+  #ifdef SPI_SLOWDOWN
+  /* tiny delay */
+  asm volatile("nop");
+  #endif
+  SPI_PORT &= ~(1 << SPI_SCK);          /* set SCK low */
 
   /*
    *  current state:
@@ -179,9 +187,17 @@ void SPI_Write_Byte(uint8_t Byte)
     }
 
     /* start clock pulse (slave takes bit on rising edge) */
+    #ifdef SPI_SLOWDOWN
+    /* tiny delay */
+    asm volatile("nop");
+    #endif
     SPI_PORT |= (1 << SPI_SCK);         /* set SCK high */
 
     /* end clock pulse (falling edge) */
+    #ifdef SPI_SLOWDOWN
+    /* tiny delay */
+    asm volatile("nop");
+    #endif
     SPI_PORT &= ~(1 << SPI_SCK);        /* set SCK low */
 
     Byte <<= 1;               /* shift bits one step left */
@@ -243,6 +259,10 @@ uint8_t SPI_WriteRead_Byte(uint8_t Byte)
     }
 
     /* start clock pulse (slave takes bit on rising edge) */
+    #ifdef SPI_SLOWDOWN
+    /* tiny delay */
+    asm volatile("nop");
+    #endif
     SPI_PORT |= (1 << SPI_SCK);         /* set SCK high */
 
     /* slave needs some time for processing */
@@ -276,6 +296,10 @@ uint8_t SPI_WriteRead_Byte(uint8_t Byte)
     #endif
 
     /* end clock pulse (slave shifts bit out on falling edge) */
+    #ifdef SPI_SLOWDOWN
+    /* tiny delay */
+    asm volatile("nop");
+    #endif
     SPI_PORT &= ~(1 << SPI_SCK);        /* set SCK low */
 
     /* slave needs some time to shift out bit */
@@ -470,7 +494,7 @@ uint8_t SPI_WriteRead_Byte(uint8_t Byte)
   while (!(SPSR & (1 << SPIF)));   /* wait for flag */
 
   /* get received byte */
-  Byte2 = SPDR;                    /* clear flag by reading data */
+  Byte2 = SPDR;                    /* also clears flag (by reading data) */
 
   return Byte2;
 }

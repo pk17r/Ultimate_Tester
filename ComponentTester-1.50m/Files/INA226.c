@@ -26,10 +26,37 @@
 #include "common.h"           /* common header file */
 #include "variables.h"        /* global variables */
 #include "functions.h"        /* external functions */
-#include "INA226.h"           /* INA226 specifics */
 
-// debug statements
+
+// arduino ide serial monitor debug statements
 #define   Serial_print(x)
+
+
+//  REGISTERS
+#define INA226_CONFIGURATION              0x00
+#define INA226_SHUNT_VOLTAGE              0x01
+#define INA226_BUS_VOLTAGE                0x02
+#define INA226_POWER                      0x03
+#define INA226_CURRENT                    0x04
+#define INA226_CALIBRATION                0x05
+#define INA226_MASK_ENABLE                0x06
+#define INA226_ALERT_LIMIT                0x07
+#define INA226_MANUFACTURER               0xFE
+#define INA226_DIE_ID                     0xFF
+
+
+//  CONFIGURATION MASKS
+#define INA226_CONF_RESET_MASK            0x8000
+#define INA226_CONF_AVERAGE_MASK          0x0E00
+#define INA226_CONF_BUSVC_MASK            0x01C0
+#define INA226_CONF_SHUNTVC_MASK          0x0038
+#define INA226_CONF_MODE_MASK             0x0007
+
+
+//  See issue #26
+#define INA226_MINIMAL_SHUNT              0.001
+
+#define INA226_MAX_WAIT_MS                600   //  millis
 
 
 ////////////////////////////////////////////////////////

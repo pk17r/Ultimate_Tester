@@ -2,7 +2,7 @@
  *
  *   IR remote control: receiver
  *
- *   (c) 2015-2023 by Markus Reschke
+ *   (c) 2015-2024 by Markus Reschke
  *
  * ************************************************************************ */
 
@@ -573,9 +573,9 @@ uint8_t PxM_Demod(uint8_t *PulseData, uint8_t Pulses, uint8_t tS, uint8_t t0, ui
   if (Counter == 0)           /* error */
   {
     Display_NextLine();
-    Display_Value(Counter, 0, 0);  /* display pulse number */
+    Display_Value2(Counter);       /* display pulse number */
     Display_Colon();               /* display; : */
-    Display_Value(Time, 0, 0);     /* display pulse duration */
+    Display_Value2(Time);          /* display pulse duration */
   }
   #endif
 
@@ -1392,7 +1392,7 @@ void IR_Decode(uint8_t *PulseData, uint8_t Pulses)
       /* display format */
       if (Flag == PACKET_OK)       /* valid packet */
       {
-        Display_Value(Bits, 0, 0); /* display number of bits */
+        Display_Value2(Bits);      /* display number of bits */
       }
 
       /* we accept the first code and don't wait for another 2 repeats */
@@ -1701,29 +1701,29 @@ result:
   if (Flag == PROTO_UNKNOWN)       /* unknown protocol */
   {
     Display_NextLine();            /* new line */
-    Display_Value(Pulses, 0, 0);   /* display number of pulses */
+    Display_Value2(Pulses);        /* display number of pulses */
     Display_Colon();               /* display: : */
-    Display_Value(Time1, 0, 0);    /* display time units of first pulse */
+    Display_Value2(Time1);         /* display time units of first pulse */
     Display_Minus();               /* display: - */
-    Display_Value(Time2, 0, 0);    /* display time units of first pause */
+    Display_Value2(Time2);         /* display time units of first pause */
 
     #if 0
     /* debugging output */
     Display_NextLine();
     Pulse++;
-    Display_Value(*Pulse, 0, 0);
+    Display_Value2(*Pulse);
     Display_Space();
     Pulse++;
-    Display_Value(*Pulse, 0, 0);
+    Display_Value2(*Pulse);
     Display_Space();
     Pulse++;
-    Display_Value(*Pulse, 0, 0);
+    Display_Value2(*Pulse);
     Display_Space();
     Pulse++;
-    Display_Value(*Pulse, 0, 0);
+    Display_Value2(*Pulse);
     Display_Space();
     Pulse++;
-    Display_Value(*Pulse, 0, 0);
+    Display_Value2(*Pulse);
     #endif
   }
 
@@ -1944,12 +1944,13 @@ void IR_Detector(void)
   /*
    *  adaptive sampling delay for 10탎 considering processing loop
    *  - processing loop needs about 24 MCU cycles (3탎@8MHz)
+   *  - cycles = MCU_CYCLES_PER_US      MCU cycles per 탎
+   *           *= 10                    cycles for 10탎
+   *           -= 24                    consider processing loop
+   *           /= 4;                    delay loop is 4 cycles
    */
 
-  Cycles = MCU_CYCLES_PER_US;           /* MCU cycles per 탎 */
-  Cycles *= 10;                         /* cycles for 10탎 */
-  Cycles -= 24;                         /* consider loop */
-  Cycles /= 4;                          /* delay loop is 4 cycles */
+  Cycles = (uint8_t)(((MCU_CYCLES_PER_US * 10UL) - 24) / 4);
 
 
   /*

@@ -2,8 +2,8 @@
  *
  *   main part
  *
- *   (c) 2012-2022 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz K�bbeler
+ *   (c) 2012-2024 by Markus Reschke
+ *   based on code from Markus Frejek and Karl-Heinz Kübbeler
  *
  * ************************************************************************ */
 
@@ -273,7 +273,7 @@ void Show_ENormCodes(uint32_t Value, int8_t Scale, uint8_t ESeries, uint8_t Tole
    *  multiplier reference
    *  - R:   0 (10^0)   -> 1 Ohms
    *    C: -12 (10^-12) -> 1 pF
-   *    L:  -6 (10^-6)  -> 1 �H
+   *    L:  -6 (10^-6)  -> 1 µH
    *  - ref_scale as function argument?
    *    scale = scale - ref_scale
    */
@@ -452,7 +452,11 @@ void Show_Fail(void)
   #ifdef UI_QUESTION_MARK
   /* display question mark symbol */
   Check.Symbol = SYMBOL_QUESTIONMARK;   /* set symbol ID */
-  Display_FancySemiPinout(3);           /* show symbol starting in line #3 */
+    #ifdef UI_CENTER_ALIGN
+      Display_FancySemiPinout(1);       /* show symbol starting in line #1 */
+    #else
+      Display_FancySemiPinout(3);       /* show symbol starting in line #3 */
+    #endif
   #endif
 
   #if CYCLE_MAX < 255
@@ -950,7 +954,7 @@ void Show_Capacitor(void)
 
 void Show_SemiCurrent(const unsigned char *String)
 {
-  if (CmpValue(Semi.I_value, Semi.I_scale, 50, -9) >= 0)  /* show if >=50nA */
+  if (CmpValue(Semi.I_value, Semi.I_scale, 10, -9) >= 0)  /* show if >= 10nA */
   {
     Display_NL_EEString_Space(String);               /* display: <string> */
     Display_Value(Semi.I_value, Semi.I_scale, 'A');  /* display current */
@@ -1027,7 +1031,7 @@ void Show_Diode(void)
 
   if (Check.Diodes == 1)           /* single diode */
   {
-    C = D1->C;                     /* make cathode first pin */
+    C = D1->C;                     /* make anode first pin */
   }
   else if (Check.Diodes == 2)      /* two diodes */
   {
@@ -1088,7 +1092,7 @@ void Show_Diode(void)
     C = D1->C;                     /* cathode of first diode */
     A = 3;                         /* in series mode */
   }
-  else                             /* too much diodes */
+  else                             /* too many diodes */
   {
     /* display number of diodes found in line #1 */
     Display_EEString_Space(Diode_AC_str);    /* display: -|>|- */
@@ -1120,7 +1124,7 @@ void Show_Diode(void)
     Display_EEString(Diode_CA_str);     /* show -|<- */
     Display_ProbeNumber(A);             /* show A */
   }
-  else              /* common cathode or in-series: show A first */
+  else              /* single, common cathode or in-series: show A first */
   {
     Display_ProbeNumber(D1->A);         /* show A */
     Display_EEString(Diode_AC_str);     /* show ->|- */
@@ -1225,12 +1229,12 @@ void Show_Diode(void)
     if (D1->V_f2 < 250)            /* < 250mV */
     {
       Display_Char('(');
-      Display_Value(D1->V_f2, 0, 0);    /* no unit */
+      Display_Value2(D1->V_f2);    /* no unit */
       Display_Char(')');
     }
 
     /* reverse leakage current */
-    UpdateProbes(D1->C, D1->A, 0);      /* reverse diode */
+    UpdateProbes2(D1->C, D1->A);        /* reverse diode */
     GetLeakageCurrent(1);               /* get current */
     Show_SemiCurrent(I_R_str);          /* display I_R */
 
@@ -1307,10 +1311,11 @@ void Show_BJT(void)
    *  B   - Collector pin
    *  C   - Emitter pin
    *  U_1 - U_BE (mV) (not implemented yet)
-   *  U_3 - I_C/I_E (�A)
+   *  U_3 - I_C/I_E (µA)
    *  F_1 - hFE
    *  F_2 - reverse hFE
    *  I_value/I_scale - I_CEO
+   *  C_value/C_scale - C_be
    */
 
   /*
@@ -1421,7 +1426,7 @@ void Show_BJT(void)
     #else
       Show_SingleResistor('B', 'E');              /* show resistor */
     #endif
-    /* B-E resistor renders hFE and V_BE measurements useless */
+    /* B-E resistor renders hFE, V_BE and C_be measurements useless */
 
     #ifdef SW_SYMBOLS
     UI.SymbolLine = 4;             /* display fancy pinout in line #4 */
@@ -1436,11 +1441,12 @@ void Show_BJT(void)
 
   /*
    *  display h_FE in next line
+   *  - B-E resistor renders value useless
    */
 
   /* display h_FE */
   Display_NL_EEString_Space(h_FE_str);       /* display: hFE */
-  Display_Value(Semi.F_1, 0, 0);             /* display h_FE */
+  Display_Value2(Semi.F_1);                  /* display h_FE */
 
   /* display hFE test circuit type */
   Display_Space();
@@ -1479,7 +1485,7 @@ void Show_BJT(void)
     if (Semi.F_2 > 0)              /* valid value */
     {
       Display_NL_EEString_Space(h_FE_r_str);      /* display: hFEr */
-      Display_Value(Semi.F_2, 0, 0);              /* display reverse h_FE */
+      Display_Value2(Semi.F_2);                   /* display reverse h_FE */
     }
   }
   #endif
@@ -1487,7 +1493,8 @@ void Show_BJT(void)
 
   /*
    *  display V_BE in next line
-   *  (taken from diode's forward voltage)
+   *  - taken from diode's forward voltage
+   *  - B-E resistor renders value useless
    */
 
   Diode = SearchDiode(BE_A, BE_C);      /* search for matching B-E diode */
@@ -1498,7 +1505,7 @@ void Show_BJT(void)
     /*
      *  V_f is quite linear for a logarithmicly scaled I_b.
      *  So we may interpolate the V_f values of low and high test current
-     *  measurements for a virtual test current. Low test current is 10�A
+     *  measurements for a virtual test current. Low test current is 10µA
      *  and high test current is 7mA. That's a logarithmic scale of
      *  3 decades.
      */
@@ -1547,8 +1554,23 @@ void Show_BJT(void)
     #endif
   }
 
-  /* I_CEO: collector emitter open current (leakage) */
+
+  /*
+   *  I_CEO: collector emitter open current (leakage)
+   */
+
   Show_SemiCurrent(I_CEO_str);          /* display I_CEO */
+
+
+  #ifdef SW_C_BE
+  /*
+   *  C_BE: base emitter capacitance
+   *  - B-E resistor renders value useless
+   */
+
+  Display_NL_EEString_Space(C_be_str);               /* display: Cbe */
+  Display_Value(Semi.C_value, Semi.C_scale, 'F');    /* display C_be */
+  #endif
 
 
   #ifdef SW_SCHOTTKY_BJT
@@ -1591,10 +1613,12 @@ void Show_BJT(void)
 
 
 /*
- *  show MOSFET/IGBT extras
- *  - diode
+ *  show MOSFET/JFET/IGBT extras
+ *  - diode (intrinsic or flyback)
  *  - V_th
  *  - Cgs
+ *  - R_DS_on
+ *  - V_f of diode
  */
 
 void Show_FET_Extras(void)
@@ -1616,6 +1640,7 @@ void Show_FET_Extras(void)
    *  show instrinsic/freewheeling diode
    */
 
+  /* get expected anode and cathode pins */
   if (Check.Type & TYPE_N_CHANNEL)      /* n-channel/NPN */
   {
     Anode = Semi.C;                /* source/emitter */
@@ -1629,12 +1654,13 @@ void Show_FET_Extras(void)
 
   /* search for matching diode */
   Diode = SearchDiode(Anode, Cathode);
-  if (Diode != NULL)          /* got it */
+
+  if (Diode != NULL)               /* if available */
   {
     #ifdef UI_NO_BODYDIODE_TEXTPINOUT
     if (! (Check.Type & TYPE_MOSFET))   /* no MOSFET */
     {
-      /* show diode for anything but MOSFETs */
+      /* show diode for anything but a MOSFET */
     #endif
 
       #ifndef UI_NO_TEXTPINOUT
@@ -1654,50 +1680,65 @@ void Show_FET_Extras(void)
 
     #ifdef UI_SERIAL_COMMANDS
     /* set data for remote commands */
-    Info.Flags |= INFO_FET_D_FB;   /* found flyback diode */
-    Info.Comp1 = Diode;            /* link diode */
+    Info.Flags |= INFO_FET_D_FB;   /* found diode */
+    Info.Comp1 = Diode;            /* link diode data */
     #endif
+
+    /* todo: move output of Vf here? */
   }
 
-  /* skip remaining stuff for depletion-mode FETs/IGBTs */
-  if (Check.Type & TYPE_DEPLETION) return;
 
-  /* gate threshold voltage V_th */
-  if (Semi.U_2 != 0)
+  /*
+   *  for enhancement mode FET/IGBT show:
+   *  - V_th
+   *  - C_GS
+   *  - R_DS_on
+   */
+
+  if (Check.Type & TYPE_ENHANCEMENT)    /* enhancement mode */
   {
-    Display_NL_EEString_Space(Vth_str);      /* display: Vth */
-    Display_SignedValue(Semi.U_2, -3, 'V');  /* display V_th in mV */
+    /* display gate threshold voltage V_th */
+    if (Semi.U_2 != 0)                       /* if available */
+    {
+      Display_NL_EEString_Space(Vth_str);         /* display: Vth */
+      Display_SignedValue(Semi.U_2, -3, 'V');     /* display V_th in mV */
+
+      #ifdef UI_SERIAL_COMMANDS
+      /* set data for remote commands */
+      Info.Flags |= INFO_FET_V_TH;                /* measured Vth */
+      #endif
+    }
+
+    /* display gate-source capacitance C_GS */
+    /* todo: display "Cge" for IGBT? */
+    Display_NL_EEString_Space(C_gs_str);               /* display: Cgs */
+    Display_Value(Semi.C_value, Semi.C_scale, 'F');    /* display value and unit */
 
     #ifdef UI_SERIAL_COMMANDS
     /* set data for remote commands */
-    Info.Flags |= INFO_FET_V_TH;             /* measured Vth */
+    Info.Flags |= INFO_FET_C_GS;                  /* measured C_GS */
     #endif
+
+    /* display R_DS_on */
+    if (Semi.U_1 > 0)                             /* if available */
+    {
+      Display_NL_EEString_Space(R_DS_str);             /* display: Rds */
+      Display_Value(Semi.U_1, -2, LCD_CHAR_OMEGA);     /* display value */
+
+      #ifdef UI_SERIAL_COMMANDS
+      /* set data for remote commands */
+      Info.Flags |= INFO_FET_R_DS;                /* measured R_DS */
+      #endif
+    }
   }
 
-  /* display gate-source capacitance C_GS */
-  /* todo: display "Cge" for IGBT? */
-  Display_NL_EEString_Space(Cgs_str);             /* display: Cgs */
-  Display_Value(Semi.C_value, Semi.C_scale, 'F'); /* display value and unit */
 
-  #ifdef UI_SERIAL_COMMANDS
-  /* set data for remote commands */
-  Info.Flags |= INFO_FET_C_GS;               /* measured C_GS */
-  #endif
+  /*
+   *  show V_f of diode (instrinsic or flyback)
+   */
 
-  /* display R_DS_on, if available */
-  if (Semi.U_1 > 0)
-  {
-    Display_NL_EEString_Space(R_DS_str);          /* display: Rds */
-    Display_Value(Semi.U_1, -2, LCD_CHAR_OMEGA);  /* display value */
-
-    #ifdef UI_SERIAL_COMMANDS
-    /* set data for remote commands */
-    Info.Flags |= INFO_FET_R_DS;             /* measured R_DS */
-    #endif
-  }
-
-  /* display V_f of diode, if available */
-  if (Diode != NULL)
+  /* display V_f of diode */
+  if (Diode != NULL)                    /* if available */
   {
     Display_NextLine();                      /* new line */
     Display_Char(LCD_CHAR_DIODE_AC);         /* diode symbol |>| */
@@ -1790,7 +1831,7 @@ void Show_FET(void)
   /* display channel type */
   Show_FET_Channel();
       
-  /* display mode for MOSFETs*/
+  /* display mode for MOSFET */
   if (Check.Type & TYPE_MOSFET) Show_FET_Mode();
 
   #ifdef UI_COLORED_TITLES
@@ -1812,8 +1853,9 @@ void Show_FET(void)
    *  display additional stuff
    */
 
-  /* show body diode, V_th and Cgs for MOSFETs */
-  if (Check.Type & TYPE_MOSFET) Show_FET_Extras();
+  /* show body diode, V_th, Cgs, etc. for MOSFET */
+  /* or optional flyback diode plus V_f for JFET */
+  Show_FET_Extras();
 
   /* show I_DSS and V_GS(off) for depletion mode FET */
   if (Check.Type & TYPE_DEPLETION)
@@ -1937,7 +1979,7 @@ void Show_PUT(void)
    *  A   - Gate
    *  B   - Anode
    *  C   - Cathode
-   *  U_1�- V_f (mV)
+   *  U_1 - V_f (mV)
    *  U_2 - V_T (mV)
    *
    *  Mapping for Semi structure:
@@ -2273,7 +2315,7 @@ void ShowBattery(void)
     }
 
   /* display small battery symbol */
-  if (Cfg.Vbat > BATT_USB_BORDER)
+  if (Cfg.Vbat > BATT_USB_IDENTIFIER)
   {
     Display_EEString(Vin_str);
   }
@@ -2339,7 +2381,7 @@ void CheckBattery(void)
   Temp /= 1000;                    /* Uin (mV) */
   U_Bat = (uint16_t)Temp;          /* keep 2 bytes */
   #endif
-  if(U_Bat > BATT_USB_BORDER)
+  if(U_Bat > BATT_USB_IDENTIFIER)
     U_Bat += USB_OFFSET;             /* add offset for voltage drop */
   else
     U_Bat += BAT_OFFSET;             /* add offset for voltage drop */
@@ -2842,7 +2884,6 @@ cycle_start:
   #ifdef UI_CENTER_ALIGN
     Display_CenterLine(1);                   /* center block: 1 line */
     Display_NextLine();
-    // Display_NextLine();
     /* move text left by one char for optional ' C' */
     UI.CharMax_X--;                          /* simulate shorter line */
     Display_EEString_Center(Probing_str);    /* display: probing... */
@@ -2935,14 +2976,24 @@ show_component:
   #ifdef UI_PROBING_DONE_BEEP
     /* buzzer: short beep for probing result (probing done) */
     #ifdef BUZZER_ACTIVE
-    BUZZER_PORT |= (1 << BUZZER_CTRL);    /* enable: set pin high */
-    MilliSleep(20);                       /* wait for 20 ms */
-    BUZZER_PORT &= ~(1 << BUZZER_CTRL);   /* disable: set pin low */
+    BUZZER_PORT |= (1 << BUZZER_CTRL);       /* enable: set pin high */
+    MilliSleep(20);                          /* wait for 20 ms */
+    BUZZER_PORT &= ~(1 << BUZZER_CTRL);      /* disable: set pin low */
     #endif
 
     #ifdef BUZZER_PASSIVE
-    PassiveBuzzer(BUZZER_FREQ_LOW);       /* low frequency beep */
+    PassiveBuzzer(BUZZER_FREQ_LOW);          /* low frequency beep */
     #endif
+  #endif
+
+  #ifdef UI_AUTOHOLD_FOUND
+  /* when in continuous mode and some component is found */
+  if ((! (Cfg.OP_Mode & OP_AUTOHOLD)) &&
+      (Check.Found >= COMP_RESISTOR))
+  {
+    /* set flag and switch temporarily to auto-hold mode */
+    Cfg.OP_Mode |= OP_AUTOHOLD_TEMP | OP_AUTOHOLD;
+  }
   #endif
 
   /* call output function based on component type */
@@ -3020,7 +3071,7 @@ show_component:
   }
   #endif
 
-  #ifdef UI_BATTERY_LASTLINE
+  #if ! defined (BAT_NONE) && defined (UI_BATTERY_LASTLINE)
   /* alternative display of battery status in last line */
   CheckBattery();                  /* check battery voltage */
                                    /* will power off on low battery */
@@ -3134,6 +3185,16 @@ cycle_action:
   /* todo: when we got a locked buffer meanwhile? */
   #endif
 
+  #ifdef UI_AUTOHOLD_FOUND
+  /* when temporary auto-hold is enabled */
+  if (Cfg.OP_Mode & OP_AUTOHOLD_TEMP)
+  {
+    /* clear flag and switch back to continuous mode */
+    Cfg.OP_Mode &= ~(OP_AUTOHOLD_TEMP | OP_AUTOHOLD);
+  }
+  #endif
+
+
   if (Key == KEY_MAINMENU)         /* run main menu */
   {
     #ifdef SAVE_POWER
@@ -3148,14 +3209,6 @@ cycle_action:
     /* todo: move this to MainMenu()? (after selecting item) */
     #endif
 
-    #ifdef POWER_OFF_TIMEOUT
-    /* automatic power-off for auto-hold mode */
-    if (Cfg.OP_Mode & OP_AUTOHOLD)        /* in auto-hold mode */
-    {
-      Cfg.OP_Control &= ~OP_PWR_TIMEOUT;  /* disable power-off timeout */
-    }
-    #endif
-
     #ifdef UI_MAINMENU_AUTOEXIT
       /* run main menu once and return to probe cycle */
       MainMenu();                  /* enter main menu */
@@ -3165,14 +3218,6 @@ cycle_action:
       {
         /* keep running main menu */
       }
-    #endif
-
-    #ifdef POWER_OFF_TIMEOUT
-    /* automatic power-off for auto-hold mode */
-    if (Cfg.OP_Mode & OP_AUTOHOLD)        /* in auto-hold mode */
-    {
-      Cfg.OP_Control |= OP_PWR_TIMEOUT;   /* enable power-off timeout */
-    }
     #endif
 
     #ifdef SAVE_POWER

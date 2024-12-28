@@ -2,8 +2,8 @@
  *
  *   global functions
  *
- *   (c) 2012-2023 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz K�bbeler
+ *   (c) 2012-2024 by Markus Reschke
+ *   based on code from Markus Frejek and Karl-Heinz Kübbeler
  *
  * ************************************************************************ */
 
@@ -189,8 +189,10 @@
 
 #ifndef MAX6675_C
 
+  #ifdef HW_MAX6675
   extern void MAX6675_BusSetup(void);
   extern void MAX6675_Tool(void);
+  #endif
 
 #endif
 
@@ -201,8 +203,23 @@
 
 #ifndef MAX31855_C
 
+  #ifdef HW_MAX31855   
   extern void MAX31855_BusSetup(void);
   extern void MAX31855_Tool(void);
+  #endif
+
+#endif
+
+
+/* ************************************************************************
+ *   functions from BH1750.c
+ * ************************************************************************ */
+
+#ifndef BH1750_C
+
+  #ifdef HW_BH1750
+  extern void BH1750_Tool(void);
+  #endif
 
 #endif
 
@@ -327,6 +344,7 @@ extern int32_t INA226_getCurrent_uA(void);
   #endif
 
   extern void Display_Value(uint32_t Value, int8_t Exponent, unsigned char Unit);
+  extern void Display_Value2(uint32_t Value);
   extern void Display_SignedValue(int32_t Value, int8_t Exponent, unsigned char Unit);
 
   #ifdef FUNC_EVALUE
@@ -391,7 +409,9 @@ extern int32_t INA226_getCurrent_uA(void);
   extern void ShowAdjustmentValues(void);
   extern uint8_t SelfAdjustment(void);
 
+  #ifdef SW_SELFTEST
   extern uint8_t SelfTest(void);
+  #endif
 
 #endif
 
@@ -548,6 +568,14 @@ extern int32_t INA226_getCurrent_uA(void);
   extern void PhotodiodeCheck(void);
   #endif
 
+  #ifdef SW_DIODE_LED
+  extern void Diode_LED_Check(void);
+  #endif
+
+  #ifdef SW_METER_5VDC
+  extern void Meter_5VDC(void);
+  #endif
+
   #ifdef HW_POWER_METER
   extern void PowerMeter(void);
   #endif
@@ -694,9 +722,9 @@ extern int32_t INA226_getCurrent_uA(void);
 #ifndef PROBES_C
 
   extern void UpdateProbes(uint8_t Probe1, uint8_t Probe2, uint8_t Probe3);
+  extern void UpdateProbes2(uint8_t Probe1, uint8_t Probe2);
   extern void RestoreProbes(void);
   extern void BackupProbes(void);
-  extern uint8_t GetThirdProbe(uint8_t Probe1, uint8_t Probe2);
   extern uint8_t ShortedProbes(void);
   #if defined (SW_ESR) || defined (SW_OLD_ESR)
   extern void DischargeCap(uint8_t Probe1, uint8_t Probe2);

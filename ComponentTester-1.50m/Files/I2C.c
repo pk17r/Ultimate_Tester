@@ -82,8 +82,6 @@
 
 #ifdef I2C_BITBANG
 
-
-
 /*
  *  set up SDA and SCL lines
  *
@@ -107,7 +105,6 @@ uint8_t I2C_Setup(void)
   /* check if SDA and SCL are pulled up externally */
   Bits = I2C_PIN;                  /* get state */
   Bits &= (1 << I2C_SDA) | (1 << I2C_SCL);        /* filter lines */
-
   if (Bits == ((1 << I2C_SDA) | (1 << I2C_SCL)))  /* lines are high */
   {
     Flag = I2C_OK;       /* signal success */
@@ -266,8 +263,8 @@ uint8_t I2C_Start(uint8_t Type)
  *  - I2C_NACK NACK
  */
 
-uint8_t I2C_WriteByte(uint8_t Type) {
-
+uint8_t I2C_WriteByte(uint8_t Type)
+{
   // low I2C lines
   I2C_DDR |= (1 << I2C_SDA);    /* pull down SDA (SDA low) */
   I2C_DDR |= (1 << I2C_SCL);    /* pull down SCL (SCL low) */
@@ -280,6 +277,12 @@ uint8_t I2C_WriteByte(uint8_t Type) {
     /* standard mode: min. 4us */
     wait4us();
   #endif
+
+  /*
+   *  expected state:
+   *  - SDA undefined
+   *  - SCL low
+   */
 
   // check I2C state
   uint8_t i = 10;

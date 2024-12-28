@@ -2,8 +2,8 @@
  *
  *   ATmega 328 specific global configuration, setup and settings
  *
- *   (c) 2012-2023 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz K�bbeler
+ *   (c) 2012-2024 by Markus Reschke
+ *   based on code from Markus Frejek and Karl-Heinz Kübbeler
  *
  * ************************************************************************ */
 
@@ -75,7 +75,7 @@
 #define LCD_HD44780                     /* display controller HD44780 */
 #define LCD_TEXT                        /* character display */
 #define LCD_PCF8574                     /* PCF8574 backpack */
-#define LCD_I2C_ADDR     0x27           /* PCF8574's I2C address */
+#define LCD_I2C_ADDR     0x3f           /* PCF8574's I2C address */
 /* control and data lines */
 #define LCD_DB_STD                      /* use standard pins 4-7 for DB4-7 */
 #define LCD_DB4          PCF8574_P4     /* port pin used for DB4 */
@@ -96,11 +96,11 @@
 /* I2C bus */
 #define I2C_BITBANG                     /* bit-bang I2C */
 #define I2C_STANDARD_MODE               /* 100kHz bus speed */
-#define I2C_PORT         PORTC          /* I2C port data register */
-#define I2C_DDR          DDRC           /* I2C port data direction register */
-#define I2C_PIN          PINC           /* I2C port input pins register */
-#define I2C_SDA          PC4            /* port pin used for SDA */
-#define I2C_SCL          PC5            /* port pin used for SCL */
+#define I2C_PORT         PORTD          /* I2C port data register */
+#define I2C_DDR          DDRD           /* I2C port data direction register */
+#define I2C_PIN          PIND           /* I2C port input pins register */
+#define I2C_SDA          PD0            /* port pin used for SDA */
+#define I2C_SCL          PD1            /* port pin used for SCL */
 #endif
 
 
@@ -129,11 +129,12 @@
 #define LCD_OFFSET_X      32            /* x offset of 32 dots (160-128) */
 //#define LCD_FLIP_X                      /* enable horizontal flip */
 #define LCD_FLIP_Y                      /* enable vertical flip */
-#define LCD_ROTATE                      /* switch X and Y (rotate by 90�) */
+#define LCD_ROTATE                      /* switch X and Y (rotate by 90°) */
 #define LCD_BGR                         /* reverse red and blue color channels */
 //#define LCD_LATE_ON                     /* turn on LCD after clearing it */
 /* font and symbols: horizonally aligned & flipped */
 #define FONT_8X8_HF                     /* 8x8 font */
+//#define FONT_8x16_ALT_HF                /* 8x16 alternative font */
 //#define FONT_10X16_HF                   /* 10x16 font */
 //#define FONT_8X8_ISO8859_2_HF           /* 8x8 Central European font */
 //#define FONT_8X12T_ISO8859_2_HF         /* thin 8x12 Central European font */
@@ -181,7 +182,7 @@
 #define LCD_DOTS_Y       240            /* number of vertical dots */
 //#define LCD_FLIP_X                      /* enable horizontal flip */
 //#define LCD_FLIP_Y                      /* enable vertical flip */
-//#define LCD_ROTATE                      /* switch X and Y (rotate by 90�) */
+//#define LCD_ROTATE                      /* switch X and Y (rotate by 90°) */
 //#define LCD_BGR                         /* reverse red and blue color channels */
 //#define LCD_EXT_CMD_OFF                 /* extended commands disabled */
 /* font and symbols: horizontally aligned & flipped */
@@ -205,7 +206,7 @@
 /*
  *  PCD8544
  *  - SPI interface using bit-bang SPI
- *  - for a 180� rotated display (LCD_ROT180)
+ *  - for a 180° rotated display (LCD_ROT180)
  *    - comment out "_VF" font and "_VFP" symbols
  *    - uncomment "_V_F" font and "_VP_F" symbols
  */
@@ -232,7 +233,7 @@
 #define SYMBOLS_24X24_VFP               /* 24x24 symbols */
 //#define SYMBOLS_24X24_ALT1_VFP          /* 24x24 alternative symbols #1 */
 //#define SYMBOLS_24X24_ALT2_VFP          /* 24x24 alternative symbols #2 */
-//#define LCD_ROT180                      /* rotate output by 180� (not supported yet) */
+//#define LCD_ROT180                      /* rotate output by 180° (not supported yet) */
 /* font and symbols: vertically aligned, bank-wise grouping, hor. flipped */
 //#define FONT_6X8_V_F                    /* 6x8 font */
 //#define FONT_6X8_ISO8859_2_V_F          /* 6x8 Central Euopean font */
@@ -298,13 +299,13 @@
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_SPI                         /* SPI interface */
 /* control and data lines */
-#define LCD_PORT         PORTB          /* port data register */
-#define LCD_DDR          DDRB           /* port data direction register */
-//#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
-#define LCD_CS           PB1            /* port pin used for /CS (optional) */
-#define LCD_A0           PB4            /* port pin used for A0 */
-#define LCD_SCL          PB5            /* port pin used for SCL */
-#define LCD_SI           PB3            /* port pin used for SI (data input) */
+#define LCD_PORT         PORTD          /* port data register */
+#define LCD_DDR          DDRD           /* port data direction register */
+#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
+#define LCD_CS           PD5            /* port pin used for /CS (optional) */
+#define LCD_A0           PD3            /* port pin used for A0 */
+#define LCD_SCL          PD2            /* port pin used for SCL */
+#define LCD_SI           PD1            /* port pin used for SI (data input) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
 #define LCD_DOTS_Y       64             /* number of vertical dots */
@@ -350,12 +351,12 @@
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_SPI                         /* SPI interface */
 /* control and data lines */
-#define LCD_PORT         PORTB          /* port data register */
-#define LCD_DDR          DDRB           /* port data direction register */
-//#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
-#define LCD_CS           PB4            /* port pin used for /CS (optional) */
-#define LCD_SCL          PB5            /* port pin used for SCL */
-#define LCD_SI           PB3            /* port pin used for SI (data input) */
+#define LCD_PORT         PORTD          /* port data register */
+#define LCD_DDR          DDRD           /* port data direction register */
+#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
+#define LCD_CS           PD5            /* port pin used for /CS (optional) */
+#define LCD_SCL          PD2            /* port pin used for SCL */
+#define LCD_SI           PD1            /* port pin used for SI (data input) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
 #define LCD_DOTS_Y       64             /* number of vertical dots */
@@ -430,20 +431,19 @@
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_SPI                         /* SPI interface */
 /* control and data lines */
-#define LCD_PORT         PORTB          /* port data register */
-#define LCD_DDR          DDRB           /* port data direction register */
-//#define LCD_RESET        PB4            /* port pin used for /RES (optional) */
-#define LCD_CS           PB2            /* port pin used for /CS (optional) */
-#define LCD_DC           PB4            /* port pin used for D/C */
-#define LCD_SCLK         PB5            /* port pin used for SCLK */
-#define LCD_SDIN         PB3            /* port pin used for SDIN (data input) */
+#define LCD_PORT         PORTD          /* port data register */
+#define LCD_DDR          DDRD           /* port data direction register */
+#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
+#define LCD_CS           PD5            /* port pin used for /CS (optional) */
+#define LCD_DC           PD3            /* port pin used for D/C */
+#define LCD_SCLK         PD2            /* port pin used for SCLK */
+#define LCD_SDIN         PD1            /* port pin used for SDIN (data input) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
 #define LCD_DOTS_Y       64             /* number of vertical dots */
-#define LCD_OFFSET_X     2              /* enable x offset of 2 or 4 dots */
-//#define LCD_FLIP_X                      /* enable horizontal flip */
-//#define LCD_FLIP_Y                      /* enable vertical flip */
-#define LCD_COM_SEQ                     /* COM pin layout: sequential */
+#define LCD_FLIP_X                      /* enable horizontal flip */
+#define LCD_FLIP_Y                      /* enable vertical flip */
+//#define LCD_COM_SEQ                     /* COM pin layout: sequential */
 //#define LCD_COM_REMAP                   /* COM pin mapping: reversed */
 #define LCD_CONTRAST     127            /* default contrast (0-255) */
 /* font and symbols: vertically aligned & flipped, bank-wise grouping */
@@ -463,11 +463,11 @@
 //#define SYMBOLS_24X24_ALT1_VFP          /* 24x24 alternative symbols #1 */
 //#define SYMBOLS_24X24_ALT2_VFP          /* 24x24 alternative symbols #2 */
 /* SPI bus */
-#define SPI_HARDWARE                     /* bit-bang SPI */
-//#define SPI_PORT         LCD_PORT       /* SPI port data register */
-//#define SPI_DDR          LCD_DDR        /* SPI port data direction register */
-//#define SPI_SCK          LCD_SCLK       /* port pin used for SCK */
-//#define SPI_MOSI         LCD_SDIN       /* port pin used for MOSI */
+#define SPI_BITBANG                     /* bit-bang SPI */
+#define SPI_PORT         LCD_PORT       /* SPI port data register */
+#define SPI_DDR          LCD_DDR        /* SPI port data direction register */
+#define SPI_SCK          LCD_SCLK       /* port pin used for SCK */
+#define SPI_MOSI         LCD_SDIN       /* port pin used for MOSI */
 #endif
 
 
@@ -482,12 +482,12 @@
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_SPI                         /* SPI interface */
 /* control and data lines */
-#define LCD_PORT         PORTB          /* port data register */
-#define LCD_DDR          DDRB           /* port data direction register */
-//#define LCD_RESET        PB4            /* port pin used for /RES (optional) */
-#define LCD_CS           PB4            /* port pin used for /CS (optional) */
-#define LCD_SCLK         PB5            /* port pin used for SCLK */
-#define LCD_SDIN         PB3            /* port pin used for SDIN (data input) */
+#define LCD_PORT         PORTD          /* port data register */
+#define LCD_DDR          DDRD           /* port data direction register */
+#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
+#define LCD_CS           PD5            /* port pin used for /CS (optional) */
+#define LCD_SCLK         PD2            /* port pin used for SCLK */
+#define LCD_SDIN         PD1            /* port pin used for SDIN (data input) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
 #define LCD_DOTS_Y       64             /* number of vertical dots */
@@ -521,11 +521,11 @@
 #define LCD_SSD1306                     /* display controller SSD1306 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_I2C                         /* I2C interface */
-#define LCD_I2C_ADDR     0x3C           /* SSD1306's I2C address */
+#define LCD_I2C_ADDR     0x3c           /* SSD1306's I2C address */
 /* control lines */
-//#define LCD_PORT         PORTD          /* port data register */
-//#define LCD_DDR          DDRD           /* port data direction register */
-//#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
+#define LCD_PORT         PORTD          /* port data register */
+#define LCD_DDR          DDRD           /* port data direction register */
+#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
 #define LCD_DOTS_Y       64             /* number of vertical dots */
@@ -533,7 +533,7 @@
 #define LCD_FLIP_Y                      /* enable vertical flip */
 //#define LCD_COM_SEQ                     /* COM pin layout: sequential */
 //#define LCD_COM_REMAP                   /* COM pin mapping: reversed */
-#define LCD_CONTRAST     255            /* default contrast (0-255) */
+#define LCD_CONTRAST     127            /* default contrast (0-255) */
 /* font and symbols: vertically aligned & flipped, bank-wise grouping */
 #define FONT_8X8_VF                     /* 8x8 font */
 #define SYMBOLS_24X24_VFP               /* 24x24 symbols */
@@ -542,11 +542,11 @@
 /* I2C bus */
 #define I2C_BITBANG                     /* bit-bang I2C */
 #define I2C_FAST_MODE                   /* 400kHz bus speed */
-#define I2C_PORT         PORTC          /* I2C port data register */
-#define I2C_DDR          DDRC           /* I2C port data direction register */
-#define I2C_PIN          PINC           /* I2C port input pins register */
-#define I2C_SDA          PC4            /* port pin used for SDA */
-#define I2C_SCL          PC5            /* port pin used for SCL */
+#define I2C_PORT         PORTD          /* I2C port data register */
+#define I2C_DDR          DDRD           /* I2C port data direction register */
+#define I2C_PIN          PIND           /* I2C port input pins register */
+#define I2C_SDA          PD0            /* port pin used for SDA */
+#define I2C_SCL          PD1            /* port pin used for SCL */
 #endif
 
 
@@ -685,13 +685,13 @@
 #define LCD_COLOR                       /* color display */
 #define LCD_SPI                         /* SPI interface */
 /* control and data lines */
-#define LCD_PORT         PORTB          /* port data register */
-#define LCD_DDR          DDRB           /* port data direction register */
-//#define LCD_RES          PB1            /* port pin used for /RESX (optional) */
-#define LCD_CS           PB2            /* port pin used for /CSX (optional) */
-#define LCD_DC           PB4            /* port pin used for D/CX */
-#define LCD_SCL          PB5            /* port pin used for SCL */
-#define LCD_SDA          PB3            /* port pin used for SDA */
+#define LCD_PORT         PORTD          /* port data register */
+#define LCD_DDR          DDRD           /* port data direction register */
+#define LCD_RES          PD4            /* port pin used for /RESX (optional) */
+#define LCD_CS           PD5            /* port pin used for /CSX (optional) */
+#define LCD_DC           PD3            /* port pin used for D/CX */
+#define LCD_SCL          PD2            /* port pin used for SCL */
+#define LCD_SDA          PD1            /* port pin used for SDA */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
 #define LCD_DOTS_Y       160            /* number of vertical dots */
@@ -699,10 +699,11 @@
 //#define LCD_OFFSET_Y     2               /* enable y offset of 1 or 2 dots */
 //#define LCD_FLIP_X                      /* enable horizontal flip */
 #define LCD_FLIP_Y                      /* enable vertical flip */
-#define LCD_ROTATE                      /* switch X and Y (rotate by 90�) */
+#define LCD_ROTATE                      /* switch X and Y (rotate by 90°) */
 //#define LCD_BGR                         /* reverse red and blue color channels */
 //#define LCD_LATE_ON                     /* turn on LCD after clearing it */
 /* font and symbols: horizontally aligned & flipped */
+//#define FONT_8x16_ALT_HF                /* 8x16 alternative font */
 #define FONT_10X16_HF                   /* 10x16 font */
 //#define FONT_6X8_ISO8859_2_HF           /* 6x8 Central European font */
 //#define FONT_8X8_ISO8859_2_HF           /* 8x8 Central European font */
@@ -730,7 +731,7 @@
 /*
  *  ST7920
  *  - SPI interface using bit-bang SPI
- *  - for a 180� rotated display (LCD_ROT180)
+ *  - for a 180° rotated display (LCD_ROT180)
  *    - comment out "_H" font and symbols
  *    - uncomment "_HF" font and symbols
  */
@@ -755,7 +756,7 @@
 #define SYMBOLS_24X24_H                 /* 24x24 symbols */
 //#define SYMBOLS_24X24_ALT1_H            /* alternative 24x24 symbols #1 */
 //#define SYMBOLS_24X24_ALT2_H            /* alternative 24x24 symbols #2 */
-//#define LCD_ROT180                      /* rotate output by 180� */
+//#define LCD_ROT180                      /* rotate output by 180° */
 /* font and symbols: horizonally aligned & flipped */
 //#define FONT_8X8_HF                     /* 8x8 font */
 //#define FONT_8X8_ISO8859_2_HF           /* 8x8 Central European font */
@@ -776,7 +777,7 @@
  *  ST7920
  *  - 4 bit parallel interface
  *  - if you change LCD_DB4/5/6/7 comment out LCD_DB_STD!
- *  - for a 180� rotated display (LCD_ROT180)
+ *  - for a 180° rotated display (LCD_ROT180)
  *    - comment out "_H" font and symbol
  *    - uncomment "_HF" font and symbol
  */
@@ -805,7 +806,7 @@
 #define SYMBOLS_24X24_H                 /* 24x24 symbols */
 //#define SYMBOLS_24X24_ALT1_H            /* alternative 24x24 symbols #1 */
 //#define SYMBOLS_24X24_ALT2_H            /* alternative 24x24 symbols #2 */
-//#define LCD_ROT180                      /* rotate output by 180� */
+//#define LCD_ROT180                      /* rotate output by 180° */
 /* font and symbols: horizonally aligned & flipped */
 //#define FONT_8X8_HF                     /* 8x8 font */
 //#define SYMBOLS_24X24_HF                /* 24x24 symbols */
@@ -892,8 +893,8 @@
 #define TP_ZENER         PC9       /* test pin for for Zener check (10:1 voltage divider) */
 #define TP_REF           ((1<<MUX2)|(1<<MUX1))       /* test pin for battery (4:1 voltage divider) */  //ADC6
 #define TP_BAT           ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))		//ADC7       /* test pin for 2.5V reference and relay */
-#define TP_CAP           PC0       /* test pin for self-adjustment cap */
 #define TP_LOGIC         PC5       /* test pin for Logic Probe (4:1 voltage divider) */
+#define TP_CAP           PC0       /* test pin for self-adjustment cap */
 #define TP_I_MEASURE     ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))		//ADC7
 #define TP_VOUT          ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))		//ADC7       /* test pin for VOUT measurement (4:1 voltage divider) */
 

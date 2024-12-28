@@ -2,11 +2,108 @@
 
              Änderungen der Component-Tester-Firmware (m-firmware)
 
-                       (c) 2012-2023 by Markus Reschke
+                       (c) 2012-2024 by Markus Reschke
 
 ------------------------------------------------------------------------------
 
-v1.50m 2023-8
+v1.54m 2024-12
+- Filter für Germanium-BJTs in CheckDepletionModeFET() verbessert (Dank an
+  KenBC1).
+- Schwellenwert zur Ausgabe vom Leckstrom auf 10 nA geändert (Vorschlag von
+  fafa80@EEVblog und indman@EEVblog). Auch GetLeakageCurrent() angepaßt für
+  kleine Ströme mit nA-Skalierung.
+- Problem bei Kapazitätsmessung von Dioden mit hohem Leckstrom behoben (
+  war Regression in LargeCap(), gemeldet von fafa80@EEVblog).
+- Brasilianisch-portugiesische Texte aktualisiert (Dank an wandows@EEVblog).
+- Compilerfehler für Variable in 5V-Meter behoben (gemeldet von
+  Alkapton@GitHub).
+- Option zur Anzeige der Basis-Emitter-Kapazität C_be von Bipolar-
+  transistoren (SW_C_BE, Vorschlag von edgard22@EEVblog).
+- Neues Fernsteuerkommando C_BE für Basis-Emitter-Kapazität von Bipolar-
+  transistoren.
+- Andere Position vom Fragezeichensymbol in Funktion Show_Fail(), wenn
+  UI_CENTER_ALIGN aktiviert ist (gemeldet von carrascoso@EEVblog).
+- Spanische Texte aktualisiert (Dank an pepe10000@EEVblog).
+
+v1.53m 2024-08
+- Interrupt-Adressproblem in gcrt1.S (OPTIMIZE_VECTORS) beseitigt, primär für
+  avr-gcc 8.3.0 (Dank an horo@EEVblog).
+- Polnische Texte #2 aktualisiert (Dank an Jacon@EEVblog).
+- Fehler im Quellcodemanagement für globale Variablen für Timer1 behoben (
+  gemeldet von indman@EEVblog).
+- Polnische Texte aktualisiert (Dank an szpila@EEVblog).
+- Option zum Aktivieren/Deaktivieren des Selbsttests (SW_SELFTEST, Vorschlag
+  von indman@EEVblog).
+- Option zur seitenweisen Ausgabe der Messwerte im Selbst-Test/Abgleich (
+  UI_TEST_PAGEMODE, benötigt >= 6 Textzeilen).
+- Neue Vereinfachungsfunktion Display_Value2() zum Reduzieren der Firmware-
+  größe. Alle passenden Funktionsaufrufe entsprechend geändert. 
+- 5V-Meter mit auswählbarer Eingangsimpedanz (SW_METER_5VDC, Vorschlag von
+  boneDragon@EEVblog). Optionaler Piep bei Überschreiten eines Schwellwertes (
+  benötigt Summer/Pieper). 
+- Option zur Ausgabe von 4-stelligen Werten als Wert mit Präfix (UI_PREFIX,
+  Vorschlag von Kim Christensen@EEVblog und edgard22@EEVblog).
+- Optionale Rücklaufdiode wird nun auch für JFETs angezeigt (Vorschlag von
+  Yuriy_K@EEVblog). Problem mit D/S-Verdrehung bei p-Kanal JFETs mit Rück-
+  laufdiode gelöst.
+- Brasilianisch-portugiesische Texte aktualisiert (Dank an wandows@EEVblog).
+
+v1.52m 2024-04
+- Schnelltest von Dioden und LEDs (SW_DIODE_LED).
+- Unterstützung vom BH1750VFI Umgebungslichtsensor (HW_BH1750).
+- Protokollfehler von IC-Adressierung im Lesemodus in I2C_WriteByte() für
+  Bit-Bang-I2C beseitigt.
+- Skalierungsfehler in der Berechnung des Spannungteilers in T2 vom Selbsttest
+  behoben.
+- Option für komprimiertes Ausgabeformat bei Testausgabe des Zeichensatzes (
+  FONT_PACKED).
+- Neuer Zeichensatz font_8x16_alt_hf.h (FONT_8x16_ALT_HF, Dank an
+  Feliciano@EEVblog).
+- Bitmap für Ö in font_8x16_iso8859-2_hf.h korrigiert (Dank an
+  Feliciano@EEVblog).
+- Problem mit Datenbyte in I2C_ReadByte() für Hardware-TWI beseitigt (
+  gemeldet von fail@mikrocontroller.net).
+- Farben der Multiplikatoren für 0,1 und 0,01 in Funktion Display_ColorCode()
+  korrigiert (gemeldet von chaoslegion@VRTP).
+- Option zum temporären Umschalten in den Auto-Hold-Modus nachdem ein Bauteil
+  erkannt wurde (im kontinuierlichen Modus, UI_AUTOHOLD_FOUND, Vorschlag von
+  Maniaxx@EEVBlog).
+- Optimierungsoption für Interruptvektortabelle zum Reduzieren der Firmware-
+  größe (Makefile: OPTIMIZE_VECTORS, Dank an Viktor Klimkovich).
+- UJT-Erkennung verbessert, d.h. Potis mit einem bestimmten Wert (3-15 k) und
+  auf eine Endposition gestellt werden ausgeschlossen (gemeldet von
+  wandows@EEVblog).
+- Problem mit Rückgabewert in Funktion DataStorage() gelöst (Dank an Viktor
+  Klimkovich).
+- Problem mit der Erkennung von kleinen Kapazitäten beseitigt. Wurde durch den
+  neuen negativen Null-Offset in Funktion LargeCap() verursacht (gemeldet von
+  Yuriy_K@EEVblog und Obelix2007@EEVblog).
+
+v1.51m 2023-12
+- Funktion GetThirdProbe() zu Vereinfachungsfunktion UpdateProbes2() geändert
+  zum Reduzieren der Firmwaregröße incl. Anpassungen der Aufrufe (Vorschlag
+  von Viktor Klimkovich).
+- Optimierung von DataStorage() und ManageAdjustmentStorage(), um Firmware-
+  größe zu verringern (Dank an Viktor Klimkovich).
+- Option zum Verlangsamen von Bit-Bang-SPI im Falle einer hohen MCU-Takt-
+  frequenz (SPI_SLOWDOWN, Vorschlag von Viktor Klimkovich).
+- Berechnung der Verzögerungsschleife in IR_Detector() geändert, um auch über-
+  taktete MCUs zu unterstützen (Dank an Viktor Klimkovich).
+- Algorithmus für Spannungsabfall in der Funktion LargeCap() verbessert.
+- Funktion LargeCap() berücksichtigt nun auch einen negativen Null-Offset.
+- Selbstabgleich gibt nun die Liste der Abgleichwerte nur bei erfolgreichem
+  Abgleich aus, um Missverständnisse zu vermeiden. 
+- Fehlerhaften Wert in E24-Tabelle korrigiert (gemeldet von siealex@EEVblog).
+- POWER_OFF_TIMEOUT ist nun auch im Hauptmenü wirksam (Vorschlag von
+  indman@EEVblog).
+- Französische Texte (Dank an moimem@EEVblog).
+- Brasilianisch-portugiesische Texte aktualisiert (Dank an wandows@EEVblog).
+- Polnische Texte #2 aktualisiert (Dank an Jacon@EEVblog).
+- Zeichen 'q' in font_8x8_iso8859-2_hf.h korrigiert (Dank an siealex@EEVblog).
+- Russische Texte aktualisiert (Dank an indman@EEVblog).
+- Spanische Texte aktualisiert (Dank an pepe10000@EEVblog).
+
+v1.50m 2023-08
 - Temporäre Option UI_PROBE_REVERSED_X entfernt, da nicht länger benötigt.
 - Option zur Ausgabe vom Batteriestatus in der letzten Zeile nach der
   Ergebnisanzeige (UI_BATTERY_LASTLINE).
@@ -413,7 +510,7 @@ v1.37m 2019-09
   als Einheit für DisplayValue() plus zusätzliches "z").  
 - Option zum Anzeigen von Bedienungshilfen  (UI_KEY_HINTS). Momentan nur
   "Menu/Test" (Vorschlag von carrascoso@EEVblog).
-- Polnische Texte aktualisiert (C szpila@EEVblog). 
+- Polnische Texte aktualisiert (Dank an szpila@EEVblog).
 - Russische Texte aktualisiert (Dank an indman@EEVblog).
 - Spanische Texte aktualisiert (Dank an pepe10000@EEVblog).
 

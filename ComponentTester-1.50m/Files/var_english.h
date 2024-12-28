@@ -2,8 +2,8 @@
  *
  *   language specific global variables: English (ISO 8859-1)
  *
- *   (c) 2012-2023 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz K�bbeler
+ *   (c) 2012-2024 by Markus Reschke
+ *   based on code from Markus Frejek and Karl-Heinz Kübbeler
  *
  * ************************************************************************ */
 
@@ -28,11 +28,10 @@
   /* common terms and texts */
   const unsigned char Probing_str[] MEM_TYPE = "Probing...";
   const unsigned char Timeout_str[] MEM_TYPE = "Timeout";
-  const unsigned char Failed1_str[] MEM_TYPE = "No component  ";
+  const unsigned char Failed1_str[] MEM_TYPE = "No component";
   const unsigned char Failed2_str[] MEM_TYPE = "found!";
   const unsigned char Done_str[] MEM_TYPE = "done!";
   const unsigned char Select_str[] MEM_TYPE = "Select";
-  const unsigned char Selftest_str[] MEM_TYPE = "Test";
   const unsigned char Adjustment_str[] MEM_TYPE = "Adjustment";
   const unsigned char Save_str[] MEM_TYPE = "Save";
   const unsigned char Load_str[] MEM_TYPE = "Load";
@@ -64,6 +63,10 @@
 
 
   /* options */
+  #ifdef SW_SELFTEST
+    const unsigned char Selftest_str[] MEM_TYPE = "Test";
+  #endif
+
   #if ! defined (BAT_NONE) && ! defined (UI_BATTERY)
     const unsigned char Battery_str[] MEM_TYPE = "Bat";
     const unsigned char OK_str[] MEM_TYPE = "ok";
@@ -225,6 +228,14 @@
     const unsigned char Photodiode_str[] MEM_TYPE = "Photodiode";
     const unsigned char NoBias_str[] MEM_TYPE = "no";
     const unsigned char ReverseBias_str[] MEM_TYPE = "rev";
+  #endif
+
+  #ifdef SW_DIODE_LED
+    const unsigned char Diode_LED_str[] MEM_TYPE = "Diode/LED";
+  #endif
+
+  #ifdef SW_METER_5VDC
+    const unsigned char Meter_5VDC_str[] MEM_TYPE = "5V-Meter";
   #endif
 
 #endif

@@ -152,7 +152,7 @@ uint16_t MeasureESR(Capacitor_Type *Cap)
      voltage to a reasonable level. */
   DischargeCap(Cap->A, Cap->B);         /* additional discharge */
 
-  UpdateProbes(Cap->A, Cap->B, 0);      /* update probes */
+  UpdateProbes2(Cap->A, Cap->B);        /* update probes */
   Probe1 = Probes.Ch_1;                 /* ADC MUX for probe-1 */
   Probe2 = Probes.Ch_2;                 /* ADC MUX for probe-2 */
 
@@ -549,7 +549,7 @@ uint16_t MeasureESR(Capacitor_Type *Cap)
 
   DischargeCap(Cap->A, Cap->B);         /* additional discharge */
 
-  UpdateProbes(Cap->A, Cap->B, 0);      /* update probes */
+  UpdateProbes2(Cap->A, Cap->B);        /* update probes */
   Probe1 = Probes.Ch_1;                 /* ADC MUX for probe-1 */
   Probe2 = Probes.Ch_2;                 /* ADC MUX for probe-2 */
 
@@ -886,14 +886,16 @@ uint8_t LargeCap(Capacitor_Type *Cap)
   int8_t            Scale;         /* capacitance scale */
   uint16_t          TempInt;       /* temp. value */
   uint16_t          Pulses;        /* number of charging pulses */
-  uint16_t          U_Zero;        /* voltage before charging */
+  int16_t           U_Zero;        /* voltage before charging (zero offset) */
+  int16_t           U_temp;        /* temporary voltage */
   uint16_t          U_Cap;         /* voltage of DUT */
-  uint16_t          U_Drop = 0;    /* voltage drop */
+  uint16_t          U_Drop = 0;    /* voltage drop (self-discharge) */
+  uint16_t          U_Leak = 0;    /* voltage drop (leakage current) */
   uint32_t          Raw;           /* raw capacitance value */
   uint32_t          Value;         /* corrected capacitance value */
 
   /* set up mode */
-  Mode = PULL_10MS | PULL_UP;      /* start with large caps */
+  Mode = PULL_10MS | PULL_UP;      /* start with large cap (>47uF) */
 
 
   /*
@@ -920,36 +922,52 @@ large_cap:
   DischargeProbes();                    /* try to discharge probes */
   if (Check.Found == COMP_ERROR) return 0;     /* skip on error */
 
-  /* set probes: Gnd -- probe-2 / probe-1 -- HiZ */
+
+  /*
+   *  get zero offset (noise / dielectric absorption)
+   *  - create reference point with a low positive voltage to be able to
+   *    measure also a low negative offset
+   *  - use voltage divider: top RiH + Rl, bottom RiL (about 140mV)
+   *  - can cause incorrect negative zero offset for diodes with low Vf
+   */
+
+  /* set probes: Gnd -- probe-2 -- Rl - Vcc / probe-1 -- HiZ */
   ADC_PORT = 0;                    /* set ADC port to low */
   ADC_DDR = Probes.Pin_2;          /* pull down probe-2 directly */
-  R_PORT = 0;                      /* set resistor port to low */
-  R_DDR = 0;                       /* set resistor port to HiZ */
-  U_Zero = ReadU(Probes.Ch_1);     /* get zero voltage (noise) */
+  R_PORT = Probes.Rl_2;            /* pull up probe-2 via Rl */
+  R_DDR = Probes.Rl_2;             /* enable pull-up */
+  U_Zero = ReadU(Probes.Ch_1);     /* get voltage at probe-1 */
+  U_Zero -= ReadU(Probes.Ch_2);    /* - voltage at probe-2 */
 
-  /* charge DUT with up to 500 pulses until it reaches 300mV */
+  /* set probes: Gnd -- probe-2 / probe-1 -- HiZ */
+  R_PORT = 0;                      /* set resistor port to low */
+  R_DDR = 0;                       /* set resistor port to HiZ */  
+
+  /* charge DUT with up to 500 pulses until it exceeds 300mV */
   /* pulse: probe-1 -- Rl -- Vcc */
-  Pulses = 0;
-  TempByte = 1;
-  while (TempByte)
+  Pulses = 0;                      /* reset number of pulses */
+  TempByte = 1;                    /* set loop control */
+  while (TempByte)                 /* charge loop */
   {
     Pulses++;
     PullProbe(Probes.Rl_1, Mode);       /* charging pulse */
     U_Cap = ReadU(Probes.Ch_1);         /* get voltage */
 
-    /* zero offset */
-    if (U_Cap > U_Zero)            /* voltage higher than zero offset */
-      U_Cap -= U_Zero;                  /* subtract zero offset */
+    /* consider zero offset */
+    U_temp = (int16_t)U_Cap;       /* explicit type conversion */
+    if (U_temp > U_Zero)           /* voltage higher than zero offset */
+      U_temp -= U_Zero;                 /* subtract zero offset */
     else                           /* shouldn't happen but you never know */
-      U_Cap = 0;                        /* assume 0V */
+      U_temp = 0;                       /* assume 0V */
+    U_Cap = (uint16_t)U_temp;      /* take result */
 
     /* end loop if charging is too slow */
     if ((Pulses == 126) && (U_Cap < 75)) TempByte = 0;
     
-    /* end loop if 300mV are reached */
+    /* end loop if 300mV are reached (cap charged) */
     if (U_Cap >= 300) TempByte = 0;
 
-    /* end loop if maximum pulses are reached */
+    /* end loop if maximum number of pulses is reached (timeout) */
     if (Pulses == 500) TempByte = 0;
 
     wdt_reset();                        /* reset watchdog */
@@ -959,7 +977,7 @@ large_cap:
   /* we can ignore that for mid-sized caps */
   if (U_Cap < 300)
   {
-    Flag = 1;
+    Flag = 1;                           /* signal too high capacitance */
   }
 
   /* if 1300mV are reached with one pulse, we got a small cap */
@@ -967,7 +985,8 @@ large_cap:
   {
     if (Mode & PULL_10MS)               /* 10ms pulses (>47µF) */
     {
-      Mode = PULL_1MS | PULL_UP;        /* set mode to 1ms charging pulses (<47µF) */
+      /* change to smaller cap (4.7 - 47µF) */
+      Mode = PULL_1MS | PULL_UP;        /* set mode to 1ms charging pulses */
       goto large_cap;                   /* and re-run */
     }
     else                                /* 1ms pulses (<47µF) */
@@ -979,28 +998,37 @@ large_cap:
 
   /*
    *  Check if DUT sustains the charge and get the voltage drop.
-   *  - Run for the same time as before (minus the 10ms charging time).
-   *  - This gives us the approximation of the leakage.
-   *  - The charge required for the ADC conversion can be neglected because
-   *    C_S/H is just 14pF (very small vs. DUT).
+   *  - Run for about the same time as before (minus the 1 or 10ms charging time).
+   *  - Ignore the MCU cycles for the conditions in the charge loop (about 20)
+   *    as they are just a few in comparison to the ADC conversion.
+   *  - Also run ADC conversions to include charge losses by ADC.
+   *  - This gives us an approximation of the leakage.
    */
 
-  if (Flag == 3)
+  if (Flag == 3)              /* no issues so far */
   {
     /* check self-discharging for measuring period */
-    TempInt = Pulses;
-    while (TempInt > 0)
+    TempInt = Pulses;                   /* same number of loop runs (pulses) */
+    while (TempInt > 0)                 /* delay loop */
     {
       TempInt--;                        /* decrease timeout */
-      U_Drop = ReadU(Probes.Ch_1);      /* get voltage */
-      U_Drop -= U_Zero;                 /* subtract zero offset */
+      U_Drop = ReadU(Probes.Ch_1);      /* get current voltage */
+
+      /* consider zero offset */
+      U_temp = (int16_t)U_Drop;         /* explicit type conversion */
+      if (U_temp > U_Zero)              /* voltage higher than zero offset */
+        U_temp -= U_Zero;                 /* subtract zero offset */
+      else                              /* shouldn't happen but you never know */
+        U_temp = 0;                       /* assume 0V */
+      U_Drop = (uint16_t)U_temp;        /* take result */
+
       wdt_reset();                      /* reset watchdog */
     }
 
     /* calculate voltage drop */
-    if (U_Cap > U_Drop)            /* sanity check */
+    if (U_Cap > U_Drop)                 /* sanity check */
     {
-      U_Drop = U_Cap - U_Drop;     /* voltage drop */
+      U_Drop = U_Cap - U_Drop;          /* voltage drop */
 
       #ifdef SW_C_VLOSS
       /* voltage loss in 0.1% */
@@ -1019,9 +1047,11 @@ large_cap:
     /*
      *  Take a second measurement with a specific delay to 
      *  determine the self-discharge leakage current.
+     *  - The charge required for the ADC conversion can be neglected because
+     *    C_S/H is just 14pF (very small vs. DUT).
      */
 
-    U_Zero = ReadU(Probes.Ch_1);        /* get start voltage */
+    U_Leak = ReadU(Probes.Ch_1);        /* get start voltage */
 
     if (Mode & PULL_10MS)     /* > 47µF */
     {
@@ -1035,26 +1065,26 @@ large_cap:
     TempInt = ReadU(Probes.Ch_1);       /* get voltage after delay */
 
     /* calculate voltage drop */
-    if (U_Zero > TempInt)               /* sanity check */
+    if (U_Leak > TempInt)               /* sanity check */
     {
       #if 0
       /* SW_C_VLOSS alternative */
       uint16_t           U_Temp;        /* temp. value */
 
-      U_Temp = U_Zero;                  /* save voltage */
+      U_Temp = U_Leak;                  /* save voltage */
       #endif
 
-      U_Zero -= TempInt;                /* voltage drop */
+      U_Leak -= TempInt;                /* voltage drop */
 
       #if 0
       /* SW_C_VLOSS alternative */
       /* voltage loss in 0.1% */
-      Cap->U_loss = (unsigned long)(U_Zero * 1000UL) / U_Temp;
+      Cap->U_loss = (unsigned long)(U_Leak * 1000UL) / U_Temp;
       #endif
     }
     else                                /* no drop */
     {
-      U_Zero = 0;                       /* drop is zero */
+      U_Leak = 0;                       /* drop is zero */
     }
   }
 
@@ -1066,7 +1096,7 @@ large_cap:
    *  - consider voltage drop by ADC and leakage
    */
 
-  if (Flag == 3)
+  if (Flag == 3)              /* no issues so far */
   {
     Scale = -9;                           /* factor is scaled to nF */
     /* get interpolated factor from table */
@@ -1119,7 +1149,7 @@ large_cap:
     }
 
     /* I = C * U_diff / t */
-    Value *= U_Zero;          /* * U_diff (mV) */
+    Value *= U_Leak;          /* * U_diff (mV) */
     Value /= 1000;            /* scale to V */
     if (Mode & PULL_1MS)      /* short pulses */
     {
@@ -1150,7 +1180,6 @@ large_cap:
  *
  *  returns:
  *  - 3 on success
- *  - 2 if capacitance is too low
  *  - 1 if capacitance is too high
  *  - 0 on any problem
  */
@@ -1616,7 +1645,7 @@ void MeasureCap(uint8_t Probe1, uint8_t Probe2, uint8_t ID)
    *  run measurements
    */
 
-  UpdateProbes(Probe1, Probe2, 0);           /* update register bits and probes */
+  UpdateProbes2(Probe1, Probe2);        /* update probes */
 
   /* first run measurement for large caps */ 
   TempByte = LargeCap(Cap);

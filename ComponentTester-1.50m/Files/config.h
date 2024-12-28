@@ -2,7 +2,7 @@
  *
  *   global configuration, setup and settings
  *
- *   (c) 2012-2023 by Markus Reschke
+ *   (c) 2012-2024 by Markus Reschke
  *   based on code from Markus Frejek and Karl-Heinz Kübbeler
  *
  * ************************************************************************ */
@@ -25,38 +25,6 @@
 /* ************************************************************************
  *   Hardware options
  * ************************************************************************ */
-
-
-
-/*
- *  Power Meter
- *  - Measure Out Voltage, Current and Power
- */
-
-#define HW_POWER_METER
-#define INA226_CURRENT_SENSOR
-
-#ifdef HW_POWER_METER
-  #ifdef INA226_CURRENT_SENSOR
-    /*
-    *  INA226 Current Sensor
-    *  - requires I2C bus
-    *  - uncomment to enable
-    */
-    #define INA226_I2C_ADDR               0x40      /* A0=GND, A1=GND */
-    #define INA_226_MICRO_CURRENT_LSB     100     /*   current_LSB = 100.0 uA / bit   */
-    #define INA_226_CALIBRATION_VAL       2438    /*   Computed using INA226_setMaxCurrentShunt()   */
-    #define I2C_RW
-    #define I_OFFSET			300
-  #else
-    /*
-    *  Current Sense IC
-    *  - ADC Pin TP_I_MEASURE
-    *  - I_OFFSET in uA for Shunt Resistor Current Sensor INA226 or mV for Hall Effect Current sense IC TMCS1108A4B
-    */
-    #define I_OFFSET			45
-  #endif
-#endif
 
 
 /*
@@ -121,7 +89,7 @@
  *  - or use >= 5.5 digit DMM to measure the voltage
  */
 
-#define UREF_25           2498
+#define UREF_25           2495
 
 
 /*
@@ -394,11 +362,60 @@
 // #define HW_FLASHLIGHT
 
 
+/*
+ *  BH1750VFI ambient light sensor
+ *  - requires I2C bus and I2C read support
+ *  - uncomment to enable and also select the correct I2C address
+ */
+
+//#define HW_BH1750
+#define BH1750_I2C_ADDR       0x23      /* I2C address 0x23 (ADDR low) */
+//#define BH1750_I2C_ADDR      0x5c       /* I2C address 0x5c (ADDR high) */
+
+
+/*
+ *  Power Meter
+ *  - Measure Out Voltage, Current and Power
+ */
+
+#define HW_POWER_METER
+#define INA226_CURRENT_SENSOR
+
+#ifdef HW_POWER_METER
+  #ifdef INA226_CURRENT_SENSOR
+    /*
+    *  INA226 Current Sensor
+    *  - requires I2C bus
+    *  - uncomment to enable
+    */
+    #define INA226_I2C_ADDR               0x40      /* A0=GND, A1=GND */
+    #define INA_226_MICRO_CURRENT_LSB     100     /*   current_LSB = 100.0 uA / bit   */
+    #define INA_226_CALIBRATION_VAL       2438    /*   Computed using INA226_setMaxCurrentShunt()   */
+    #define I2C_RW
+    #define I_OFFSET			300
+  #else
+    /*
+    *  Current Sense IC
+    *  - ADC Pin TP_I_MEASURE
+    *  - I_OFFSET in uA for Shunt Resistor Current Sensor INA226 or mV for Hall Effect Current sense IC TMCS1108A4B
+    */
+    #define I_OFFSET			45
+  #endif
+#endif
+
 
 
 /* ************************************************************************
  *   software options
  * ************************************************************************ */
+
+
+/*
+ *  Self Test
+ *  - comment out to disable
+ */
+
+//#define SW_SELFTEST
 
 
 /*
@@ -417,7 +434,7 @@
  *  - uncomment to enable
  */
 
-// #define SW_PWM_PLUS
+//#define SW_PWM_PLUS
 
 
 /*
@@ -537,7 +554,7 @@
 
 
 /*
- *  Alternative delay loop for IR remote control sender
+ *  alternative delay loop for IR remote control sender
  *  - in case the the C compiler screws up the default delay loop
  *    and causes incorrect pulse/pause timings
  *  - uncomment to enable
@@ -586,7 +603,7 @@
  *  - uncomment to enable
  */
 
-// #define SW_SERVO
+//#define SW_SERVO
 
 
 /*
@@ -657,6 +674,14 @@
  */
 
 #define SW_HFE_CURRENT
+
+
+/*
+ *  display C_be (base-emitter capacitance) for BJTs
+ *  - uncomment to enable
+ */
+
+//#define SW_C_BE
 
 
 /*
@@ -759,7 +784,28 @@
  *  - uncomment to enable
  */
 
-// #define SW_PHOTODIODE
+//#define SW_PHOTODIODE
+
+
+/*
+ *  diode/LED quick-check
+ *  - requires a display with more than 2 text lines
+ *  - uncomment to enable
+ */
+
+//#define SW_DIODE_LED
+
+
+/*
+ *  Voltmeter 0-5V DC
+ *  - warning: no input protection!!!
+ *  - with optional buzzer:
+ *    beep when default threshold is exceeded
+ *  - uncomment to enable
+ */
+
+//#define SW_METER_5VDC
+#define METER_5VDC_THRESHOLD  25        /* default threshold in 100 mV */
 
 
 
@@ -820,19 +866,22 @@
 
 
 /*
- *  Language of user interface. Available languages:
- *  - English (default)
- *  - Brazilian Portuguese
- *  - Czech (based on ISO 8859-1)
- *  - Czech 2 (with Czech characters based on ISO 8859-2)
- *  - Danish
- *  - German
- *  - Polish (based on ISO 8859-1)
- *  - Polish 2 (with Polish characters based on ISO 8859-2)
- *  - Spanish
- *  - Romanian
- *  - Russian (with cyrillic characters based on Windows-1251)
- *  - Russian 2 (with cyrillic characters based on Windows-1251)
+ *  Language of user interface.
+ *  - Available languages:
+ *    - English (default)
+ *    - Brazilian Portuguese
+ *    - Czech (based on ISO 8859-1)
+ *    - Czech 2 (with Czech characters based on ISO 8859-2)
+ *    - Danish
+ *    - French (based on ISO 8859-1)
+ *    - German
+ *    - Polish (based on ISO 8859-1)
+ *    - Polish 2 (with Polish characters based on ISO 8859-2)
+ *    - Spanish
+ *    - Romanian
+ *    - Russian (with cyrillic characters based on Windows-1251)
+ *    - Russian 2 (with cyrillic characters based on Windows-1251)
+ *  - choose one language
  */
 
 #define UI_ENGLISH
@@ -840,6 +889,7 @@
 //#define UI_CZECH
 //#define UI_CZECH_2
 //#define UI_DANISH
+//#define UI_FRENCH
 //#define UI_GERMAN
 //#define UI_ITALIAN
 //#define UI_POLISH
@@ -867,7 +917,18 @@
 
 
 /*
- *  Display hexadecimal values in uppercase instead of lowercase
+ *  Display 4-digit values as value with metric prefix (where applicable).
+ *  - 1234  -> 1.234k
+ *    1234k -> 1.234M
+ *    1234p -> 1.234n
+ *  - uncomment to enable.
+ */
+
+#define UI_PREFIX
+
+
+/*
+ *  Display hexadecimal values in uppercase instead of lowercase.
  *  - uncomment to enable
  */
 
@@ -876,11 +937,20 @@
 
 /*
  *  Set the default operation mode to auto-hold.
- *  - instead of continous mode
+ *  - instead of continuous mode
  *  - uncomment to enable
  */
 
-#define UI_AUTOHOLD
+//#define UI_AUTOHOLD
+
+
+/*
+ *  Switch temporarily to auto-hold mode when a component is detected.
+ *  - only in continuous mode
+ *  - uncomment to enable
+ */
+
+//#define UI_AUTOHOLD_FOUND
 
 
 /*
@@ -994,7 +1064,7 @@
  *  - uncomment to enable
  */
 
-// #define UI_QUESTION_MARK
+//#define UI_QUESTION_MARK
 
 
 /*
@@ -1140,10 +1210,15 @@
 
 /*
  *  main menu: display font for test purposes
+ *  - default output format:
+ *    index number (hex) and 8 characters (including unavailable ones)
+ *  - packed output format:
+ *    no index, only available characters, complete text line
  *  - uncomment to enable
  */
 
 //#define SW_FONT_TEST
+//#define FONT_PACKED           /* packed output format */
 
 
 /*
@@ -1184,9 +1259,18 @@
 
 
 /*
+ *  Self-Test/Adjustment: display measurement values page-wise
+ *  - requires display with 6 text lines or more
+ *  - uncomment to enable
+ */
+
+//#define UI_TEST_PAGEMODE
+
+
+/*
  *  storage of firmware data (texts, tables etc)
  *  - self-adjustment data is always stored in EEPROM
- *  - fonts and symbols are always stored in Flash
+ *  - fonts and symbols are always stored in Flash memory
  *  - uncomment one
  */ 
 
@@ -1261,7 +1345,7 @@
 
 #define BAT_OFFSET       31
 #define USB_OFFSET       150
-#define BATT_USB_BORDER       4400
+#define BATT_USB_IDENTIFIER       4400
 
 
 /*
@@ -1537,6 +1621,7 @@
 //#define SPI_BITBANG                /* bit-bang SPI */
 //#define SPI_HARDWARE               /* hardware SPI */
 //#define SPI_RW                     /* enable SPI read support */
+//#define SPI_SLOWDOWN               /* slow down bit-bang SPI */
 
 
 /*
