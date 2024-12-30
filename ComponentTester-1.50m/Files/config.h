@@ -377,6 +377,7 @@
  *  INA226 Power Monitor
  *  - Measure Out Voltage, Current and Power
  *  - requires I2C bus with read capability
+ *  - Long Press to zero Current Out Value
  *  - uncomment to enable
  */
 
@@ -1199,7 +1200,7 @@
 
 
 /*
- *  show probe component menu item at top of menu and hide Menu Exit item
+ *  show test component menu item at top of menu and hide Menu Exit item
  *  - uncomment to enable
  */
 

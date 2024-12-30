@@ -2442,6 +2442,11 @@ void Flashlight(void)
 #define DISP_CHARS_PER_ROW       16       // from SH1106.c   ->   LCD_CHAR_X
 #define REG_VAL_DISP_WIDTH       6
 #define X_START_VALUE           (DISP_CHARS_PER_ROW - REG_VAL_DISP_WIDTH + 1)
+#define VMETER_ON_FLAG_POS    7
+#define ROW_NO_BATTERY      1
+#define ROW_NO_VOUT         2
+#define ROW_NO_CURRENT      3
+#define ROW_NO_POWER        4
 
 void DisplayDashValue() {
   Display_Char('-'); Display_Space(); Display_Space(); Display_Space(); Display_Space(); Display_Space();
@@ -2489,6 +2494,19 @@ void DisplaySignedPMValue(int32_t Value, unsigned char Unit_first_letter, unsign
 }
 
 
+void DisplayLeftSideLabels()
+{
+  LCD_Clear();
+
+  // Print Left Side Row Labels
+  LCD_CharPos(1, ROW_NO_VOUT);
+  Display_Char('V'); Display_EEString(Out_str);
+  LCD_CharPos(1, ROW_NO_CURRENT);
+  Display_Char('I'); Display_EEString(Out_str);
+  Display_NL_EEString(Power_str);
+}
+
+
  /*
   *  measures various voltages and current through INA226 Current Sensor or Current sense IC TMCS1108A4B
   *  Vout, Iout, Power, Vmeter
@@ -2499,7 +2517,7 @@ void PowerMonitor(void)
   uint8_t           Flag;               /* loop control */
   uint8_t           Test;               /* user feedback */
   uint16_t          Vout_mV = 0, Vmeter = 0;
-  int32_t           Isense = 0, Power = 0;
+  int32_t           Isense = 0, Power = 0, Ioffset_local = 0;
   unsigned char     Current_Unit = 'm', Power_Unit = 'm';
   int32_t           Value = 0;              /* temporary value */
   uint8_t           counter = 0;
@@ -2510,12 +2528,6 @@ void PowerMonitor(void)
 
   /* local constants for Flag (bitfield) */
   #define RUN_FLAG            0b00000001     /* run / otherwise end */
-  #define VMETER_ON_FLAG_POS    7
-  #define ROW_NO_BATTERY      1
-  #define ROW_NO_VOUT         2
-  #define ROW_NO_CURRENT      3
-  #define ROW_NO_POWER        4
-
 
   Cfg.Samples = 255;        /* do 255 samples to be averaged */
   Flag = RUN_FLAG;                      /* enter processing loop */
@@ -2527,15 +2539,7 @@ void PowerMonitor(void)
   ADC_DDR &= ~(1 << TP_LOGIC);          /* set pin to HiZ */
   Flag = INA226_setup();    //  INA226 setup error is 0 and setup good is 1.
 
-  LCD_Clear();
-
-  // Print Left Side Row Labels
-  LCD_CharPos(1, ROW_NO_VOUT);
-  Display_Char('V'); Display_EEString(Out_str);
-  LCD_CharPos(1, ROW_NO_CURRENT);
-  Display_Char('I'); Display_EEString(Out_str);
-  Display_NL_EEString(Power_str);
-
+  DisplayLeftSideLabels();
 
   /*
    *  processing loop
@@ -2561,7 +2565,7 @@ void PowerMonitor(void)
     #ifdef INA_226_SELF_ADJUST_CURRENT
     Value = INA226_getCurrent_uA() - NV.Ioffset;
     #else
-    Value = INA226_getCurrent_uA() - INA_226_I_OFFSET_MICROA;
+    Value = INA226_getCurrent_uA() - INA_226_I_OFFSET_MICROA - Ioffset_local;
     #endif
     if(Value < 300 && Value > -300)
       Value = 0;                // currents under 0.3mA are ignored to keep zero stable
@@ -2636,6 +2640,37 @@ void PowerMonitor(void)
     {
       Flag = 0;                    /* end loop */
     }
+    else if (Test == KEY_LONG)      /* long press -> zero current offset */
+    {
+      LCD_Clear();
+      LCD_CharPos(4, ROW_NO_VOUT);
+      Display_Char('Z'); Display_Char('E'); Display_Char('R'); Display_Char('0'); Display_Space(); Display_Char('I'); Display_EEString(Out_str);
+      Value = 0;
+      counter = 0;
+      const uint8_t kNoOfMeasurements = 5;
+      while (1)
+      {
+        // take kNoOfMeasurements current measurements
+        Value += INA226_getCurrent_uA() - INA_226_I_OFFSET_MICROA;
+        counter++;
+        if(counter == kNoOfMeasurements)
+          break;
+        wait200ms();
+      }
+      Value /= kNoOfMeasurements;
+      Ioffset_local = Value;
+      if(Value < 1000000 && Value > -1000000) {
+        Current_Unit = 'm';
+        Isense = Value; // Isense in uA
+      }
+      else {
+        Current_Unit = 'A';
+        Isense = Value / 1000;    // Isense in mA
+      }
+      DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
+      wait1000ms();
+      DisplayLeftSideLabels();
+    }
   }
 
 
@@ -2648,16 +2683,16 @@ void PowerMonitor(void)
 
   /* local constants for Flag */
 #undef RUN_FLAG
-#undef VMETER_ON_FLAG_POS
-#undef ROW_NO_BATTERY
-#undef ROW_NO_VOUT
-#undef ROW_NO_CURRENT
-#undef ROW_NO_POWER
 }
 
 #undef DISP_CHARS_PER_ROW
 #undef REG_VAL_DISP_WIDTH
 #undef X_START_VALUE
+#undef VMETER_ON_FLAG_POS
+#undef ROW_NO_BATTERY
+#undef ROW_NO_VOUT
+#undef ROW_NO_CURRENT
+#undef ROW_NO_POWER
 
 #endif    // INA226_POWER_MONITOR
 
