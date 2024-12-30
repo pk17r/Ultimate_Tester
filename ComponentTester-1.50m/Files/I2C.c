@@ -112,11 +112,7 @@
 #ifdef I2C_FAST_MODE
   /* fast mode: 1µs */
   #define BIT_BANG_HALF_DELAY      wait1us()
-  // #if CPU_FREQ >= 16000000
-    #define BIT_BANG_QUARTER_DELAY      wait500ns()
-  // #else
-  //   #define BIT_BANG_QUARTER_DELAY      wait1us()
-  // #endif
+  #define BIT_BANG_QUARTER_DELAY      wait500ns()
 #else
   /* standard mode: 4µs */
   #define BIT_BANG_HALF_DELAY      wait4us()
@@ -180,8 +176,13 @@ void I2C_Stop(void)
   BIT_BANG_QUARTER_DELAY;
 
   // check and set I2C state
-  uint8_t i = 10;
-  while(((BIT_BANG_READ_SDA == 1) || (BIT_BANG_READ_SCL == 1)) && (i > 0)) {
+  uint8_t n = I2C.Timeout;         /* get timeout */
+  if (n == 0)              /* prevent zero timeout */
+  {
+    n = 1;
+  }
+  n *= 5;
+  while(((BIT_BANG_READ_SDA == 1) || (BIT_BANG_READ_SCL == 1)) && (n > 0)) {
 
     // set I2C lines
     BIT_BANG_SDA_LOW;
@@ -189,7 +190,7 @@ void I2C_Stop(void)
 
     BIT_BANG_HALF_DELAY;
 
-    i--;
+    n--;
   }
 
   // create stop condition
@@ -254,8 +255,13 @@ uint8_t I2C_Start(uint8_t Type)
      */
 
     // set I2C desired state
-    uint8_t i = 10;
-    while(((BIT_BANG_READ_SDA == 0) || (BIT_BANG_READ_SCL == 0)) && (i > 0)) {
+    uint8_t n = I2C.Timeout;         /* get timeout */
+    if (n == 0)              /* prevent zero timeout */
+    {
+      n = 1;
+    }
+    n *= 5;
+    while(((BIT_BANG_READ_SDA == 0) || (BIT_BANG_READ_SCL == 0)) && (n > 0)) {
 
       // release (high) I2C lines
       BIT_BANG_SDA_HIGH_Z;
@@ -263,8 +269,8 @@ uint8_t I2C_Start(uint8_t Type)
 
       BIT_BANG_HALF_DELAY;
 
-      i--;
-      if(i == 0)
+      n--;
+      if(n == 0)
         return I2C_ERROR;
     }
 
@@ -323,13 +329,18 @@ uint8_t I2C_Start(uint8_t Type)
 uint8_t I2C_Check_Slave_SCL_Control(void)
 {
   // check SCL is not controlled by slave
-  uint8_t i = 10;
-  while((BIT_BANG_READ_SCL == 0) && (i > 0)) {
+  uint8_t n = I2C.Timeout;         /* get timeout */
+  if (n == 0)              /* prevent zero timeout */
+  {
+    n = 1;
+  }
+  n *= 5;
+  while((BIT_BANG_READ_SCL == 0) && (n > 0)) {
 
     BIT_BANG_QUARTER_DELAY;
 
-    i--;
-    if(i == 0)
+    n--;
+    if(n == 0)
       return I2C_ERROR;
   }
   return I2C_OK;
@@ -428,7 +439,12 @@ uint8_t I2C_WriteByte(uint8_t Type)
   BIT_BANG_HALF_DELAY;
 
   // wait until ACK bit is received from slave
-  n = 10;
+  n = I2C.Timeout;         /* get timeout */
+  if (n == 0)              /* prevent zero timeout */
+  {
+    n = 1;
+  }
+  n *= 5;
   while(n > 0)
   {
     if(BIT_BANG_READ_SDA == 0)
