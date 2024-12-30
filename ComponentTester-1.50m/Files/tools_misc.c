@@ -2439,9 +2439,9 @@ void Flashlight(void)
 #ifdef INA226_POWER_MONITOR
 
 
-#define DISP_CHARS_PER_ROW       16       // from SH1106.c   ->   LCD_CHAR_X
-#define REG_VAL_DISP_WIDTH       6
-#define X_START_VALUE           (DISP_CHARS_PER_ROW - REG_VAL_DISP_WIDTH + 1)
+#define DISP_CHARS_PER_ROW       UI.CharMax_X       // from SH1106.c   ->   LCD_CHAR_X
+#define REG_VAL_DISP_CHARS       6
+#define X_START_VALUE           (UI.CharMax_X - REG_VAL_DISP_CHARS + 1)
 #define VMETER_ON_FLAG_POS    7
 #define ROW_NO_BATTERY      1
 #define ROW_NO_VOUT         2
@@ -2686,7 +2686,7 @@ void PowerMonitor(void)
 }
 
 #undef DISP_CHARS_PER_ROW
-#undef REG_VAL_DISP_WIDTH
+#undef REG_VAL_DISP_CHARS
 #undef X_START_VALUE
 #undef VMETER_ON_FLAG_POS
 #undef ROW_NO_BATTERY

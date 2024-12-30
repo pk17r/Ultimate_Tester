@@ -75,9 +75,9 @@ PARTNO = m328p
 # avrdude: ISP programmer, port and options
 
 # Arduino as ISP
-PROGRAMMER = stk500v1
-PORT = COM17
-OPTIONS = -b 19200
+#PROGRAMMER = stk500v1
+#PORT = COM17
+#OPTIONS = -b 19200
 
 # Bus Pirate
 #PROGRAMMER = buspirate
@@ -113,6 +113,12 @@ OPTIONS = -b 19200
 #PROGRAMMER = wiring
 #PORT = /dev/ttyACM0
 #OPTIONS = -D -b 115200
+
+# FTDI2232H/D based generic programmer
+PROGRAMMER = avrftdi
+PORT = COM37
+OPTIONS = -e -b 2000000
+
 
 
 #
@@ -257,6 +263,12 @@ endif
 #
 
 # program firmware and EEPROM data
+# Program the device.  
+.PHONY: program
+program: ${NAME} ${NAME}.hex ${NAME}.eep ${NAME}.lss
+	avrdude.exe -c ${PROGRAMMER} -p ${PARTNO} -P ${PORT} ${OPTIONS} \
+	  -U flash:w:./${NAME}.hex:a -U eeprom:w:./${NAME}.eep:a
+
 .PHONY: upload
 upload: ${NAME} ${NAME}.hex ${NAME}.eep ${NAME}.lss size
 	avrdude -c ${PROGRAMMER} -P ${PORT} -p ${PARTNO} ${OPTIONS} \
