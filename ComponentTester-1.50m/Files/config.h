@@ -374,33 +374,21 @@
 
 
 /*
- *  Power Meter
+ *  INA226 Power Monitor
  *  - Measure Out Voltage, Current and Power
+ *  - requires I2C bus with read capability
+ *  - uncomment to enable
  */
 
-#define HW_POWER_METER
-#define INA226_CURRENT_SENSOR
+#define INA226_POWER_MONITOR
 
-#ifdef HW_POWER_METER
-  #ifdef INA226_CURRENT_SENSOR
-    /*
-    *  INA226 Current Sensor
-    *  - requires I2C bus
-    *  - uncomment to enable
-    */
-    #define INA226_I2C_ADDR               0x40      /* A0=GND, A1=GND */
-    #define INA_226_MICRO_CURRENT_LSB     100     /*   current_LSB = 100.0 uA / bit   */
-    #define INA_226_CALIBRATION_VAL       2438    /*   Computed using INA226_setMaxCurrentShunt()   */
-    #define I2C_RW
-    #define I_OFFSET			300
-  #else
-    /*
-    *  Current Sense IC
-    *  - ADC Pin TP_I_MEASURE
-    *  - I_OFFSET in uA for Shunt Resistor Current Sensor INA226 or mV for Hall Effect Current sense IC TMCS1108A4B
-    */
-    #define I_OFFSET			45
-  #endif
+#ifdef INA226_POWER_MONITOR
+  #define INA_226_I2C_ADDR              0x40      /* A0=GND, A1=GND */
+  #define INA_226_MICRO_CURRENT_LSB     100       /* current_LSB = 100.0 uA / bit   */
+  #define INA_226_CALIBRATION_VAL       2438      /* Computed using INA226_setMaxCurrentShunt()   */
+  #define INA_226_I_OFFSET			        -300      /* Excess offset current in microamps measured on shunt */
+  #define INA_226_BUS_V_MULTIPLIER_e4   9849      /* Bus Voltage Calibration */
+  #define I2C_RW
 #endif
 
 
@@ -1344,8 +1332,8 @@
  */  
 
 #define BAT_OFFSET       31
-#define USB_OFFSET       150
-#define BATT_USB_IDENTIFIER       4400
+#define USB_OFFSET       188
+#define EXT_POW_IDENTIFIER       4400
 
 
 /*

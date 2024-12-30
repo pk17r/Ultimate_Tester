@@ -116,8 +116,8 @@ void SetAdjustmentDefaults(void)
   /* this triggers the touch adjustment at startup */
   #endif
 
-  #ifdef HW_POWER_METER
-  NV.Ioffset = I_OFFSET;
+  #ifdef INA226_POWER_MONITOR
+  NV.Ioffset = INA_226_I_OFFSET;
   #endif
 
 }
@@ -498,7 +498,7 @@ void ShowAdjustmentValues(void)
   Display_NL_EEString_Space(CompOffset_str);      /* display: AComp */
   Display_SignedValue(NV.CompOffset, -3, 'V');    /* display offset */
 
-  #ifdef HW_POWER_METER
+  #ifdef INA226_POWER_MONITOR
   /* display offset of analog comparator (value is in uA) */
   Display_NL_EEString_Space(Ioffset_str);        /* display: Ioffset */
   Display_SignedValue(NV.Ioffset, 0, 'u'); Display_Char('A');    /* display offset */
@@ -555,16 +555,12 @@ uint8_t SelfAdjustment(void)
   uint8_t           RefCounter = 0;     /* number of ref/offset runs */
   #endif
 
-  #ifdef HW_POWER_METER
+  #ifdef INA226_POWER_MONITOR
   const uint8_t MaxStep = 7;
   int32_t           Isense;
   int32_t           IoffsetSum = 0;   /* sum of Offset in Isense IC output */
-  #ifdef INA226_CURRENT_SENSOR
-    I2C_Setup();
-    INA226_setup();
-  #else      // HALL EFFECT CURRENT SENSOR
-    ADC_DDR &= ~(1 << TP_I_MEASURE);          /* set pin to HiZ */
-  #endif
+  I2C_Setup();
+  INA226_setup();
   #else
   const uint8_t MaxStep = 6;
   #endif
@@ -853,20 +849,16 @@ uint8_t SelfAdjustment(void)
           #ifdef UI_TEST_PAGEMODE
           if (Flag == 1)                     /* first run */
           #endif
-          Display_EEString(Power_Meter_str);
+          Display_EEString(Power_Monitor_str);
           #ifndef UI_TEST_PAGEMODE
           Display_NextLine();
           Display_EEString_Space(Ioffset_str);
           #endif
-          #ifdef INA226_CURRENT_SENSOR
-            Isense = INA226_getCurrent_uA();
-          #else   // Hall Effect Sensor -> 0A is at middle = 2.5V
-            Isense = (int32_t)Cfg.Vcc / 2 - (int32_t)ReadU_20ms(TP_I_MEASURE);          /* read voltage */
-          #endif
+          Isense = INA226_getCurrent_uA();
           #ifndef UI_TEST_PAGEMODE
           Display_SignedValue(Isense, 0, 'u'); Display_Char('A');
           #endif
-          IoffsetSum -= Isense;
+          IoffsetSum += Isense;
           DisplayFlag = 0;                   /* reset flag */
           break;
       }
@@ -982,7 +974,7 @@ uint8_t SelfAdjustment(void)
     }
   }
 
-  #ifdef HW_POWER_METER
+  #ifdef INA226_POWER_MONITOR
   NV.Ioffset = IoffsetSum / 5;
   #endif
 

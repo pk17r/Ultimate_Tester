@@ -2305,13 +2305,13 @@ void ShowBattery(void)
       Char1 = LCD_CHAR_BAT_LH;          /* left: high */
       Char2 = LCD_CHAR_BAT_RL;          /* right: low */
     }
-    else if (Cfg.Vbat > BATT_USB_IDENTIFIER)       /* usb power in */
+    else if (Cfg.Vbat > EXT_POW_IDENTIFIER)       /* usb power in */
     {
       #ifdef LCD_COLOR
       UI.PenColor = COLOR_BAT_OK;     /* set OK color */
       #endif
-      Char1 = LCD_CHAR_USB_L;          /* left */
-      Char2 = LCD_CHAR_USB_R;          /* right */
+      Char1 = LCD_CHAR_EXT_POW_L;          /* left */
+      Char2 = LCD_CHAR_EXT_POW_R;          /* right */
     }
     else                                /* ok */
     {
@@ -2382,7 +2382,7 @@ void CheckBattery(void)
   Temp /= 1000;                    /* Uin (mV) */
   U_Bat = (uint16_t)Temp;          /* keep 2 bytes */
   #endif
-  if(U_Bat > BATT_USB_IDENTIFIER)
+  if(U_Bat > EXT_POW_IDENTIFIER)
     U_Bat += USB_OFFSET;             /* add offset for voltage drop */
   else
     U_Bat += BAT_OFFSET;             /* add offset for voltage drop */

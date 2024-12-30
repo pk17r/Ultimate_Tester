@@ -931,8 +931,8 @@
     extern const unsigned char Flashlight_str[];
   #endif
   
-  #ifdef HW_POWER_METER
-    extern const unsigned char Power_Meter_str[];
+  #ifdef INA226_POWER_MONITOR
+    extern const unsigned char Power_Monitor_str[];
     extern const unsigned char Out_str[];
     extern const unsigned char Power_str[];
     extern const unsigned char VMeter_str[];

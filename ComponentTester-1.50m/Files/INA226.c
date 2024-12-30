@@ -16,7 +16,7 @@
 
 #include "config.h"           /* global configuration */
 
-#ifdef INA226_CURRENT_SENSOR
+#ifdef INA226_POWER_MONITOR
 
 /*
  *  include header files
@@ -72,7 +72,7 @@ uint16_t INA226__readRegister(uint8_t reg)
     return I2C_ERROR;
   }
   /* address (7 bit & write) */
-  I2C.Byte = (INA226_I2C_ADDR << 1);
+  I2C.Byte = (INA_226_I2C_ADDR << 1);
   if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
     Serial_print("INA226__readRegister I2C_WriteByte1 Error\n");
     return I2C_ERROR;
@@ -89,7 +89,7 @@ uint16_t INA226__readRegister(uint8_t reg)
     return I2C_ERROR;
   }
   /* address (7 bit & read) */
-  I2C.Byte = (INA226_I2C_ADDR << 1);
+  I2C.Byte = (INA_226_I2C_ADDR << 1);
   I2C.Byte |= 1;    // set read bit
   if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
     Serial_print("INA226__readRegister I2C_WriteByte3 Error\n");
@@ -120,7 +120,7 @@ uint8_t INA226__writeRegister(uint8_t reg, uint16_t value)
     return I2C_ERROR;
   }
   /* address (7 bit & write) */
-  I2C.Byte = (INA226_I2C_ADDR << 1);
+  I2C.Byte = (INA_226_I2C_ADDR << 1);
   if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
     Serial_print("INA226__writeRegister I2C_WriteByte1 Error\n");
     return I2C_ERROR;
@@ -342,7 +342,7 @@ uint8_t INA226_isConnected(void)
   }
 
   /* address (7 bit & write) */
-  I2C.Byte = (INA226_I2C_ADDR << 1);
+  I2C.Byte = (INA_226_I2C_ADDR << 1);
   if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
     Serial_print("****** I2C_WriteByte(I2C_ADDRESS) ERROR! ******\n");
     I2C_Stop();

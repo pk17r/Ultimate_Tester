@@ -49,8 +49,8 @@
   const unsigned char PUT_str[] MEM_TYPE = "PUT";
   const unsigned char Bye_str[] MEM_TYPE = "Bye!";
 
-#ifdef HW_POWER_METER
-  const unsigned char Power_Meter_str[] MEM_TYPE = "Power Meter";
+#ifdef INA226_POWER_MONITOR
+  const unsigned char Power_Monitor_str[] MEM_TYPE = "Power Monitor";
   const unsigned char Out_str[] MEM_TYPE = "OUT";
   const unsigned char Power_str[] MEM_TYPE = "Power";
   const unsigned char VMeter_str[] MEM_TYPE = "VMeter";

@@ -376,8 +376,8 @@
 #define LCD_CHAR_BAT_LH      13    /* battery icon left part: high */
 #define LCD_CHAR_BAT_RL      14    /* battery icon right part: low */
 #define LCD_CHAR_BAT_RH      15    /* battery icon right part: high */
-#define LCD_CHAR_USB_L       16    /* usb icon left part */
-#define LCD_CHAR_USB_R       17    /* usb icon right part */
+#define LCD_CHAR_EXT_POW_L       16    /* usb icon left part */
+#define LCD_CHAR_EXT_POW_R       17    /* usb icon right part */
 
 
 /* basic component symbols */
@@ -515,8 +515,8 @@ typedef struct
   int8_t            CompOffset;    /* voltage offset of analog comparator (mV) */
   uint8_t           Contrast;      /* contrast value of display */
 
-  #ifdef HW_POWER_METER
-  int32_t           Ioffset;     /* sum of Offset in Isense IC output */
+  #ifdef INA226_POWER_MONITOR
+  int32_t           Ioffset;     /* sum of Offset in INA226 current measurement */
   #endif
 
   uint8_t           CheckSum;      /* checksum for stored values */

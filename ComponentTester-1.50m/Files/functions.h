@@ -244,7 +244,7 @@
  *   functions from INA226.c
  * ************************************************************************ */
 
-#ifdef INA226_CURRENT_SENSOR
+#ifdef INA226_POWER_MONITOR
 
 extern uint8_t INA226_setup();
 extern uint16_t INA226_getLoadVoltage_mV(void);
@@ -576,8 +576,8 @@ extern int32_t INA226_getCurrent_uA(void);
   extern void Meter_5VDC(void);
   #endif
 
-  #ifdef HW_POWER_METER
-  extern void PowerMeter(void);
+  #ifdef INA226_POWER_MONITOR
+  extern void PowerMonitor(void);
   #endif
 
 #endif

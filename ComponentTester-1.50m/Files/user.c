@@ -1856,7 +1856,7 @@ void AdjustmentMenu(uint8_t Mode)
 #define MENUITEM_BH1750           40
 #define MENUITEM_DIODE_LED        41
 #define MENUITEM_METER_5VDC       42
-#define MENUITEM_POWER_METER      43
+#define MENUITEM_POWER_MONITOR      43
 
 
 /*
@@ -2102,7 +2102,7 @@ uint8_t PresentMainMenu(void)
     #define ITEM_38      0
   #endif
 
-  #ifdef HW_POWER_METER
+  #ifdef INA226_POWER_MONITOR
     #define ITEM_39      1
   #else
     #define ITEM_39      0
@@ -2136,10 +2136,10 @@ uint8_t PresentMainMenu(void)
    *  test/check/signal features
    */
 
-  #ifdef HW_POWER_METER
-   /* voltage current measure */
-  Item_Str[n] = (void*)Power_Meter_str;
-  Item_ID[n] = MENUITEM_POWER_METER;
+  #ifdef INA226_POWER_MONITOR
+   /* output power supply voltage current power measure */
+  Item_Str[n] = (void*)Power_Monitor_str;
+  Item_ID[n] = MENUITEM_POWER_MONITOR;
   n++;
   #endif
 
@@ -2859,10 +2859,10 @@ uint8_t MainMenu(void)
       break;
     #endif
 
-    #ifdef HW_POWER_METER
-    /* voltage current measure */
-    case MENUITEM_POWER_METER:
-      PowerMeter();
+    #ifdef INA226_POWER_MONITOR
+    /* output power supply voltage current power measure */
+    case MENUITEM_POWER_MONITOR:
+      PowerMonitor();
       break;
     #endif
 
@@ -2980,7 +2980,7 @@ uint8_t MainMenu(void)
 #undef MENUITEM_BH1750
 #undef MENUITEM_DIODE_LED
 #undef MENUITEM_METER_5VDC
-#undef MENUITEM_POWER_METER
+#undef MENUITEM_POWER_MONITOR
 
 
 

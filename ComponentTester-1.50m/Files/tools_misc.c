@@ -2432,11 +2432,11 @@ void Flashlight(void)
 
 
 /* ************************************************************************
- *   out voltage current power measure
+ *   output power supply voltage current power monitor using INA 226
  * ************************************************************************ */
 
 
-#ifdef HW_POWER_METER
+#ifdef INA226_POWER_MONITOR
 
 
 #define DISP_CHARS_PER_ROW       16       // from SH1106.c   ->   LCD_CHAR_X
@@ -2492,7 +2492,7 @@ void DisplaySignedPMValue(int32_t Value, unsigned char Unit_first_letter, unsign
   *  Vout, Iout, Power, Vmeter
   */
 
-void PowerMeter(void)
+void PowerMonitor(void)
 {
   uint8_t           Flag;               /* loop control */
   uint8_t           Test;               /* user feedback */
@@ -2514,13 +2514,7 @@ void PowerMeter(void)
    */
   ADC_DDR &= ~(1 << TP_BAT);          /* set pin to HiZ */
   ADC_DDR &= ~(1 << TP_LOGIC);          /* set pin to HiZ */
-  #ifdef INA226_CURRENT_SENSOR
-    Flag = INA226_setup();    //  INA226 setup error is 0 and setup good is 1.
-  #else      // HALL EFFECT CURRENT SENSOR
-	int32_t          Isensitivity = 400;    // I sense IC sensitivity mV/A
-    ADC_DDR &= ~(1 << TP_VOUT);          /* set pin to HiZ */
-    ADC_DDR &= ~(1 << TP_I_MEASURE);          /* set pin to HiZ */
-  #endif
+  Flag = INA226_setup();    //  INA226 setup error is 0 and setup good is 1.
 
   LCD_Clear();
 
@@ -2549,46 +2543,31 @@ void PowerMeter(void)
     Value = (((int32_t)(LOGIC_PROBE_R1 + LOGIC_PROBE_R2) * 10000) / (LOGIC_PROBE_R2));  /* factor (0.0001) */
     Value *= Vmeter;                   /* voltage (0.001 mV) */
     Value /= 10000;                       /* scale to mV */
-    Vmeter = (uint16_t)Value;          /* keep 2 bytes */
-    #ifdef INA226_CURRENT_SENSOR
-      // Voltage
-      Vout_mV = INA226_getLoadVoltage_mV();
-      // Current
-      Value = INA226_getCurrent_uA() + NV.Ioffset;
-      if(labs(Value) < 300)
-        Value = 0;                // currents under 0.3mA are ignored to keep zero stable
-      if(labs(Value) < 1e6) {
-        Current_Unit = 'm';
-        Isense = Value; // Isense in uA
-      }
-      else {
-        Current_Unit = 'A';
-        Isense = Value / 1000;    // Isense in mA
-      }
-      // Power
-      Value = (int32_t)(Vout_mV / 10) * (Value / 100);
-      if(labs(Value) < 1e6) {
-        Power_Unit = 'm';
-        Power = Value;   // Power in uW
-      }
-      else {
-        Power_Unit = 'W';
-        Power = Value / 1000;    // Power in mW
-      }
-    #else // HALL EFFECT CURRENT SENSOR TMCS1108A4B
-      Vout_mV = ReadU(TP_VOUT);          /* read voltage */
-      /* VOUT consider voltage divider */
-      Value = (((uint32_t)(BAT_R1 + BAT_R2) * 1000) / BAT_R2);   /* factor (0.001) */
-      Value *= Vout_mV;                   /* Uin (0.001 mV) */
-      Value /= 1000;                    /* Uin (mV) */
-      Vout_mV = (uint16_t)Value;          /* keep 2 bytes */
-      /* I SENSE consider sensitivity and 0 value */
-      Value = ReadU(TP_I_MEASURE);          /* read voltage */
-      Isense = ((int32_t)Value - (int32_t)Cfg.Vcc / 2);  /* factor (0.001) */
-      Isense += NV.Ioffset / 1000;                                  /* add offset */
-      Isense = (int32_t)(Isense * 1000) / Isensitivity;                 /* divide by sensitivity and scale to mA */
-      Power = (int32_t)(Vout_mV)*Isense / 1000;      /* Power in mW */
-    #endif
+    Vmeter = (uint16_t)Value + BAT_OFFSET;          /* keep 2 bytes */
+    // Voltage
+    Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV()) * INA_226_BUS_V_MULTIPLIER_e4 / 10000;
+    // Current
+    Value = INA226_getCurrent_uA() - NV.Ioffset;
+    if(labs(Value) < 300)
+      Value = 0;                // currents under 0.3mA are ignored to keep zero stable
+    if(labs(Value) < 1e6) {
+      Current_Unit = 'm';
+      Isense = Value; // Isense in uA
+    }
+    else {
+      Current_Unit = 'A';
+      Isense = Value / 1000;    // Isense in mA
+    }
+    // Power
+    Value = (int32_t)(Vout_mV / 10) * (Value / 100);
+    if(labs(Value) < 1e6) {
+      Power_Unit = 'm';
+      Power = Value;   // Power in uW
+    }
+    else {
+      Power_Unit = 'W';
+      Power = Value / 1000;    // Power in mW
+    }
 
     /* Show Battery or VoltMeter */
 
@@ -2661,7 +2640,7 @@ void PowerMeter(void)
 #undef REG_VAL_DISP_WIDTH
 #undef X_START_VALUE
 
-#endif    // HW_POWER_METER
+#endif    // INA226_POWER_MONITOR
 
 
 
