@@ -22,7 +22,7 @@
 
   /* firmware */
   const unsigned char UltimateTester_str[] MEM_TYPE = "ULTIMATE";
-  const unsigned char Tester_str[] MEM_TYPE = "TESTER!";
+  const unsigned char Tester_str[] MEM_TYPE = "TESTER!!";
 
 
   /* common terms and texts */
