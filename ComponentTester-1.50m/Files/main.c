@@ -2856,6 +2856,22 @@ cycle_start:
 
 
   /*
+   *  skip to main menu
+   */
+
+  #ifdef MAINMENU_AT_POWER_ON
+  /* skip first probing after power-on */
+  CheckBattery();                     /* check battery voltage */
+                                      /* will power off on low battery */
+  if (Key == KEY_POWER_ON)         /* first cycle */
+  {
+    Key = KEY_MAINMENU;            /* signal main menu */
+    goto cycle_control_main_menu;            /* skip probing and go to main menu */
+  }
+  #endif
+
+
+  /*
    *  battery check (default display)
    */
 
@@ -2880,14 +2896,6 @@ cycle_start:
   {
     goto cycle_control;            /* skip probing */
     /* will also change Key */
-  }
-  #endif
-  #ifdef MAINMENU_AT_POWER_ON
-  /* skip first probing after power-on */
-  if (Key == KEY_POWER_ON)         /* first cycle */
-  {
-    Key = KEY_MAINMENU;            /* signal main menu */
-    goto cycle_control_main_menu;            /* skip probing and go to main menu */
   }
   #endif
 

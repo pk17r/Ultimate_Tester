@@ -1,0 +1,78 @@
+measured 5.157              5.053
+
+actual 5.074 + 0.1% = 5.079         1005
+
+multiplier = 0.9849         
+
+
+
+
+
+
+AVR Memory Usage   without INA226 Power Monitor
+----------------
+Device: atmega328
+
+Program:   28384 bytes (86.6% Full)
+(.text + .data + .bootloader)
+
+Data:        234 bytes (11.4% Full)
+(.data + .bss + .noinit)
+
+EEPROM:      677 bytes (66.1% Full)
+(.eeprom)
+
+
+AVR Memory Usage   with INA226 full
+----------------
+Device: atmega328
+
+Program:   30028 bytes (91.6% Full)
+(.text + .data + .bootloader)
+
+Data:        238 bytes (11.6% Full)
+(.data + .bss + .noinit)
+
+EEPROM:      721 bytes (70.4% Full)
+(.eeprom)
+
+
+
+AVR Memory Usage   with INA226, without tools_misc
+----------------
+Device: atmega328
+
+Program:   29086 bytes (88.8% Full)
+(.text + .data + .bootloader)
+
+Data:        238 bytes (11.6% Full)
+(.data + .bss + .noinit)
+
+EEPROM:      721 bytes (70.4% Full)
+(.eeprom)
+
+
+
+AVR Memory Usage    with only INA226.c
+----------------
+Device: atmega328
+
+Program:   28810 bytes (87.9% Full)
+(.text + .data + .bootloader)
+
+Data:        234 bytes (11.4% Full)
+(.data + .bss + .noinit)
+
+EEPROM:      677 bytes (66.1% Full)
+(.eeprom)
+
+
+
+INA226 Memory Usage
+all without self_adjust         =    1422,   0,   31
+tools_misc.c                    =     942,   0,    0
+self_adjust                     =     222,   4,   13
+INA226.c                        =     426,   0,    0
+
+avrdude -c avrftdi -P ${PORT} -p ${PARTNO} ${OPTIONS} -U flash:w:./${NAME}.hex:a -U eeprom:w:./${NAME}.eep:a
+avrdude.exe -c avrftdi -p m328p -P COM35 -b 2000000 -e -U flash:w:"D:\MyProjects\Transistor_Tester\Transistortester-Warehouse\ComponentTester-1.50m\Files\ComponentTester.hex":a -U eeprom:w:"D:\MyProjects\Transistor_Tester\Transistortester-Warehouse\ComponentTester-1.50m\Files\ComponentTester.eep":a 
