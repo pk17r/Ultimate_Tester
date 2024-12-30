@@ -2882,6 +2882,14 @@ cycle_start:
     /* will also change Key */
   }
   #endif
+  #ifdef MAINMENU_AT_POWER_ON
+  /* skip first probing after power-on */
+  if (Key == KEY_POWER_ON)         /* first cycle */
+  {
+    Key = KEY_MAINMENU;            /* signal main menu */
+    goto cycle_control_main_menu;            /* skip probing and go to main menu */
+  }
+  #endif
 
   /* display start of probing */
   #ifdef UI_CENTER_ALIGN
@@ -3197,6 +3205,7 @@ cycle_action:
   }
   #endif
 
+cycle_control_main_menu:
 
   if (Key == KEY_MAINMENU)         /* run main menu */
   {

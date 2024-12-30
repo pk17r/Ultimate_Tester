@@ -936,7 +936,9 @@
     extern const unsigned char Out_str[];
     extern const unsigned char Power_str[];
     extern const unsigned char VMeter_str[];
+    #ifdef INA_226_SELF_ADJUST_CURRENT
     extern const unsigned char Ioffset_str[];
+    #endif
   #endif
 
   #ifdef SW_PHOTODIODE

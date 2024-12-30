@@ -12,7 +12,7 @@
 //  Read the datasheet for the details
 
 
-#define INA226_LIB_VERSION              "0.6.0"
+// #define INA226_LIB_VERSION              "0.6.0"
 
 #include "config.h"           /* global configuration */
 
@@ -28,8 +28,8 @@
 #include "functions.h"        /* external functions */
 
 
-// arduino ide serial monitor debug statements
-#define   Serial_print(x)
+// Uncomment to enable Arduino IDE Serial Monitor debugging print statements
+// #define INA226_DEBUG_PRINTS
 
 
 //  REGISTERS
@@ -53,12 +53,6 @@
 #define INA226_CONF_MODE_MASK             0x0007
 
 
-//  See issue #26
-#define INA226_MINIMAL_SHUNT              0.001
-
-#define INA226_MAX_WAIT_MS                600   //  millis
-
-
 ////////////////////////////////////////////////////////
 //
 //  PRIVATE
@@ -68,35 +62,47 @@
 uint16_t INA226__readRegister(uint8_t reg)
 {
   if(I2C_Start(I2C_START) == I2C_ERROR) {
-    Serial_print("INA226__readRegister I2C_Start1 Error\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("INA226__readRegister I2C_Start1 Error\n");
+    #endif
     return I2C_ERROR;
   }
   /* address (7 bit & write) */
   I2C.Byte = (INA_226_I2C_ADDR << 1);
   if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
-    Serial_print("INA226__readRegister I2C_WriteByte1 Error\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("INA226__readRegister I2C_WriteByte1 Error\n");
+    #endif
     return I2C_ERROR;
   }
   /* register address to write */
   I2C.Byte = reg;
   if(I2C_WriteByte(I2C_DATA) != I2C_ACK) {
-    Serial_print("INA226__readRegister I2C_WriteByte2 Error\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("INA226__readRegister I2C_WriteByte2 Error\n");
+    #endif
     return I2C_ERROR;
   }
   /* repeated start condition */
   if(I2C_Start(I2C_REPEATED_START) == I2C_ERROR) {
-    Serial_print("INA226__readRegister I2C_Start2 Error\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("INA226__readRegister I2C_Start2 Error\n");
+    #endif
     return I2C_ERROR;
   }
   /* address (7 bit & read) */
   I2C.Byte = (INA_226_I2C_ADDR << 1);
   I2C.Byte |= 1;    // set read bit
   if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
-    Serial_print("INA226__readRegister I2C_WriteByte3 Error\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("INA226__readRegister I2C_WriteByte3 Error\n");
+    #endif
     return I2C_ERROR;
   }
   if(I2C_ReadByte(I2C_ACK) == I2C_ERROR) {
-    Serial_print("INA226__readRegister I2C_Read1 Error\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("INA226__readRegister I2C_Read1 Error\n");
+    #endif
     return I2C_ERROR;
   }
   uint16_t ReadValue = I2C.Byte;
@@ -104,7 +110,9 @@ uint16_t INA226__readRegister(uint8_t reg)
   ReadValue <<= 8;
   // read_byte = 0;
   if(I2C_ReadByte(I2C_ACK) == I2C_ERROR) {
-    Serial_print("INA226__readRegister I2C_Read2 Error\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("INA226__readRegister I2C_Read2 Error\n");
+    #endif
     return I2C_ERROR;
   }
   ReadValue |= I2C.Byte;
@@ -116,31 +124,41 @@ uint16_t INA226__readRegister(uint8_t reg)
 uint8_t INA226__writeRegister(uint8_t reg, uint16_t value)
 {
   if(I2C_Start(I2C_START) == I2C_ERROR) {
-    Serial_print("INA226__writeRegister I2C_Start1 Error\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("INA226__writeRegister I2C_Start1 Error\n");
+    #endif
     return I2C_ERROR;
   }
   /* address (7 bit & write) */
   I2C.Byte = (INA_226_I2C_ADDR << 1);
   if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
-    Serial_print("INA226__writeRegister I2C_WriteByte1 Error\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("INA226__writeRegister I2C_WriteByte1 Error\n");
+    #endif
     return I2C_ERROR;
   }
   /* register address to write */
   I2C.Byte = reg;
   if(I2C_WriteByte(I2C_DATA) != I2C_ACK) {
-    Serial_print("INA226__writeRegister I2C_WriteByte2 Error\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("INA226__writeRegister I2C_WriteByte2 Error\n");
+    #endif
     return I2C_ERROR;
   }
   /* value MSB to write */
   I2C.Byte = (value >> 8);
   if(I2C_WriteByte(I2C_DATA) != I2C_ACK) {
-    Serial_print("INA226__writeRegister I2C_WriteByte2 Error\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("INA226__writeRegister I2C_WriteByte2 Error\n");
+    #endif
     return I2C_ERROR;
   }
   /* value LSB to write */
   I2C.Byte = (value & 0xFF);
   if(I2C_WriteByte(I2C_DATA) != I2C_ACK) {
-    Serial_print("INA226__writeRegister I2C_WriteByte2 Error\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("INA226__writeRegister I2C_WriteByte2 Error\n");
+    #endif
     return I2C_ERROR;
   }
   I2C_Stop();
@@ -154,17 +172,18 @@ uint8_t INA226__writeRegister(uint8_t reg, uint16_t value)
 //  CORE FUNCTIONS
 //
 
+
 int16_t INA226_getBusVoltage_mV(void)
 {
   uint16_t val = INA226__readRegister(INA226_BUS_VOLTAGE);
   // Serial_print("INA226_getBusVoltage_V val = "); Serial_print(val); Serial_print("\n");
-  return (int16_t)(val * 1.25);  //  LSB fixed 1.25 mV; Converting into int for lower flash memory consumption in INA226_getLoadVoltage_mV Function, somehow.
+  return (int16_t)(((int32_t)val) * 125 / 100);  //  LSB fixed 1.25 mV; Converting into int for lower flash memory consumption in INA226_getLoadVoltage_mV Function, somehow.
 }
 
 int16_t INA226_getShuntVoltage_mV(void)
 {
   int16_t val = INA226__readRegister(INA226_SHUNT_VOLTAGE);
-  return (int16_t)(val * 2.5e-3);   //  LSB fixed 2.50 uV
+  return (int16_t)(((int32_t)val) * 25 / 10000);   //  LSB fixed 2.50 uV
 }
 
 uint16_t INA226_getLoadVoltage_mV(void)
@@ -174,8 +193,8 @@ uint16_t INA226_getLoadVoltage_mV(void)
 
 int32_t INA226_getCurrent_uA(void)
 {
-  int16_t val = INA226__readRegister(INA226_CURRENT);
-  return (((int32_t)val) * INA_226_MICRO_CURRENT_LSB);
+  int16_t value = INA226__readRegister(INA226_CURRENT);
+  return (((int32_t)value) * INA_226_MICRO_CURRENT_LSB);
 }
 
 /*  CALIBRATION
@@ -204,6 +223,9 @@ uint16_t INA226_setMaxCurrentShunt(float maxCurrent, float shunt, uint8_t normal
   #define INA226_ERR_MAXCURRENT_LOW         0x8001
   #define INA226_ERR_SHUNT_LOW              0x8002
   #define INA226_ERR_NORMALIZE_FAILED       0x8003
+
+  //  See issue #26
+  #define INA226_MINIMAL_SHUNT              0.001
 
   //  https://github.com/RobTillaart/INA226/pull/29
 
@@ -332,19 +354,25 @@ uint16_t INA226_setMaxCurrentShunt(float maxCurrent, float shunt, uint8_t normal
 uint8_t INA226_isConnected(void)
 {
   if(I2C_Setup() != I2C_OK){
-    Serial_print("****** I2C_Setup() ERROR! ******\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("****** I2C_Setup() ERROR! ******\n");
+    #endif
     return I2C_ERROR;
   }
 
   if(I2C_Start(I2C_START) != I2C_OK){
-    Serial_print("****** I2C_Start(I2C_START) ERROR! ******\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("****** I2C_Start(I2C_START) ERROR! ******\n");
+    #endif
     return I2C_ERROR;
   }
 
   /* address (7 bit & write) */
   I2C.Byte = (INA_226_I2C_ADDR << 1);
   if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
-    Serial_print("****** I2C_WriteByte(I2C_ADDRESS) ERROR! ******\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("****** I2C_WriteByte(I2C_ADDRESS) ERROR! ******\n");
+    #endif
     I2C_Stop();
     return I2C_ERROR;
   }
@@ -373,13 +401,17 @@ uint8_t INA226_isConnected(void)
  */
 uint8_t INA226_setup() {
   if(INA226_isConnected() != I2C_OK){
-    Serial_print("****** INA226_isConnected() ERROR! ******\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("****** INA226_isConnected() ERROR! ******\n");
+    #endif
     return I2C_ERROR;
   }
 
   // set calibration value
   if(INA226__writeRegister(INA226_CALIBRATION, INA_226_CALIBRATION_VAL) != I2C_OK){
-    Serial_print("****** INA226_CALIBRATION ERROR! ******\n");
+    #ifdef INA226_DEBUG_PRINTS
+    Serial.print("****** INA226_CALIBRATION ERROR! ******\n");
+    #endif
     return I2C_ERROR;
   }
 

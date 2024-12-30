@@ -27,7 +27,7 @@ MCU = atmega328
 
 # MCU freqency:
 # - 1MHz  : 1
-# - 8MHz  : 8
+# - 8MHz  : 8  
 # - 16MHz : 16
 # - 20MHz : 20
 FREQ = 20

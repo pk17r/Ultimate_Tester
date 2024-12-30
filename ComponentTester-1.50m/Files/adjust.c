@@ -116,8 +116,8 @@ void SetAdjustmentDefaults(void)
   /* this triggers the touch adjustment at startup */
   #endif
 
-  #ifdef INA226_POWER_MONITOR
-  NV.Ioffset = INA_226_I_OFFSET;
+  #ifdef INA_226_SELF_ADJUST_CURRENT
+  NV.Ioffset = INA_226_I_OFFSET_MICROA;
   #endif
 
 }
@@ -498,7 +498,7 @@ void ShowAdjustmentValues(void)
   Display_NL_EEString_Space(CompOffset_str);      /* display: AComp */
   Display_SignedValue(NV.CompOffset, -3, 'V');    /* display offset */
 
-  #ifdef INA226_POWER_MONITOR
+  #ifdef INA_226_SELF_ADJUST_CURRENT
   /* display offset of analog comparator (value is in uA) */
   Display_NL_EEString_Space(Ioffset_str);        /* display: Ioffset */
   Display_SignedValue(NV.Ioffset, 0, 'u'); Display_Char('A');    /* display offset */
@@ -555,14 +555,11 @@ uint8_t SelfAdjustment(void)
   uint8_t           RefCounter = 0;     /* number of ref/offset runs */
   #endif
 
-  #ifdef INA226_POWER_MONITOR
-  const uint8_t MaxStep = 7;
+  #ifdef INA_226_SELF_ADJUST_CURRENT
   int32_t           Isense;
   int32_t           IoffsetSum = 0;   /* sum of Offset in Isense IC output */
   I2C_Setup();
   INA226_setup();
-  #else
-  const uint8_t MaxStep = 6;
   #endif
 
   #ifdef HW_ADJUST_CAP
@@ -583,7 +580,11 @@ uint8_t SelfAdjustment(void)
     Step = 10;                /* skip adjustment */
   }
 
-  while (Step <= MaxStep)      /* loop through steps */
+  #ifdef INA_226_SELF_ADJUST_CURRENT
+  while (Step <= 7)      /* loop through steps */
+  #else
+  while (Step <= 6)      /* loop through steps */
+  #endif
   {
     Flag = 1;            /* reset loop counter */
 
@@ -844,7 +845,7 @@ uint8_t SelfAdjustment(void)
           }
 
           break;
-
+        #ifdef INA_226_SELF_ADJUST_CURRENT
         case 7:     /* Power Meter Current Offset */
           #ifdef UI_TEST_PAGEMODE
           if (Flag == 1)                     /* first run */
@@ -861,6 +862,7 @@ uint8_t SelfAdjustment(void)
           IoffsetSum += Isense;
           DisplayFlag = 0;                   /* reset flag */
           break;
+        #endif
       }
 
       /* reset ports to defaults */
@@ -974,7 +976,7 @@ uint8_t SelfAdjustment(void)
     }
   }
 
-  #ifdef INA226_POWER_MONITOR
+  #ifdef INA_226_SELF_ADJUST_CURRENT
   NV.Ioffset = IoffsetSum / 5;
   #endif
 

@@ -2451,9 +2451,10 @@ void DisplayPMVoltageValue(uint16_t Value, uint8_t row) {
   LCD_CharPos(X_START_VALUE - 1, row); Display_Space();
   if(Value > 10) {
     uint8_t x_start = X_START_VALUE;
-    if(Value >= 1e4) x_start--;    // Voltage is 2 byte unsigned int, always positive
+    if(Value >= 10000)
+      x_start--;          // 2 digits before decimal
     LCD_CharPos(x_start, row);
-    Display_Value(Value / 10, -2, 0);
+    Display_Value(Value / 10, -2, 0);         // show 2 decimal digits
     Display_Space(); Display_Char('V');
   }
   else {
@@ -2463,21 +2464,22 @@ void DisplayPMVoltageValue(uint16_t Value, uint8_t row) {
 
 void DisplaySignedPMValue(int32_t Value, unsigned char Unit_first_letter, unsigned char Unit_second_letter, uint8_t row) {
   LCD_CharPos(X_START_VALUE - 3, row); Display_Space(); Display_Space(); Display_Space();
-  if(labs(Value) > 10) {
+  if(Value > 10 || Value < -10) {
     uint8_t x_start = X_START_VALUE;
-    if(labs(Value) >= 1e5)
-      x_start -= 2;
-    else if(labs(Value) >= 1e4)
-      x_start--;
-    if(Value < 0) x_start--;
+    if(Value >= 100000 || Value <= -100000)
+      x_start -= 2;   // 3 digits before decimal
+    else if(Value >= 10000 || Value <= -10000)
+      x_start--;      // 2 digits before decimal
+    if(Value < 0)
+      x_start--;      // minus sign
     LCD_CharPos(x_start, row);
     if(Unit_first_letter == 'm') {
-      Display_SignedValue(Value / 100, -1, 0);
+      Display_SignedValue(Value / 100, -1, 0);    // show 1 decimal digit
       Display_Space(); Display_Char(Unit_first_letter);
       Display_Char(Unit_second_letter);
     }
     else {
-      Display_SignedValue(Value / 10, -2, 0);
+      Display_SignedValue(Value / 10, -2, 0);     // show 2 decimal digits
       Display_Space(); Display_Char(Unit_first_letter);
     }
   }
@@ -2501,10 +2503,19 @@ void PowerMonitor(void)
   unsigned char     Current_Unit = 'm', Power_Unit = 'm';
   int32_t           Value = 0;              /* temporary value */
   uint8_t           counter = 0;
+  // unsigned char power_str[6];
+  // memcpy(power_str, &Power_Monitor_str[0], 5);
+  // power_str[5] = '\0';
+
 
   /* local constants for Flag (bitfield) */
   #define RUN_FLAG            0b00000001     /* run / otherwise end */
   #define VMETER_ON_FLAG_POS    7
+  #define ROW_NO_BATTERY      1
+  #define ROW_NO_VOUT         2
+  #define ROW_NO_CURRENT      3
+  #define ROW_NO_POWER        4
+
 
   Cfg.Samples = 255;        /* do 255 samples to be averaged */
   Flag = RUN_FLAG;                      /* enter processing loop */
@@ -2519,9 +2530,9 @@ void PowerMonitor(void)
   LCD_Clear();
 
   // Print Left Side Row Labels
-  LCD_CharPos(1, 2);
+  LCD_CharPos(1, ROW_NO_VOUT);
   Display_Char('V'); Display_EEString(Out_str);
-  LCD_CharPos(1, 3);
+  LCD_CharPos(1, ROW_NO_CURRENT);
   Display_Char('I'); Display_EEString(Out_str);
   Display_NL_EEString(Power_str);
 
@@ -2545,12 +2556,16 @@ void PowerMonitor(void)
     Value /= 10000;                       /* scale to mV */
     Vmeter = (uint16_t)Value + BAT_OFFSET;          /* keep 2 bytes */
     // Voltage
-    Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV()) * INA_226_BUS_V_MULTIPLIER_e4 / 10000;
+    Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV() * INA_226_BUS_V_MULTIPLIER_e4 / 10000);
     // Current
+    #ifdef INA_226_SELF_ADJUST_CURRENT
     Value = INA226_getCurrent_uA() - NV.Ioffset;
-    if(labs(Value) < 300)
+    #else
+    Value = INA226_getCurrent_uA() - INA_226_I_OFFSET_MICROA;
+    #endif
+    if(Value < 300 && Value > -300)
       Value = 0;                // currents under 0.3mA are ignored to keep zero stable
-    if(labs(Value) < 1e6) {
+    if(Value < 1000000 && Value > -1000000) {
       Current_Unit = 'm';
       Isense = Value; // Isense in uA
     }
@@ -2560,7 +2575,7 @@ void PowerMonitor(void)
     }
     // Power
     Value = (int32_t)(Vout_mV / 10) * (Value / 100);
-    if(labs(Value) < 1e6) {
+    if(Value < 1000000 && Value > -1000000) {
       Power_Unit = 'm';
       Power = Value;   // Power in uW
     }
@@ -2578,7 +2593,7 @@ void PowerMonitor(void)
         LCD_ClearLine(1);
         Flag &= ~(1 << VMETER_ON_FLAG_POS);     // record VMeter Off in Flag
       }
-      LCD_CharPos(1, 1);
+      LCD_CharPos(1, ROW_NO_BATTERY);
       CheckBattery();
       ShowBattery();
     }
@@ -2588,27 +2603,27 @@ void PowerMonitor(void)
       {   // VMeter was off, clear line and record VMeter turned on
         LCD_ClearLine(1);
         Flag |= (1 << VMETER_ON_FLAG_POS);     // record VMeter On in Flag
-        LCD_CharPos(1, 1);
+        LCD_CharPos(1, ROW_NO_BATTERY);
         Display_EEString(VMeter_str);
       }
-      DisplayPMVoltageValue(Vmeter, 1);
+      DisplayPMVoltageValue(Vmeter, ROW_NO_BATTERY);
     }
 
     /* display values */
 
-    DisplayPMVoltageValue(Vout_mV, 2);
+    DisplayPMVoltageValue(Vout_mV, ROW_NO_VOUT);
+
+    DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
 
     // display active current output sign
-    LCD_CharPos(X_START_VALUE - 5, 2);
+    LCD_CharPos(X_START_VALUE - 5, ROW_NO_CURRENT);
     if((Isense != 0) && (counter % 4 < 2))
       Display_Char('*');
     else
       Display_Space();
     counter++;
 
-    DisplaySignedPMValue(Isense, Current_Unit, 'A', 3);
-
-    DisplaySignedPMValue(Power, Power_Unit, 'W', 4);
+    DisplaySignedPMValue(Power, Power_Unit, 'W', ROW_NO_POWER);
 
     /*
      *  user feedback
@@ -2634,6 +2649,10 @@ void PowerMonitor(void)
   /* local constants for Flag */
 #undef RUN_FLAG
 #undef VMETER_ON_FLAG_POS
+#undef ROW_NO_BATTERY
+#undef ROW_NO_VOUT
+#undef ROW_NO_CURRENT
+#undef ROW_NO_POWER
 }
 
 #undef DISP_CHARS_PER_ROW

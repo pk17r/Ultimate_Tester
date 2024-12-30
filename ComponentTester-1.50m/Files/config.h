@@ -89,7 +89,7 @@
  *  - or use >= 5.5 digit DMM to measure the voltage
  */
 
-#define UREF_25           2498
+#define UREF_25           2499
 
 
 /*
@@ -383,13 +383,15 @@
 #define INA226_POWER_MONITOR
 
 #ifdef INA226_POWER_MONITOR
-  #define INA_226_I2C_ADDR              0x40      /* A0=GND, A1=GND */
-  #define INA_226_MICRO_CURRENT_LSB     100       /* current_LSB = 100.0 uA / bit   */
-  #define INA_226_CALIBRATION_VAL       2438      /* Computed using INA226_setMaxCurrentShunt()   */
-  #define INA_226_I_OFFSET			        -300      /* Excess offset current in microamps measured on shunt */
+  #define INA_226_I2C_ADDR              0x40      /* A0=GND, A1=GND  */
+  #define INA_226_MICRO_CURRENT_LSB     100       /* current_LSB = 100.0 uA / bit. Computed using INA226_setMaxCurrentShunt(2, 0.021, 1). Inputs: maxCurrent=2A, shunt=0.021Ohms, normalize=1   */
+  #define INA_226_CALIBRATION_VAL       2438      /* Input to INA226. Computed using INA226_setMaxCurrentShunt(2, 0.021, 1). Inputs: maxCurrent=2A, shunt=0.021Ohms, normalize=1   */
+  #define INA_226_I_OFFSET_MICROA			  -300      /* Excess offset current in microamps measured on shunt  */
   #define INA_226_BUS_V_MULTIPLIER_e4   9849      /* Bus Voltage Calibration */
-  #define I2C_RW
+  #define I2C_RW                                  /* Requires I2C Read Support  */
+  // #define INA_226_SELF_ADJUST_CURRENT             /* Option to add Current Self Adjustment and find out INA_226_I_OFFSET_MICROA */
 #endif
+
 
 
 
@@ -459,7 +461,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_ESR_TOOL
+#define SW_ESR_TOOL
 
 
 /*
@@ -681,9 +683,9 @@
  */
 
 #define SW_MONITOR_R          /* just R */
-// #define SW_MONITOR_C          /* just C plus ESR */
+#define SW_MONITOR_C          /* just C plus ESR */
 //#define SW_MONITOR_L          /* just L */
-//#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
+#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
 //#define SW_MONITOR_RL         /* R plus L */
 
 
@@ -693,7 +695,7 @@
  *  - uncomment to enable (one or more)
  */
 
-//#define SW_MONITOR_HOLD_ESR   /* auto-hold ESR (C monitor) */
+#define SW_MONITOR_HOLD_ESR   /* auto-hold ESR (C monitor) */
 //#define SW_MONITOR_HOLD_L     /* auto-hold L (L monitor) */
 
 
@@ -792,7 +794,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_METER_5VDC
+// #define SW_METER_5VDC
 #define METER_5VDC_THRESHOLD  25        /* default threshold in 100 mV */
 
 
@@ -1052,7 +1054,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_QUESTION_MARK
+#define UI_QUESTION_MARK
 
 
 /*
@@ -1115,7 +1117,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_BATTERY_LASTLINE
+// #define UI_BATTERY_LASTLINE
 
 
 /*
@@ -1186,6 +1188,14 @@
  */
 
 //#define UI_MAINMENU_AUTOEXIT
+
+
+/*
+ *  enter main menu at startup before probing cycle
+ *  - uncomment to enable
+ */
+
+#define MAINMENU_AT_POWER_ON
 
 
 /*
@@ -1372,7 +1382,7 @@
  *  ADC voltage reference based on Vcc (in mV). 
  */
 
-#define UREF_VCC         4997
+#define UREF_VCC         4985
 
 
 /*
@@ -1417,7 +1427,7 @@
  *  - will be updated by self-adjustment
  */
 
-#define R_ZERO           20
+#define R_ZERO           15
 
 
 /*
@@ -1426,7 +1436,7 @@
  *  - uncomment to enable
  */
 
-#define R_MULTIOFFSET
+// #define R_MULTIOFFSET
 
 
 /* 
@@ -1442,7 +1452,7 @@
  *  - will be updated by self-adjustment
  */
 
-#define C_ZERO           43
+#define C_ZERO           31
 
 
 /*
@@ -1594,7 +1604,7 @@
 //#define I2C_HARDWARE               /* MCU's hardware TWI */
 //#define I2C_STANDARD_MODE          /* 100kHz bus speed */
 #define I2C_FAST_MODE              /* 400kHz bus speed */
-#define I2C_RW                     /* enable I2C read support (untested) */
+// #define I2C_RW                     /* enable I2C read support (untested) */
 
 
 /*
