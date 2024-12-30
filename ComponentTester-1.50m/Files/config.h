@@ -176,7 +176,7 @@
  *  - uncomment to enable
  */
 
-//#define HW_FIXED_SIGNAL_OUTPUT
+#define HW_FIXED_SIGNAL_OUTPUT
 
 
 /*
@@ -188,7 +188,7 @@
  *  - uncomment to enable
  */
 
-//#define HW_FREQ_COUNTER_BASIC
+#define HW_FREQ_COUNTER_BASIC
 
 
 /*
@@ -232,7 +232,7 @@
  *  - uncomment to enable
  */
 
-//#define HW_EVENT_COUNTER
+// #define HW_EVENT_COUNTER
 
 
 /*
@@ -480,7 +480,7 @@
  *  - uncomment to enable
  */
 
-// #define SW_SQUAREWAVE
+#define SW_SQUAREWAVE
 
 
 /*
@@ -568,7 +568,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_OPTO_COUPLER
+// #define SW_OPTO_COUPLER
 
 
 /*
@@ -584,7 +584,7 @@
  *  - uncomment to enable
  */
 
-#define SW_SCHOTTKY_BJT
+// #define SW_SCHOTTKY_BJT
 
 
 /*
@@ -654,7 +654,7 @@
  *  - uncomment to enable
  */
 
-#define SW_REVERSE_HFE
+// #define SW_REVERSE_HFE
 
 
 /*
@@ -664,7 +664,7 @@
  *  - uncomment to enable
  */
 
-#define SW_HFE_CURRENT
+// #define SW_HFE_CURRENT
 
 
 /*
@@ -672,7 +672,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_C_BE
+#define SW_C_BE
 
 
 /*
@@ -684,9 +684,9 @@
  */
 
 #define SW_MONITOR_R          /* just R */
-#define SW_MONITOR_C          /* just C plus ESR */
+// #define SW_MONITOR_C          /* just C plus ESR */
 //#define SW_MONITOR_L          /* just L */
-#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
+// #define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
 //#define SW_MONITOR_RL         /* R plus L */
 
 
@@ -775,7 +775,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_PHOTODIODE
+#define SW_PHOTODIODE
 
 
 /*
@@ -784,7 +784,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_DIODE_LED
+#define SW_DIODE_LED
 
 
 /*
@@ -1046,7 +1046,7 @@
  *  - uncomment to enable
  */
 
-#define UI_PINOUT_ALT
+// #define UI_PINOUT_ALT
 
 
 /*
@@ -1224,7 +1224,7 @@
  *  - uncomment to enable
  */
 
-#define SW_FONT_TEST
+// #define SW_FONT_TEST
 #define FONT_PACKED           /* packed output format */
 
 
@@ -1234,7 +1234,7 @@
  *  - uncomment to enable
  */
 
-#define SW_SYMBOL_TEST
+// #define SW_SYMBOL_TEST
 
 
 /*

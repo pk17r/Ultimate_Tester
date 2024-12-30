@@ -977,7 +977,7 @@
 
 #define COUNTER_PORT     PORTD     /* port data register */
 #define COUNTER_DDR      DDRD      /* port data direction register */
-#define COUNTER_IN       PD6       /* signal input T0 */
+#define COUNTER_IN       PD4       /* signal input T0 */
 
 
 /*
@@ -987,7 +987,7 @@
 
 #define RINGTESTER_PORT  PORTD     /* port data register */
 #define RINGTESTER_DDR   DDRD      /* port data direction register */
-#define RINGTESTER_OUT   PD6       /* pulse output */
+#define RINGTESTER_OUT   PD4       /* pulse output */
 
 
 
