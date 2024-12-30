@@ -156,7 +156,7 @@
 
 
   /* firmware */
-  const unsigned char Version_str[] MEM_TYPE = "v1.54m";
+  // const unsigned char Version_str[] MEM_TYPE = "v1.54m";
 
 
   /* common terms and texts */
@@ -931,7 +931,6 @@
     extern const unsigned char Flashlight_str[];
   #endif
   
-  extern const unsigned char Vin_str[];
   #ifdef HW_POWER_METER
     extern const unsigned char Power_Meter_str[];
     extern const unsigned char Out_str[];

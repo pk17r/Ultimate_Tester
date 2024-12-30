@@ -376,6 +376,8 @@
 #define LCD_CHAR_BAT_LH      13    /* battery icon left part: high */
 #define LCD_CHAR_BAT_RL      14    /* battery icon right part: low */
 #define LCD_CHAR_BAT_RH      15    /* battery icon right part: high */
+#define LCD_CHAR_USB_L       16    /* usb icon left part */
+#define LCD_CHAR_USB_R       17    /* usb icon right part */
 
 
 /* basic component symbols */

@@ -693,7 +693,7 @@
  */
 
 #define SW_MONITOR_R          /* just R */
-#define SW_MONITOR_C          /* just C plus ESR */
+// #define SW_MONITOR_C          /* just C plus ESR */
 //#define SW_MONITOR_L          /* just L */
 //#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
 //#define SW_MONITOR_RL         /* R plus L */
@@ -1217,8 +1217,8 @@
  *  - uncomment to enable
  */
 
-//#define SW_FONT_TEST
-//#define FONT_PACKED           /* packed output format */
+#define SW_FONT_TEST
+#define FONT_PACKED           /* packed output format */
 
 
 /*
@@ -1227,7 +1227,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_SYMBOL_TEST
+#define SW_SYMBOL_TEST
 
 
 /*

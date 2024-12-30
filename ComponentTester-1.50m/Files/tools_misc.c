@@ -2504,6 +2504,7 @@ void PowerMeter(void)
 
   /* local constants for Flag (bitfield) */
   #define RUN_FLAG            0b00000001     /* run / otherwise end */
+  #define VMETER_ON_FLAG_POS    7
 
   Cfg.Samples = 255;        /* do 255 samples to be averaged */
   Flag = RUN_FLAG;                      /* enter processing loop */
@@ -2524,12 +2525,11 @@ void PowerMeter(void)
   LCD_Clear();
 
   // Print Left Side Row Labels
-  LCD_CharPos(1, 1);
-  Display_Char('V'); Display_EEString(Out_str);
   LCD_CharPos(1, 2);
+  Display_Char('V'); Display_EEString(Out_str);
+  LCD_CharPos(1, 3);
   Display_Char('I'); Display_EEString(Out_str);
   Display_NL_EEString(Power_str);
-  Display_NL_EEString(VMeter_str);
 
 
   /*
@@ -2589,11 +2589,35 @@ void PowerMeter(void)
       Isense = (int32_t)(Isense * 1000) / Isensitivity;                 /* divide by sensitivity and scale to mA */
       Power = (int32_t)(Vout_mV)*Isense / 1000;      /* Power in mW */
     #endif
-    
+
+    /* Show Battery or VoltMeter */
+
+    if(Vmeter < 50)
+    {   // Show Battery/USB In Voltage
+      if((Flag >> VMETER_ON_FLAG_POS) == 1)
+      {   // VMeter was on, clear line and record VMeter turned off
+        LCD_ClearLine(1);
+        Flag &= ~(1 << VMETER_ON_FLAG_POS);     // record VMeter Off in Flag
+      }
+      LCD_CharPos(1, 1);
+      CheckBattery();
+      ShowBattery();
+    }
+    else
+    {   // Show Volt Meter Voltage
+      if((Flag >> VMETER_ON_FLAG_POS) == 0)
+      {   // VMeter was off, clear line and record VMeter turned on
+        LCD_ClearLine(1);
+        Flag |= (1 << VMETER_ON_FLAG_POS);     // record VMeter On in Flag
+        LCD_CharPos(1, 1);
+        Display_EEString(VMeter_str);
+      }
+      DisplayPMVoltageValue(Vmeter, 1);
+    }
 
     /* display values */
 
-    DisplayPMVoltageValue(Vout_mV, 1);
+    DisplayPMVoltageValue(Vout_mV, 2);
 
     // display active current output sign
     LCD_CharPos(X_START_VALUE - 5, 2);
@@ -2603,11 +2627,9 @@ void PowerMeter(void)
       Display_Space();
     counter++;
 
-    DisplaySignedPMValue(Isense, Current_Unit, 'A', 2);    
+    DisplaySignedPMValue(Isense, Current_Unit, 'A', 3);
 
-    DisplaySignedPMValue(Power, Power_Unit, 'W', 3);
-
-    DisplayPMVoltageValue(Vmeter, 4);
+    DisplaySignedPMValue(Power, Power_Unit, 'W', 4);
 
     /*
      *  user feedback
@@ -2632,6 +2654,7 @@ void PowerMeter(void)
 
   /* local constants for Flag */
 #undef RUN_FLAG
+#undef VMETER_ON_FLAG_POS
 }
 
 #undef DISP_CHARS_PER_ROW

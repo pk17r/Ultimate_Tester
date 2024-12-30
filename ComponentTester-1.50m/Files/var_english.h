@@ -51,7 +51,6 @@
 
 #ifdef HW_POWER_METER
   const unsigned char Power_Meter_str[] MEM_TYPE = "Power Meter";
-  const unsigned char Vin_str[] MEM_TYPE = "VIN";
   const unsigned char Out_str[] MEM_TYPE = "OUT";
   const unsigned char Power_str[] MEM_TYPE = "Power";
   const unsigned char VMeter_str[] MEM_TYPE = "VMeter";
