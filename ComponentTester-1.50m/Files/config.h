@@ -1199,6 +1199,14 @@
 
 
 /*
+ *  show probe component menu item at top of menu and hide Menu Exit item
+ *  - uncomment to enable
+ */
+
+#define SW_MENUITEM_TEST_COMPONENT
+
+
+/*
  *  main menu: power off tester
  *  - uncomment to enable
  */

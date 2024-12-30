@@ -941,6 +941,10 @@
     #endif
   #endif
 
+  #ifdef SW_MENUITEM_TEST_COMPONENT
+    extern const unsigned char Test_Component_str[];
+  #endif
+
   #ifdef SW_PHOTODIODE
     extern const unsigned char Photodiode_str[];
     extern const unsigned char NoBias_str[];

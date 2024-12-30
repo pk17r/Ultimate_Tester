@@ -402,7 +402,7 @@
 #define LCD_FLIP_X                      /* enable horizontal flip */
 #define LCD_FLIP_Y                      /* enable vertical flip */
 //#define LCD_COM_SEQ                     /* COM pin layout: sequential */
-#define LCD_CONTRAST     250            /* default contrast (0-255) */
+#define LCD_CONTRAST     255            /* default contrast (0-255) */
 /* font and symbols: vertically aligned & flipped, bank-wise grouping */
 #define FONT_8X16_VFP                     /* 8x8 font */
 #define SYMBOLS_24X24_VFP               /* 24x24 symbols */

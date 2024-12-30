@@ -1856,7 +1856,8 @@ void AdjustmentMenu(uint8_t Mode)
 #define MENUITEM_BH1750           40
 #define MENUITEM_DIODE_LED        41
 #define MENUITEM_METER_5VDC       42
-#define MENUITEM_POWER_MONITOR      43
+#define MENUITEM_POWER_MONITOR    43
+#define MENUITEM_TEST_COMPONENT   44
 
 
 /*
@@ -2107,11 +2108,17 @@ uint8_t PresentMainMenu(void)
   #else
     #define ITEM_39      0
   #endif
+  
+  #ifdef SW_MENUITEM_TEST_COMPONENT
+    #define ITEM_40      1
+  #else
+    #define ITEM_40      0
+  #endif
 
   #define ITEMS_PACK_0   (ITEM_01 + ITEM_02 + ITEM_03 + ITEM_04 + ITEM_05 + ITEM_06 + ITEM_07 + ITEM_08 + ITEM_09 + ITEM_10)
   #define ITEMS_PACK_1   (ITEM_11 + ITEM_12 + ITEM_13 + ITEM_14 + ITEM_15 + ITEM_16 + ITEM_17 + ITEM_18 + ITEM_19 + ITEM_20)
   #define ITEMS_PACK_2   (ITEM_21 + ITEM_22 + ITEM_23 + ITEM_24 + ITEM_25 + ITEM_26 + ITEM_27 + ITEM_28 + ITEM_29 + ITEM_30)
-  #define ITEMS_PACK_3   (ITEM_31 + ITEM_32 + ITEM_33 + ITEM_34 + ITEM_35 + ITEM_36 + ITEM_37 + ITEM_38 + ITEM_39)
+  #define ITEMS_PACK_3   (ITEM_31 + ITEM_32 + ITEM_33 + ITEM_34 + ITEM_35 + ITEM_36 + ITEM_37 + ITEM_38 + ITEM_39 + ITEM_40)
 
   /* number of menu items */
   #define MENU_ITEMS     (ITEMS_BASIC + ITEMS_PACK_0 + ITEMS_PACK_1 + ITEMS_PACK_2 + ITEMS_PACK_3)
@@ -2136,6 +2143,13 @@ uint8_t PresentMainMenu(void)
    *  test/check/signal features
    */
 
+  #ifdef SW_MENUITEM_TEST_COMPONENT
+   /* output power supply voltage current power measure */
+  Item_Str[n] = (void*)Test_Component_str;
+  Item_ID[n] = MENUITEM_TEST_COMPONENT;
+  n++;
+  #endif
+
   #ifdef INA226_POWER_MONITOR
    /* output power supply voltage current power measure */
   Item_Str[n] = (void*)Power_Monitor_str;
@@ -2143,19 +2157,19 @@ uint8_t PresentMainMenu(void)
   n++;
   #endif
 
-#ifdef HW_FLASHLIGHT
+  #ifdef HW_FLASHLIGHT
   /* flashlight / general purpose switched output */
   Item_Str[n] = (void*)Flashlight_str;
   Item_ID[n] = MENUITEM_FLASHLIGHT;
   n++;
-#endif
+  #endif
 
-#ifdef SW_CONTINUITY_CHECK
+  #ifdef SW_CONTINUITY_CHECK
   /* continuity check */
   Item_Str[n] = (void*)ContinuityCheck_str;
   Item_ID[n] = MENUITEM_CONTINUITY;
   n++;
-#endif
+  #endif
 
   #if defined (SW_PWM_SIMPLE) || defined (SW_PWM_PLUS)
   /* PWM tool */
@@ -2434,10 +2448,12 @@ uint8_t PresentMainMenu(void)
   n++;
   #endif
 
+  #ifndef SW_MENUITEM_TEST_COMPONENT
   /* exit menu */
   Item_Str[n] = (void *)Exit_str;
   Item_ID[n] = MENUITEM_EXIT;
   n++;
+  #endif
 
 
   /*
@@ -2502,6 +2518,7 @@ uint8_t PresentMainMenu(void)
   #undef ITEM_37
   #undef ITEM_38
   #undef ITEM_39
+  #undef ITEM_40
 
   return(ID);                 /* return item ID */
 }
@@ -2547,10 +2564,17 @@ uint8_t MainMenu(void)
      *  tester management and settings
      */
 
+    #ifdef SW_MENUITEM_TEST_COMPONENT
+    /* probe component */
+    case MENUITEM_TEST_COMPONENT:
+      Flag = KEY_PROBE;        /* signal "probe" */
+      break;
+    #else
     /* exit menu */
     case MENUITEM_EXIT:
       Flag = KEY_EXIT;        /* signal "exit" */
       break;
+    #endif
 
     #ifdef SW_SELFTEST
     /* self-test */

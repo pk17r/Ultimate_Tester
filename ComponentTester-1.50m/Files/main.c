@@ -3223,11 +3223,13 @@ cycle_control_main_menu:
 
     #ifdef UI_MAINMENU_AUTOEXIT
       /* run main menu once and return to probe cycle */
-      MainMenu();                  /* enter main menu */
+      uint8_t user_main_menu_input = MainMenu();                  /* enter main menu */
     #else
       /* run main menu until explicit exit */
-      while (MainMenu() != KEY_EXIT)
+      uint8_t user_main_menu_input = 0;
+      while (user_main_menu_input != KEY_EXIT && user_main_menu_input != KEY_PROBE)
       {
+        user_main_menu_input = MainMenu();
         /* keep running main menu */
       }
     #endif
@@ -3235,6 +3237,11 @@ cycle_control_main_menu:
     #ifdef SAVE_POWER
     /* change sleep mode back */
     Cfg.SleepMode = Test;          /* change sleep mode back */
+    #endif
+
+    #ifdef SW_MENUITEM_TEST_COMPONENT
+    if(user_main_menu_input == KEY_PROBE)
+      goto cycle_start;              /* next round */
     #endif
 
     goto cycle_control;            /* re-run cycle control */

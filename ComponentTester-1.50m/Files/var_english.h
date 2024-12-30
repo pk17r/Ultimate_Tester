@@ -49,15 +49,19 @@
   const unsigned char PUT_str[] MEM_TYPE = "PUT";
   const unsigned char Bye_str[] MEM_TYPE = "Bye!";
 
-#ifdef INA226_POWER_MONITOR
-  const unsigned char Power_Monitor_str[] MEM_TYPE = "Power Monitor";
-  const unsigned char Out_str[] MEM_TYPE = "OUT";
-  const unsigned char Power_str[] MEM_TYPE = "Power";
-  const unsigned char VMeter_str[] MEM_TYPE = "VMeter";
-  #ifdef INA_226_SELF_ADJUST_CURRENT
-  const unsigned char Ioffset_str[] MEM_TYPE = "IOff";
+  #ifdef INA226_POWER_MONITOR
+    const unsigned char Power_Monitor_str[] MEM_TYPE = "Power Monitor";
+    const unsigned char Out_str[] MEM_TYPE = "OUT";
+    const unsigned char Power_str[] MEM_TYPE = "Power";
+    const unsigned char VMeter_str[] MEM_TYPE = "VMeter";
+    #ifdef INA_226_SELF_ADJUST_CURRENT
+    const unsigned char Ioffset_str[] MEM_TYPE = "IOff";
+    #endif
   #endif
-#endif
+
+  #ifdef SW_MENUITEM_TEST_COMPONENT
+    const unsigned char Test_Component_str[] MEM_TYPE = "Test Component";
+  #endif
 
   /* units */
   const unsigned char Hertz_str[] MEM_TYPE = "Hz";
