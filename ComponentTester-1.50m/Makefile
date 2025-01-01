@@ -1,8 +1,8 @@
 #
 #  Makefile
 #
-#  (c) 2012-2023 by Markus Reschke
-#  based on code from Markus Frejek and Karl-Heinz Kübbeler
+#  (c) 2012-2024 by Markus Reschke
+#  based on code from Markus Frejek and Karl-Heinz KÃ¼bbeler
 #
 
 PROJECT = ComponentTester
@@ -20,13 +20,14 @@ PROJECT = ComponentTester
 # - ATmega 640             : atmega640
 # - ATmega 644/644P/644PA  : atmega644
 # - ATmega 1280            : atmega1280
+# - ATmega 1284            : atmega1284
 # - ATmega 1284P           : atmega1284p
 # - ATmega 2560            : atmega2560
 MCU = atmega328
 
 # MCU freqency:
 # - 1MHz  : 1
-# - 8MHz  : 8
+# - 8MHz  : 8  
 # - 16MHz : 16
 # - 20MHz : 20
 FREQ = 20
@@ -74,9 +75,9 @@ PARTNO = m328p
 # avrdude: ISP programmer, port and options
 
 # Arduino as ISP
-PROGRAMMER = stk500v1
-PORT = COM17
-OPTIONS = -b 19200
+#PROGRAMMER = stk500v1
+#PORT = COM17
+#OPTIONS = -b 19200
 
 # Bus Pirate
 #PROGRAMMER = buspirate
@@ -106,12 +107,26 @@ OPTIONS = -b 19200
 # Arduino Uno bootloader via serial/USB
 #PROGRAMMER = arduino
 #PORT = /dev/ttyACM0
-#OPTIONS = -b 19200
+#OPTIONS = -D -b 115200
 
 # Arduino Mega2560 bootloader via serial/USB
 #PROGRAMMER = wiring
 #PORT = /dev/ttyACM0
 #OPTIONS = -D -b 115200
+
+# FTDI2232H/D based generic programmer
+PROGRAMMER = avrftdi
+PORT = COM37
+OPTIONS = -e -b 2000000
+
+
+
+#
+#  settings for special options
+#
+
+# optimize interrupt vector table (requires linux/unix environment)
+#OPTIMIZE_VECTORS = yes
 
 
 #
@@ -134,10 +149,14 @@ CFLAGS += -gdwarf-2 -std=gnu99 -Os -mcall-prologues
 CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 #CFLAGS += -flto
 CFLAGS += -MD -MP -MT $(*F).o -MF dep/$(@F).d
-#CFLAGS += -DTQFP_ADC6 -DTQFP_ADC7
 
 # linker flags
 LDFLAGS = -mmcu=${MCU} -Wl,-Map=${NAME}.map
+ifeq (${OPTIMIZE_VECTORS},yes)
+  LDFLAGS += -nostartfiles
+endif
+# > 128kB flash
+#LDFLAGS += -Wl,-relax
 
 # hex file flags
 HEX_FLASH_FLAGS = -R .eeprom -R .fuse -R .lock -R .signature
@@ -158,12 +177,15 @@ OBJECTS_C = main.o user.o pause.o adjust.o ADC.o probes.o display.o
 OBJECTS_C += resistor.o cap.o semi.o inductor.o
 OBJECTS_C += tools_misc.o tools_signal.o tools_counter.o tools_LC_Meter.o
 OBJECTS_C += SPI.o I2C.o serial.o commands.o OneWire.o
-OBJECTS_C += IR_RX.o IR_TX.o DHTxx.o ADS7843.o MAX6675.o MAX31855.o
+OBJECTS_C += IR_RX.o IR_TX.o DHTxx.o ADS7843.o MAX6675.o MAX31855.o BH1750.o INA226.o
 OBJECTS_C += HD44780.o ILI9163.o ILI9341.o ILI9481.o ILI9486.o ILI9488.o
 OBJECTS_C += PCD8544.o PCF8814.o SH1106.o SSD1306.o
 OBJECTS_C += ST7036.o ST7565R.o ST7735.o Semi_ST7735.o ST7920.o
 OBJECTS_C += STE2007.o VT100.o RD_Display.o
 OBJECTS_S = wait.o
+ifeq (${OPTIMIZE_VECTORS},yes)
+  OBJECTS_S += gcrt1.o
+endif
 OBJECTS = ${OBJECTS_C} ${OBJECTS_S}
 
 
@@ -199,6 +221,7 @@ $(NAME): ${OBJECTS}
 size: ${NAME}
 	@echo
 	@avr-size -C --mcu=${MCU} $<
+#	@avr-objdump -Pmem-usage $<
 
 
 #
@@ -213,8 +236,26 @@ ${OBJECTS_C}: %.o: %.c ${HEADERS} ${MAKEFILE_LIST}
 ${OBJECTS_S}: %.o: %.S ${HEADERS} ${MAKEFILE_LIST}
 	${CC} ${CFLAGS} -c ${@:.o=.S}
 
+
 # external dependencies
 -include $(shell mkdir dep 2>/dev/null) $(wildcard dep/*)
+
+
+#
+#  special options
+#
+
+# trigger creation of gcrt1.inc
+ifeq (${OPTIMIZE_VECTORS},yes)
+gcrt1.S: gcrt1.inc
+endif
+
+# rule for gcrt1.inc
+ifeq (${OPTIMIZE_VECTORS},yes)
+gcrt1.inc: $(filter-out gcrt1.o, $(OBJECTS))
+	chmod +x ./gcrt1.inc-builder
+	./gcrt1.inc-builder '$(findstring -flto, ${CFLAGS})' '$^'
+endif
 
 
 #
@@ -222,6 +263,12 @@ ${OBJECTS_S}: %.o: %.S ${HEADERS} ${MAKEFILE_LIST}
 #
 
 # program firmware and EEPROM data
+# Program the device.  
+.PHONY: program
+program: ${NAME} ${NAME}.hex ${NAME}.eep ${NAME}.lss
+	avrdude.exe -c ${PROGRAMMER} -p ${PARTNO} -P ${PORT} ${OPTIONS} \
+	  -U flash:w:./${NAME}.hex:a -U eeprom:w:./${NAME}.eep:a
+
 .PHONY: upload
 upload: ${NAME} ${NAME}.hex ${NAME}.eep ${NAME}.lss size
 	avrdude -c ${PROGRAMMER} -P ${PORT} -p ${PARTNO} ${OPTIONS} \
@@ -251,12 +298,13 @@ dist: clean
 	  ${DIST}/*.h ${DIST}/*.c ${DIST}/*.S ${DIST}/bitmaps/*.h \
 	  ${DIST}/Makefile ${DIST}/README ${DIST}/CHANGES \
 	  ${DIST}/README.de ${DIST}/CHANGES.de ${DIST}/Clones \
-	  ${DIST}/EUPL-v1.2.txt ${DIST}/dep
+	  ${DIST}/EUPL-v1.2.txt ${DIST}/dep ${DIST}/gcrt1.inc-builder
 
 # clean up
 clean:
 	-rm -rf ${OBJECTS} ${NAME} dep/* *.tgz
 	-rm -rf ${NAME}.hex ${NAME}.eep ${NAME}.lss ${NAME}.map
+	-rm -rf gcrt1.inc
 
 
 #
@@ -293,7 +341,12 @@ ifeq (${MCU},atmega1280)
   FAMILY = atmega328_324_640
 endif
 
-# ATmega 1284/1284P
+# ATmega 1284
+ifeq (${MCU},atmega1284)
+  FAMILY = atmega328_324_640
+endif
+
+# ATmega 1284P
 ifeq (${MCU},atmega1284p)
   FAMILY = atmega328_324_640
 endif
@@ -306,9 +359,9 @@ endif
 # ATmega 328/324/640/644/1280/1284/2560
 ifeq (${FAMILY},atmega328_324_640)
   # high byte: use default settings, disable JTAG
-  HFUSE = -U hfuse:w:0xde:m
+  HFUSE = -U hfuse:w:0xd9:m
   # extended byte: BOD level 4.3V
-  EFUSE = -U efuse:w:0xfd:m
+  EFUSE = -U efuse:w:0xfc:m
   # low byte: clock settings
   ifeq (${FREQ},1)
     # internal RC oscillator (8MHz) and /1 clock divider

@@ -2,8 +2,8 @@
  *
  *   global configuration, setup and settings
  *
- *   (c) 2012-2023 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz Kübbeler
+ *   (c) 2012-2024 by Markus Reschke
+ *   based on code from Markus Frejek and Karl-Heinz KÃ¼bbeler
  *
  * ************************************************************************ */
 
@@ -25,20 +25,6 @@
 /* ************************************************************************
  *   Hardware options
  * ************************************************************************ */
-
-
-
-/*
- *  Current Sense IC
- *  - ADC Pin TP_I_MEASURE
- *  - VI_OFFSET in mV
- */
-
-#define HW_V_I_MEASURE
-
-#ifdef HW_V_I_MEASURE
-#define VI_OFFSET			45
-#endif
 
 
 /*
@@ -103,7 +89,7 @@
  *  - or use >= 5.5 digit DMM to measure the voltage
  */
 
-#define UREF_25           2498
+#define UREF_25           2499
 
 
 /*
@@ -190,7 +176,7 @@
  *  - uncomment to enable
  */
 
-//#define HW_FIXED_SIGNAL_OUTPUT
+#define HW_FIXED_SIGNAL_OUTPUT
 
 
 /*
@@ -202,7 +188,7 @@
  *  - uncomment to enable
  */
 
-//#define HW_FREQ_COUNTER_BASIC
+#define HW_FREQ_COUNTER_BASIC
 
 
 /*
@@ -246,7 +232,7 @@
  *  - uncomment to enable
  */
 
-//#define HW_EVENT_COUNTER
+// #define HW_EVENT_COUNTER
 
 
 /*
@@ -328,7 +314,7 @@
  *  - uncomment to enable and adjust resistor values
  */
 
-#define HW_LOGIC_PROBE
+// #define HW_LOGIC_PROBE
 #define LOGIC_PROBE_R1        10000
 #define LOGIC_PROBE_R2        3300
 
@@ -376,10 +362,51 @@
 #define HW_FLASHLIGHT
 
 
+/*
+ *  BH1750VFI ambient light sensor
+ *  - requires I2C bus and I2C read support
+ *  - uncomment to enable and also select the correct I2C address
+ */
+
+//#define HW_BH1750
+#define BH1750_I2C_ADDR       0x23      /* I2C address 0x23 (ADDR low) */
+//#define BH1750_I2C_ADDR      0x5c       /* I2C address 0x5c (ADDR high) */
+
+
+/*
+ *  INA226 Power Monitor
+ *  - Measure Out Voltage, Current and Power
+ *  - requires I2C bus with read capability
+ *  - Long Press to zero Current Out Value
+ *  - uncomment to enable
+ */
+
+#define INA226_POWER_MONITOR
+
+#ifdef INA226_POWER_MONITOR
+  #define INA_226_I2C_ADDR              0x40      /* A0=GND, A1=GND  */
+  #define INA_226_MICRO_CURRENT_LSB     100       /* current_LSB = 100.0 uA / bit. Computed using INA226_setMaxCurrentShunt(2, 0.021, 1). Inputs: maxCurrent=2A, shunt=0.021Ohms, normalize=1   */
+  #define INA_226_CALIBRATION_VAL       2438      /* Input to INA226. Computed using INA226_setMaxCurrentShunt(2, 0.021, 1). Inputs: maxCurrent=2A, shunt=0.021Ohms, normalize=1   */
+  #define INA_226_I_OFFSET_MICROA			  -300      /* Excess offset current in microamps measured on shunt  */
+  #define INA_226_BUS_V_MULTIPLIER_e4   9849      /* Bus Voltage Calibration */
+  #define I2C_RW                                  /* Requires I2C Read Support  */
+  // #define INA_226_SELF_ADJUST_CURRENT             /* Option to add Current Self Adjustment and find out INA_226_I_OFFSET_MICROA */
+#endif
+
+
+
 
 /* ************************************************************************
  *   software options
  * ************************************************************************ */
+
+
+/*
+ *  Self Test
+ *  - comment out to disable
+ */
+
+//#define SW_SELFTEST
 
 
 /*
@@ -435,7 +462,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_ESR_TOOL
+#define SW_ESR_TOOL
 
 
 /*
@@ -518,7 +545,7 @@
 
 
 /*
- *  Alternative delay loop for IR remote control sender
+ *  alternative delay loop for IR remote control sender
  *  - in case the the C compiler screws up the default delay loop
  *    and causes incorrect pulse/pause timings
  *  - uncomment to enable
@@ -541,7 +568,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_OPTO_COUPLER
+// #define SW_OPTO_COUPLER
 
 
 /*
@@ -557,7 +584,7 @@
  *  - uncomment to enable
  */
 
-#define SW_SCHOTTKY_BJT
+// #define SW_SCHOTTKY_BJT
 
 
 /*
@@ -567,7 +594,7 @@
  *  - uncomment to enable
  */
 
-#define SW_SERVO
+//#define SW_SERVO
 
 
 /*
@@ -582,14 +609,14 @@
 
 /*
  *  DS18S20 - OneWire temperature sensor
- *  - DS18S20_HIGHRES: enable high resolution (0.01°C)
- *    normal resolution is 0.5°C
+ *  - DS18S20_HIGHRES: enable high resolution (0.01Â°C)
+ *    normal resolution is 0.5Â°C
  *  - uncomment to enable
  *  - also enable ONEWIRE_PROBES or ONEWIRE_IO_PIN (see section 'Busses')
  */
 
 //#define SW_DS18S20
-//#define DS18S20_HIGHRES       /* high resolution (0.01°C) */
+//#define DS18S20_HIGHRES       /* high resolution (0.01Â°C) */
 
 
 /*
@@ -627,7 +654,7 @@
  *  - uncomment to enable
  */
 
-#define SW_REVERSE_HFE
+// #define SW_REVERSE_HFE
 
 
 /*
@@ -637,7 +664,15 @@
  *  - uncomment to enable
  */
 
-#define SW_HFE_CURRENT
+// #define SW_HFE_CURRENT
+
+
+/*
+ *  display C_be (base-emitter capacitance) for BJTs
+ *  - uncomment to enable
+ */
+
+#define SW_C_BE
 
 
 /*
@@ -649,10 +684,10 @@
  */
 
 #define SW_MONITOR_R          /* just R */
-#define SW_MONITOR_C          /* just C plus ESR */
-#define SW_MONITOR_L          /* just L */
-#define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
-#define SW_MONITOR_RL         /* R plus L */
+// #define SW_MONITOR_C          /* just C plus ESR */
+//#define SW_MONITOR_L          /* just L */
+// #define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
+//#define SW_MONITOR_RL         /* R plus L */
 
 
 /*
@@ -661,7 +696,7 @@
  *  - uncomment to enable (one or more)
  */
 
-//#define SW_MONITOR_HOLD_ESR   /* auto-hold ESR (C monitor) */
+#define SW_MONITOR_HOLD_ESR   /* auto-hold ESR (C monitor) */
 //#define SW_MONITOR_HOLD_L     /* auto-hold L (L monitor) */
 
 
@@ -732,7 +767,7 @@
  *  - uncomment to enable
  */ 
 
-#define SW_C_VLOSS
+//#define SW_C_VLOSS
 
 
 /*
@@ -741,6 +776,27 @@
  */
 
 #define SW_PHOTODIODE
+
+
+/*
+ *  diode/LED quick-check
+ *  - requires a display with more than 2 text lines
+ *  - uncomment to enable
+ */
+
+#define SW_DIODE_LED
+
+
+/*
+ *  Voltmeter 0-5V DC
+ *  - warning: no input protection!!!
+ *  - with optional buzzer:
+ *    beep when default threshold is exceeded
+ *  - uncomment to enable
+ */
+
+// #define SW_METER_5VDC
+#define METER_5VDC_THRESHOLD  25        /* default threshold in 100 mV */
 
 
 
@@ -801,19 +857,22 @@
 
 
 /*
- *  Language of user interface. Available languages:
- *  - English (default)
- *  - Brazilian Portuguese
- *  - Czech (based on ISO 8859-1)
- *  - Czech 2 (with Czech characters based on ISO 8859-2)
- *  - Danish
- *  - German
- *  - Polish (based on ISO 8859-1)
- *  - Polish 2 (with Polish characters based on ISO 8859-2)
- *  - Spanish
- *  - Romanian
- *  - Russian (with cyrillic characters based on Windows-1251)
- *  - Russian 2 (with cyrillic characters based on Windows-1251)
+ *  Language of user interface.
+ *  - Available languages:
+ *    - English (default)
+ *    - Brazilian Portuguese
+ *    - Czech (based on ISO 8859-1)
+ *    - Czech 2 (with Czech characters based on ISO 8859-2)
+ *    - Danish
+ *    - French (based on ISO 8859-1)
+ *    - German
+ *    - Polish (based on ISO 8859-1)
+ *    - Polish 2 (with Polish characters based on ISO 8859-2)
+ *    - Spanish
+ *    - Romanian
+ *    - Russian (with cyrillic characters based on Windows-1251)
+ *    - Russian 2 (with cyrillic characters based on Windows-1251)
+ *  - choose one language
  */
 
 #define UI_ENGLISH
@@ -821,6 +880,7 @@
 //#define UI_CZECH
 //#define UI_CZECH_2
 //#define UI_DANISH
+//#define UI_FRENCH
 //#define UI_GERMAN
 //#define UI_ITALIAN
 //#define UI_POLISH
@@ -848,7 +908,18 @@
 
 
 /*
- *  Display hexadecimal values in uppercase instead of lowercase
+ *  Display 4-digit values as value with metric prefix (where applicable).
+ *  - 1234  -> 1.234k
+ *    1234k -> 1.234M
+ *    1234p -> 1.234n
+ *  - uncomment to enable.
+ */
+
+#define UI_PREFIX
+
+
+/*
+ *  Display hexadecimal values in uppercase instead of lowercase.
  *  - uncomment to enable
  */
 
@@ -857,11 +928,20 @@
 
 /*
  *  Set the default operation mode to auto-hold.
- *  - instead of continous mode
+ *  - instead of continuous mode
  *  - uncomment to enable
  */
 
 #define UI_AUTOHOLD
+
+
+/*
+ *  Switch temporarily to auto-hold mode when a component is detected.
+ *  - only in continuous mode
+ *  - uncomment to enable
+ */
+
+//#define UI_AUTOHOLD_FOUND
 
 
 /*
@@ -947,7 +1027,7 @@
  *  - uncomment to enable, also adjust timeout (in s)
  */
 
-#define POWER_OFF_TIMEOUT     60
+#define POWER_OFF_TIMEOUT     120
 
 
 /*
@@ -966,7 +1046,7 @@
  *  - uncomment to enable
  */
 
-#define UI_PINOUT_ALT
+// #define UI_PINOUT_ALT
 
 
 /*
@@ -975,7 +1055,7 @@
  *  - uncomment to enable
  */
 
-#define UI_QUESTION_MARK
+// #define UI_QUESTION_MARK
 
 
 /*
@@ -1038,7 +1118,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_BATTERY_LASTLINE
+// #define UI_BATTERY_LASTLINE
 
 
 /*
@@ -1112,6 +1192,22 @@
 
 
 /*
+ *  enter main menu at startup before probing cycle
+ *  - uncomment to enable
+ */
+
+#define MAINMENU_AT_POWER_ON
+
+
+/*
+ *  show test component menu item at top of menu and hide Menu Exit item
+ *  - uncomment to enable
+ */
+
+#define SW_MENUITEM_TEST_COMPONENT
+
+
+/*
  *  main menu: power off tester
  *  - uncomment to enable
  */
@@ -1121,10 +1217,15 @@
 
 /*
  *  main menu: display font for test purposes
+ *  - default output format:
+ *    index number (hex) and 8 characters (including unavailable ones)
+ *  - packed output format:
+ *    no index, only available characters, complete text line
  *  - uncomment to enable
  */
 
-//#define SW_FONT_TEST
+// #define SW_FONT_TEST
+#define FONT_PACKED           /* packed output format */
 
 
 /*
@@ -1133,13 +1234,13 @@
  *  - uncomment to enable
  */
 
-//#define SW_SYMBOL_TEST
+// #define SW_SYMBOL_TEST
 
 
 /*
  *  Round some values if appropriate.
  *  - for
- *    - DS18B20 (0.1 °C/F)
+ *    - DS18B20 (0.1 Â°C/F)
  *  - uncomment to enable
  */
 
@@ -1165,9 +1266,18 @@
 
 
 /*
+ *  Self-Test/Adjustment: display measurement values page-wise
+ *  - requires display with 6 text lines or more
+ *  - uncomment to enable
+ */
+
+//#define UI_TEST_PAGEMODE
+
+
+/*
  *  storage of firmware data (texts, tables etc)
  *  - self-adjustment data is always stored in EEPROM
- *  - fonts and symbols are always stored in Flash
+ *  - fonts and symbols are always stored in Flash memory
  *  - uncomment one
  */ 
 
@@ -1241,8 +1351,8 @@
  */  
 
 #define BAT_OFFSET       31
-#define USB_OFFSET       150
-#define BATT_USB_BORDER       4400
+#define USB_OFFSET       188
+#define EXT_POW_IDENTIFIER       4400
 
 
 /*
@@ -1281,7 +1391,7 @@
  *  ADC voltage reference based on Vcc (in mV). 
  */
 
-#define UREF_VCC         4997
+#define UREF_VCC         4985
 
 
 /*
@@ -1326,7 +1436,7 @@
  *  - will be updated by self-adjustment
  */
 
-#define R_ZERO           20
+#define R_ZERO           15
 
 
 /*
@@ -1335,7 +1445,7 @@
  *  - uncomment to enable
  */
 
-#define R_MULTIOFFSET
+// #define R_MULTIOFFSET
 
 
 /* 
@@ -1351,7 +1461,7 @@
  *  - will be updated by self-adjustment
  */
 
-#define C_ZERO           43
+#define C_ZERO           31
 
 
 /*
@@ -1375,9 +1485,9 @@
  *  Correction factors for capacitors (in 0.1%)
  *  - positive factor increases capacitance value
  *    negative factor decreases capacitance value
- *  - CAP_FACTOR_SMALL for caps < 4.7µF
- *  - CAP_FACTOR_MID for caps 4.7 - 47µF
- *  - CAP_FACTOR_LARGE for caps > 47µF
+ *  - CAP_FACTOR_SMALL for caps < 4.7ÂµF
+ *  - CAP_FACTOR_MID for caps 4.7 - 47ÂµF
+ *  - CAP_FACTOR_LARGE for caps > 47ÂµF
  */
 
 #define CAP_FACTOR_SMALL      0      /* no correction */ 
@@ -1499,11 +1609,11 @@
  *  - uncomment one of the bus speed modes
  */
 
-//#define I2C_BITBANG                /* bit-bang I2C */
+#define I2C_BITBANG                /* bit-bang I2C */
 //#define I2C_HARDWARE               /* MCU's hardware TWI */
 //#define I2C_STANDARD_MODE          /* 100kHz bus speed */
-//#define I2C_FAST_MODE              /* 400kHz bus speed */
-//#define I2C_RW                     /* enable I2C read support (untested) */
+#define I2C_FAST_MODE              /* 400kHz bus speed */
+// #define I2C_RW                     /* enable I2C read support (untested) */
 
 
 /*
@@ -1518,6 +1628,7 @@
 //#define SPI_BITBANG                /* bit-bang SPI */
 //#define SPI_HARDWARE               /* hardware SPI */
 //#define SPI_RW                     /* enable SPI read support */
+//#define SPI_SLOWDOWN               /* slow down bit-bang SPI */
 
 
 /*
