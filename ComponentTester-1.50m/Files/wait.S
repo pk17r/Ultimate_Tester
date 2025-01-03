@@ -2,7 +2,7 @@
  *
  *   wait functions
  *
- *   based on code from Karl-Heinz K�bbeler
+ *   based on code from Karl-Heinz Kübbeler
  *
  * ************************************************************************ */
 
@@ -49,16 +49,16 @@
 .global wait3ms		; wait 3ms
 .global wait2ms		; wait 2ms
 .global wait1ms		; wait 1ms
-.global wait500us	; wait 500�s
-.global wait400us	; wait 400�s
-.global wait300us	; wait 300�s
-.global wait200us	; wait 200�s
-.global wait100us	; wait 100�s
-.global wait50us	; wait 50�s
-.global wait40us	; wait 40�s
-.global wait30us	; wait 30�s
-.global wait20us	; wait 20�s
-.global wait10us	; wait 10�s
+.global wait500us	; wait 500µs
+.global wait400us	; wait 400µs
+.global wait300us	; wait 300µs
+.global wait200us	; wait 200µs
+.global wait100us	; wait 100µs
+.global wait50us	; wait 50µs
+.global wait40us	; wait 40µs
+.global wait30us	; wait 30µs
+.global wait20us	; wait 20µs
+.global wait10us	; wait 10µs
 
 ; waiting functions for MCU clock rates of 1MHz, 2MHz, 4MHz, 8MHz and 16MHz
 ; stacked design to minimize flash memory usage:
@@ -71,7 +71,7 @@
 
 
 /*
- *  20�s and up (clock rate independent)
+ *  20µs and up (clock rate independent)
  */
 
 wait5s:
@@ -153,48 +153,48 @@ wait2ms:
 ;proceed with wait1ms	;+1ms
 
 wait1ms:
- rcall wait500us    	;500�s	5+x return addresses
-;laeuft in wait500us	;+500�s
+ rcall wait500us    	;500µs	5+x return addresses
+;laeuft in wait500us	;+500µs
 
 wait500us:
- rcall wait100us    	;100�s	4+x return addresses
-;proceed with wait400us	;+400�s
+ rcall wait100us    	;100µs	4+x return addresses
+;proceed with wait400us	;+400µs
 
 wait400us:
- rcall wait100us    	;100�s	4+x return addresses
-;proceed with wait300us	;+300�s
+ rcall wait100us    	;100µs	4+x return addresses
+;proceed with wait300us	;+300µs
 
 wait300us:
- rcall wait100us    	;100�s	4+x return addresses
-;proceed with wait200us	;+200�s
+ rcall wait100us    	;100µs	4+x return addresses
+;proceed with wait200us	;+200µs
 
 wait200us:
- rcall wait100us    	;100�s	4+x return addresses
-;proceed with wait100us	;+100�s	
+ rcall wait100us    	;100µs	4+x return addresses
+;proceed with wait100us	;+100µs	
 
 wait100us:
- rcall wait50us	    	;50�s	3+x return addresses
-;proceed with wait50us	;+50�s	
+ rcall wait50us	    	;50µs	3+x return addresses
+;proceed with wait50us	;+50µs	
 
 wait50us:
- rcall wait10us     	;10�s	2+x return addresses
-;proceed with wait40us	;+40�s
+ rcall wait10us     	;10µs	2+x return addresses
+;proceed with wait40us	;+40µs
 
 wait40us:
- rcall wait10us     	;10�s	2+x return addresses
-;proceed with wait30us	;+30�s
+ rcall wait10us     	;10µs	2+x return addresses
+;proceed with wait30us	;+30µs
 
 wait30us:
- rcall wait10us     	;10�s	2+x return addresses
-;proceed with wait20us	;+20�s
+ rcall wait10us     	;10µs	2+x return addresses
+;proceed with wait20us	;+20µs
 
 wait20us:
- rcall wait10us		;10�s	2+x return addresses
-;proceed with wait10us	;+10�s
+ rcall wait10us		;10µs	2+x return addresses
+;proceed with wait10us	;+10µs
 
 
 /*
- *  10�s and below based on MCU clock rate
+ *  10µs and below based on MCU clock rate
  *  - rcall needs 3 clock cycles
  *  - ret needs 4 clock cycles
  */
@@ -202,7 +202,7 @@ wait20us:
 wait10us:		;	1+x return addresses
 
 #if CPU_FREQ == 1000000
-;1MHz: clock cycle 1�s		x = 0
+;1MHz: clock cycle 1µs		x = 0
 
 ;wait10us
  nop
@@ -214,11 +214,11 @@ wait10us:		;	1+x return addresses
 #if CPU_FREQ == 2000000
 ;2MHz: clock cycle 500ns	x = 1
 
-.global wait5us		;wait 5�s
+.global wait5us		;wait 5µs
 
 ;wait10us
- rcall wait5us		;5�s
-;proceed with wait5us	;+5�s
+ rcall wait5us		;5µs
+;proceed with wait5us	;+5µs
 
 wait5us:
  nop
@@ -230,93 +230,92 @@ wait5us:
 #if CPU_FREQ == 4000000
 ;4MHz: clock cycle 250ns	x = 2
 
-.global wait5us		;wait 5�s
-.global wait4us		;wait 4�s
-.global wait2us		;wait 2�s
+.global wait5us		;wait 5µs
+.global wait4us		;wait 4µs
+.global wait2us		;wait 2µs
 
 ;wait10us
- rcall wait5us		;5�s
-;proceed with wait5us	;+5�s
+ rcall wait5us		;5µs
+;proceed with wait5us	;+5µs
 
 wait5us:
  nop
  nop
  nop
- nop			;1�s
-;proceed with wait4us	;+4�s
+ nop			;1µs
+;proceed with wait4us	;+4µs
 
 wait4us:
-rcall wait2us		;2�s
-;proceed with wait2us	;+2�s
+rcall wait2us		;2µs
+;proceed with wait2us	;+2µs
 
 wait2us:
- nop			;2�s
+ nop			;2µs
 #endif
 
 
 #if CPU_FREQ == 8000000
 ;8MHz: clock cycle 125ns	x = 2
 
-.global wait5us		;wait 5�s
-.global wait4us		;wait 4�s
-.global wait3us		;wait 3�s
-.global wait2us		;wait 2�s
-.global wait1us		;wait 1�s
+.global wait5us		;wait 5µs
+.global wait4us		;wait 4µs
+.global wait3us		;wait 3µs
+.global wait2us		;wait 2µs
+.global wait1us		;wait 1µs
 
 ;wait10us
- rcall wait5us		;5�s
-;proceed with wait5us	;+5�s
+ rcall wait5us		;5µs
+;proceed with wait5us	;+5µs
 
 wait5us:
- rcall wait1us		;1�s
-;proceed with wait4us	;+4�s
+ rcall wait1us		;1µs
+;proceed with wait4us	;+4µs
 
 wait4us:
- rcall wait1us		;1�s
+ rcall wait1us		;1µs
 ;proceed with wait3us	;+3us
 
 wait3us:
- rcall wait1us		;1�s
-;proceed with wait2us	;+2�s
+ rcall wait1us		;1µs
+;proceed with wait2us	;+2µs
 
 wait2us:
- rcall wait1us		;1�s
-;proceed with wait1us	;+1�s
+ rcall wait1us		;1µs
+;proceed with wait1us	;+1µs
 
 wait1us:
- nop			;1�s
+ nop			;1µs
 #endif
 
 
 #if CPU_FREQ == 16000000
 ;16MHz: clock cycle 62.5ns	x = 2
 
-.global wait5us		;wait 5�s
-.global wait4us		;wait 4�s
-.global wait3us		;wait 3�s
-.global wait2us		;wait 2�s
-.global wait1us		;wait 1�s
-.global wait500ns	;wait 500ns
+.global wait5us		;wait 5µs
+.global wait4us		;wait 4µs
+.global wait3us		;wait 3µs
+.global wait2us		;wait 2µs
+.global wait1us		;wait 1µs
 
 ;wait10us
- rcall wait5us		;5�s
-;proceed with wait5us	;+5�s
+ rcall wait5us		;5µs
+;proceed with wait5us	;+5µs
 
 wait5us:
- rcall wait1us		;1�s
-;proceed with wait4us	;+4�s
+ rcall wait1us		;1µs
+;proceed with wait4us	;+4µs
 
 wait4us:
- rcall wait1us		;1�s
-;proceed with wait3us	;+3�s
+ rcall wait1us		;1µs
+;proceed with wait3us	;+3µs
 
 wait3us:
- rcall wait1us		;1�s
-;proceed with wait2us	;+2�s
+ rcall wait1us		;1µs
+;proceed with wait2us	;+2µs
 
 wait2us:
- rcall wait1us		;1�s
-;proceed with wait1us	;+1�s
+ rcall wait1us		;1µs
+;proceed with wait1us	;+1µs
 
 wait1us:
  rcall wait500ns	;500ns
@@ -330,32 +329,31 @@ wait500ns:
 #if CPU_FREQ == 20000000
 ;20MHz: clock cycle 50ns	x = 2
 
-.global wait5us		;wait 5�s
-.global wait4us		;wait 4�s
-.global wait3us		;wait 3�s
-.global wait2us		;wait 2�s
-.global wait1us		;wait 1�s
-.global wait500ns	;wait 500ns
+.global wait5us		;wait 5µs
+.global wait4us		;wait 4µs
+.global wait3us		;wait 3µs
+.global wait2us		;wait 2µs
+.global wait1us		;wait 1µs
 
 ;wait10us
- rcall wait5us		;5�s
-;proceed with wait5us	;+5�s
+ rcall wait5us		;5µs
+;proceed with wait5us	;+5µs
 
 wait5us:
- rcall wait1us		;1�s
-;proceed with wait4us	;+4�s
+ rcall wait1us		;1µs
+;proceed with wait4us	;+4µs
 
 wait4us:
- rcall wait1us		;1�s
-;proceed with wait3us	;+3�s
+ rcall wait1us		;1µs
+;proceed with wait3us	;+3µs
 
 wait3us:
- rcall wait1us		;1�s
-;proceed with wait2us	;+2�s
+ rcall wait1us		;1µs
+;proceed with wait2us	;+2µs
 
 wait2us:
- rcall wait1us		;1�s
-;proceed with wait1us	;+1�s
+ rcall wait1us		;1µs
+;proceed with wait1us	;+1µs
 
 wait1us:
  rcall wait500ns	;500ns

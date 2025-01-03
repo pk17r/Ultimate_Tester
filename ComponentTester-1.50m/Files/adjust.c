@@ -115,7 +115,6 @@ void SetAdjustmentDefaults(void)
   Touch.Y_Stop = 0;
   /* this triggers the touch adjustment at startup */
   #endif
-
 }
 
 

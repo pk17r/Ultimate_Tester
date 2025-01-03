@@ -807,9 +807,6 @@ extern int32_t INA226_getCurrent_uA(void);
   /* clock frequency >= 8 MHz */
   extern void wait1us(void);
 
-  /* clock frequency >= 16 MHz */
-  extern void wait500ns(void);
-
 #endif
 
 

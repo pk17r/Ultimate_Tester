@@ -2322,10 +2322,10 @@ void ShowBattery(void)
       Char2 = LCD_CHAR_BAT_RH;          /* right: high */
     }
 
-    /* display small battery symbol */
-    Display_Char(Char1);             /* display left part of symbol */
-    Display_Char(Char2);             /* display right part of symbol */
-    Display_Space();                 /* display space */
+  /* display small battery symbol */
+  Display_Char(Char1);             /* display left part of symbol */
+  Display_Char(Char2);             /* display right part of symbol */
+  Display_Space();                 /* display space */
 
     #ifdef LCD_COLOR
     UI.PenColor = COLOR_PEN;       /* set color back to default */

@@ -514,7 +514,6 @@ typedef struct
   int8_t            RefOffset;     /* voltage offset of bandgap reference (mV) */
   int8_t            CompOffset;    /* voltage offset of analog comparator (mV) */
   uint8_t           Contrast;      /* contrast value of display */
-
   uint8_t           CheckSum;      /* checksum for stored values */
 } Adjust_Type;
 
