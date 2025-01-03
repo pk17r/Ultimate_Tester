@@ -1,0 +1,145 @@
+Partlist
+
+Exported from LiBatteryChargeBoostBoard.sch at 17-Dec-23 11:04 PM
+
+EAGLE Version 9.6.2 Copyright (c) 1988-2020 Autodesk, Inc.
+
+Assembly variant: 
+
+Part             Value              Device                                   Package                          Library       Sheet
+
+5V               TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+5V-0.2A          TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+5V-SWITCH                           HEADER-2PIN-0.1"P                        HEADER-2PIN-0.1"P                .MyComponents 1
+20MHZ            ECS-200-18-4X-CKM  CRYSTAL-20MHZ-ECS-200-18-4X-CKM          XTAL_ECS-200-18-4X-CKM           .MyComponents 1
+BATT+ON          TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+BATT+ON'         TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+BATT_PORT        S2B-PH-K-S         S2B-PH-K-S                               S2B-PH-K-S                       .MyComponents 1
+BUZZER           CMI-9605-0580T     BUZZER-ACTIVE-CMI-9605-0580T             BUZZER-ACTIVE-CMI-9605-0580T     .MyComponents 1
+C1               0.1uF              CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C2               1uF                CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C3               22pF               CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C4               10uF               CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C5               10uF               CAPACITOR1206                            1206                             .MyComponents 1
+C6               22uF-35V           CAPACITOR_SMD1206                        1206                             .MyComponents 1
+C7               22pF               CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C8               100nF              CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C9               100nF              CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C10              10uF               CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C12              10uF               CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C13              1nF                CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C14              NC/10pF            CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C15              NC/10pF            CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C16              100nF              CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C17              100nF              CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C21              1uF                CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C31              22uF-15V           CAPACITOR_SMD1206                        1206                             .MyComponents 1
+C41              0.1uF              CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C42              10nF               CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C43              100uF              EEEFN1E101UP                             CAP_EEEFN1E101UP                 .MyComponents 1
+C44              10uF               CAPACITOR_SMD0603                        0603                             .MyComponents 1
+C51              10uF-25V           CAPACITOR0603                            0603                             .MyComponents 1
+C52              10uF               CAPACITOR0603                            0603                             .MyComponents 1
+C53              10nFC0G            CAPACITOR_SMD0603                        0603                             .MyComponents 1
+CHARGING         BLUE               LED0603                                  0603-DIODE                       .MyComponents 1
+D1               PMBD6100           DIODE-DOUBLE-COMMON-CATHODE-PMBD6100,215 SOT-23-3                         .MyComponents 1
+D4               PMBD6100           DIODE-DOUBLE-COMMON-CATHODE-PMBD6100,215 SOT-23-3                         .MyComponents 1
+D5               CUS10S30           DIODE-SCHOTTKY-CUS10S30,H3F              SOD-323                          .MyComponents 1
+D31              SS34               DIODE-SCHOTTKY-SS34                      SMA                              .MyComponents 1
+D41              SMAJ15A            DIODE-TVS-SMA                            SMA                              .MyComponents 1
+D42              SS34               DIODE-SCHOTTKY-SS34                      SMA                              .MyComponents 1
+D53              PMEG3010EP         DIODE-SCHOTTKY-PMEG3010EP,115            SOD-128                          .MyComponents 1
+DISPLAY                             DISPLAY-1.3"-SH1106-I2C                  DISPLAY-1.3"-SH1106-I2C          .MyComponents 1
+E-FUSE-SWITCH                       HEADER-2PIN-0.1"P                        HEADER-2PIN-0.1"P                .MyComponents 1
+ESD_D1           SRV05-4MR6         SRV05-4MR6T1G                            SOT-23-6                         .MyComponents 1
+FAULT            RED                LED0603                                  0603-DIODE                       .MyComponents 1
+FLASHLIGHT       HEADER-2PIN-0.2"P  HEADER-2PIN-0.2"P                        HEADER-2PIN-0.2"P                .MyComponents 1
+GND              TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+GND1             TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+GND2             TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+GND3             TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+GND4             TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+I-SENSE-HEADER   CES-102-02-G-S-RA  HEADER-2PIN-0.1"P                        HEADER-2PIN-0.1"P                .MyComponents 1
+IC1-BATT-PROTECT XB8089D            XB8089D                                  SOIC-8-POWER-PAD                 .MyComponents 1
+IC2-CHARGER      BQ21040DB          BQ21040DBVR                              SOT-23-6                         .MyComponents 1
+IC3              MT3608             MT3608                                   SOT-23-6                         .MyComponents 1
+IC4-E-FUSE       TPS259630          TPS259621DDAR                            SOIC-8-POWER-PAD                 .MyComponents 1
+IC5-5V           LP2992IM5-5.0      LP2992IM5-5.0                            SOT-23-5                         .MyComponents 1
+IC6-I-SENSE      TMCS1108A4B        TMCS1108A4B-CURRENT-SENSE                SOIC-8                           .MyComponents 1
+ICSP             CES-103-01-T-D     HEADER-ICSP-0.1"P                        HEADER-ICSP-0.1"P                .MyComponents 1
+ILIMIT                              HEADER-3PIN-0.1"P                        HEADER-3PIN-0.1"P                .MyComponents 1
+L31              22uH               INDUCTOR-SMRH74-220MT                    INDUCTOR-SMRH74-220MT            .MyComponents 1
+LOGIC-PROBE                         HEADER-2PIN-0.1"P                        HEADER-2PIN-0.1"P                .MyComponents 1
+POW-SW           TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+POW~12V          RED                LED1206                                  1206-DIODE                       .MyComponents 1
+PWR-EN           TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+R1               1K                 RESISTOR_SMD0603                         0603                             .MyComponents 1
+R2               10K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R3               4K7                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R4               10K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R5               3K3                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R6               680                RESISTOR_SMD1206                         1206                             .MyComponents 1
+R7               51                 RESISTOR_SMD1206                         1206                             .MyComponents 1
+R8               100K               RESISTOR_SMD0603                         0603                             .MyComponents 1
+R9               680                RESISTOR_SMD1206                         1206                             .MyComponents 1
+R10              680                RESISTOR_SMD1206                         1206                             .MyComponents 1
+R11              470k               RESISTOR_SMD1206                         1206                             .MyComponents 1
+R12              470k               RESISTOR_SMD1206                         1206                             .MyComponents 1
+R13              470k               RESISTOR_SMD1206                         1206                             .MyComponents 1
+R14              10K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R15              100K               RESISTOR_SMD0603                         0603                             .MyComponents 1
+R16              10K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R17              3K3                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R18              10K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R19              10K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R20              10K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R21              1K                 RESISTOR_SMD0603                         0603                             .MyComponents 1
+R22              750                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R23              3.3K               RESISTOR_SMD0603                         0603                             .MyComponents 1
+R24              3.3K               RESISTOR_SMD0603                         0603                             .MyComponents 1
+R25              10K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R26              3.3K               RESISTOR_SMD0603                         0603                             .MyComponents 1
+R27              10K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R28              68R                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R29              10K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R30              10K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R31              2.2K               RESISTOR_SMD0603                         0603                             .MyComponents 1
+R32              18K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R33              0                  RESISTOR_SMD0603                         0603                             .MyComponents 1
+R34              10K-1%             RESISTOR_SMD0603                         0603                             .MyComponents 1
+R35              50K                ROTARY-POTENTIOMETER-3386P-1-503TLF      ROTARY-POTENTIOMETER-3386P       .MyComponents 1
+R36              10K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R37              22K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R38              7K5                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R41              82K5               RESISTOR_SMD0603                         0603                             .MyComponents 1
+R42              38K3               RESISTOR_SMD0603                         0603                             .MyComponents 1
+R43              10K                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R46              3K3                RESISTOR_SMD0603                         0603                             .MyComponents 1
+R47              1K                 RESISTOR_SMD0603                         0603                             .MyComponents 1
+R48              470                RESISTOR_SMD0603                         0603                             .MyComponents 1
+RD1              5K1-1%             RESISTOR_SMD0603                         0603                             .MyComponents 1
+RD2              5K1-1%             RESISTOR_SMD0603                         0603                             .MyComponents 1
+RILIM1           1K8-1%             RESISTOR_SMD0603                         0603                             .MyComponents 1
+RILIM2           560-1%             RESISTOR_SMD0603                         0603                             .MyComponents 1
+RISET            1K5-0.36A          RESISTOR_SMD0603                         0603                             .MyComponents 1
+ROTARY-ENCODER   PEC12R-3217F-S0024 PEC12R-3217F-S0024                       PEC12R-3217F-S0024               .MyComponents 1
+S1               POWER-SWITCH       SLIDE-SWITCH-SP3T-VER-TH-MINI            CSS-1310MC                       .MyComponents 1
+S2               TPS22995H          TPS22995H-Q1                             SOT-23-6                         .MyComponents 1
+S3               BC847C             BC847C                                   SOT-23-3                         .MyComponents 1
+S4               DMP1045U           DMP1045U                                 SOT-23-3                         .MyComponents 1
+S6               AS2312             AS2312AS2312                             SOT-23-3                         .MyComponents 1
+TP1                                 HEADER-3PIN-0.1"P                        HEADER-3PIN-0.1"P                .MyComponents 1
+TP2                                 HEADER-3PIN-0.1"P                        HEADER-3PIN-0.1"P                .MyComponents 1
+TP3                                 HEADER-3PIN-0.1"P                        HEADER-3PIN-0.1"P                .MyComponents 1
+TVS_D2           SMBJP6KE6.8A       SMBJP6KE6.8A-TP                          DIOM5336X244N                    .MyComponents 1
+U1               ATMEGA328P-AU-TQFP ATMEGA328P-AU-TQFP                       TQFP32                           .MyComponents 1
+USB-ON           ORANGE             LED0603                                  0603-DIODE                       .MyComponents 1
+USBC             10164359-00011LF   USB-C-RECEPTABLE-10164359-00011LF        USB-C-RECEPTABLE-1016435900011LF .MyComponents 1
+VBOOST           TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+VBOOST-SEL                          SLIDE-SWITCH-SPDT-VERTICLE-TH            SLW-883935-2A-D                  .MyComponents 1
+VIN              TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+VIN'             TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+VIN-ON           GREEN              LED0603                                  0603-DIODE                       .MyComponents 1
+VOUT             TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+VOUT'            TEST-POINT-TH      TEST-POINT-TH                            TEST-POINT-TH-1MM                .MyComponents 1
+VREF_SHUNT       LM4040AELT-2.5     LM4040AELT-2.5-SOT23                     SOT-23-3                         .MyComponents 1
