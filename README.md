@@ -1,11 +1,13 @@
 # Ultimate Tester!
 
-Pocket Sized Component Tester + LiPo Charge Boost Protect / USB-C Power Supply
+Pocket Sized Component Tester + Variable Power Source + Accurate Power Monitor in Arduino Uno Form Factor
 
 Full Blog Entry & Details:
 https://pk17r.wordpress.com/2023/12/18/ultimate-tester-component-tester-lipo-charge-boost-protect/
 
 <br>
+
+![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/20250103_055959.jpg?raw=true "Component Tester + Power Supply and Power Monitor")
 
 ![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/2.JPG?raw=true "Component Tester")
 
