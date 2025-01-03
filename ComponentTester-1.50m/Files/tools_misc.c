@@ -2555,10 +2555,10 @@ void PowerMonitor(void)
      /* get voltage */
     /* TP LOGIC consider voltage divider */
     Vmeter = ReadU(TP_LOGIC);          /* read voltage */
-    Value = (((int32_t)(LOGIC_PROBE_R1 + LOGIC_PROBE_R2) * 10000) / (LOGIC_PROBE_R2));  /* factor (0.0001) */
+    Value = (((int32_t)(LOGIC_PROBE_R1 + LOGIC_PROBE_R2) * 1000) / (LOGIC_PROBE_R2));  /* factor (0.0001) */
     Value *= Vmeter;                   /* voltage (0.001 mV) */
-    Value /= 10000;                       /* scale to mV */
-    Vmeter = (uint16_t)Value + BAT_OFFSET;          /* keep 2 bytes */
+    Value /= 1000;                       /* scale to mV */
+    Vmeter = (uint16_t)Value;          /* keep 2 bytes */
     // Voltage
     Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV() * INA_226_BUS_V_MULTIPLIER_e4 / 10000);
     // Current
@@ -2590,7 +2590,7 @@ void PowerMonitor(void)
 
     /* Show Battery or VoltMeter */
 
-    if(Vmeter < 50)
+    if(Vmeter < 100)
     {   // Show Battery/USB In Voltage
       if((Flag >> VMETER_ON_FLAG_POS) == 1)
       {   // VMeter was on, clear line and record VMeter turned off
@@ -2670,6 +2670,15 @@ void PowerMonitor(void)
       DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
       wait1000ms();
       DisplayLeftSideLabels();
+      // reset Voltmeter
+      if((Flag >> VMETER_ON_FLAG_POS) == 1)
+      {   // VMeter was on
+        Flag &= ~(1 << VMETER_ON_FLAG_POS);     // record VMeter Off in Flag
+      }
+      else
+      {   // VMeter was off
+        Flag |= (1 << VMETER_ON_FLAG_POS);     // record VMeter On in Flag
+      }
     }
   }
 
