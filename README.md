@@ -5,9 +5,19 @@ Pocket Sized Component Tester + LiPo Charge Boost Protect / USB-C Power Supply
 Full Blog Entry & Details:
 https://pk17r.wordpress.com/2023/12/18/ultimate-tester-component-tester-lipo-charge-boost-protect/
 
-![Alt text](1.png?raw=true "LiPo Charge Boost Protect / USB-C Power Supply")
 <br>
-![Alt text](2.JPG?raw=true "Component Tester")
+
+![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/2.JPG?raw=true "Component Tester")
+
+![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/1.png?raw=true "LiPo Charge Boost Protect / USB-C Power Supply")
+
+![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/20250103_011049.jpg?raw=true "Accurate INA226 Power Monitor with External Power Supply")
+
+![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/20250103_005226.jpg?raw=true "Accurate INA226 Power Monitor with Internal Power Supply")
+
+![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/20250103_011416.jpg?raw=true "Accurate INA226 Power Monitor along with Voltmeter")
+
+Ultimate Tester Schematics: https://github.com/pk17r/Ultimate_Tester/blob/prash/ComponentTester-1.54m/UltimateTester_PCB/UltimateTester_v1_with_mods.pdf
 
 <br>
 
