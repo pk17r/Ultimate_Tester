@@ -2465,8 +2465,11 @@ uint8_t PresentMainMenu(void)
     /* display "Select" */
     Display_ColoredEEString(Select_str, COLOR_TITLE);
   #else
-    // Display_EEString(Select_str);       /* display "Select" */
+	#ifndef BAT_NONE
     ShowBattery();                      /* display (line #1) battery status */
+	#else
+    Display_EEString(Select_str);       /* display "Select" */
+	#endif
   #endif
 
   ID = MenuTool(n, 1, Item_Str, NULL);  /* menu dialog */

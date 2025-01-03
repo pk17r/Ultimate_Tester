@@ -2499,6 +2499,12 @@ void DisplayLeftSideLabels()
   LCD_Clear();
 
   // Print Left Side Row Labels
+  // #ifndef TP_LOGIC
+    #ifdef BAT_NONE
+    LCD_CharPos(1, ROW_NO_BATTERY);
+    Display_EEString_Center(Power_Monitor_str);
+    #endif
+  // #endif
   LCD_CharPos(1, ROW_NO_VOUT);
   Display_Char('V'); Display_EEString(Out_str);
   LCD_CharPos(1, ROW_NO_CURRENT);
@@ -2516,16 +2522,15 @@ void PowerMonitor(void)
 {
   uint8_t           Flag;               /* loop control */
   uint8_t           Test;               /* user feedback */
-  uint16_t          Vout_mV = 0, Vmeter = 0;
+  uint16_t          Vout_mV = 0;
+  #ifdef TP_LOGIC
+  uint16_t          Vmeter = 0;
+  #endif
   int32_t           Isense = 0, Power = 0;
   static int32_t    Ioffset_local = 0;    // if user zero's IOUT, the zero offset will be stored here until tester power off
   unsigned char     Current_Unit = 'm', Power_Unit = 'm';
   int32_t           Value = 0;              /* temporary value */
   uint8_t           counter = 0;
-  // unsigned char power_str[6];
-  // memcpy(power_str, &Power_Monitor_str[0], 5);
-  // power_str[5] = '\0';
-
 
   /* local constants for Flag (bitfield) */
   #define RUN_FLAG            0b00000001     /* run / otherwise end */
@@ -2536,8 +2541,9 @@ void PowerMonitor(void)
   /*
    *  init
    */
-  ADC_DDR &= ~(1 << TP_BAT);          /* set pin to HiZ */
+  #ifdef TP_LOGIC
   ADC_DDR &= ~(1 << TP_LOGIC);          /* set pin to HiZ */
+  #endif
   Flag = INA226_setup();    //  INA226 setup error is 0 and setup good is 1.
 
   DisplayLeftSideLabels();
@@ -2555,11 +2561,13 @@ void PowerMonitor(void)
 
      /* get voltage */
     /* TP LOGIC consider voltage divider */
+    #ifdef TP_LOGIC
     Vmeter = ReadU(TP_LOGIC);          /* read voltage */
     Value = (((int32_t)(LOGIC_PROBE_R1 + LOGIC_PROBE_R2) * 1000) / (LOGIC_PROBE_R2));  /* factor (0.0001) */
     Value *= Vmeter;                   /* voltage (0.001 mV) */
     Value /= 1000;                       /* scale to mV */
     Vmeter = (uint16_t)Value;          /* keep 2 bytes */
+    #endif
     // Voltage
     Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV() * INA_226_BUS_V_MULTIPLIER_e4 / 10000);
     // Current
@@ -2586,20 +2594,30 @@ void PowerMonitor(void)
     }
 
     /* Show Battery or VoltMeter */
-
+    #ifdef TP_LOGIC
     if(Vmeter < 100)
-    {   // Show Battery/External Power Voltage
+    {
+      // Show Battery/External Power Voltage
       if((Flag >> VMETER_ON_FLAG_POS) == 1)
       {   // VMeter was on, clear line and record VMeter turned off
         LCD_ClearLine(1);
         Flag &= ~(1 << VMETER_ON_FLAG_POS);     // record VMeter Off in Flag
+        #ifdef BAT_NONE
+        LCD_CharPos(1, ROW_NO_BATTERY);
+        Display_EEString_Center(Power_Monitor_str);
+        #endif
       }
+      #endif
+      #ifndef BAT_NONE
       LCD_CharPos(1, ROW_NO_BATTERY);
       CheckBattery();
       ShowBattery();
+      #endif
+    #ifdef TP_LOGIC
     }
     else
-    {   // Show Volt Meter Voltage
+    {
+      // Show Volt Meter Voltage
       if((Flag >> VMETER_ON_FLAG_POS) == 0)
       {   // VMeter was off, clear line and record VMeter turned on
         LCD_ClearLine(1);
@@ -2609,6 +2627,7 @@ void PowerMonitor(void)
       }
       DisplayPMVoltageValue(Vmeter, ROW_NO_BATTERY);
     }
+    #endif
 
     /* display values */
 
@@ -2667,6 +2686,7 @@ void PowerMonitor(void)
       DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
       wait1000ms();
       DisplayLeftSideLabels();
+      #ifdef TP_LOGIC
       // reset Voltmeter
       if((Flag >> VMETER_ON_FLAG_POS) == 1)
       {   // VMeter was on
@@ -2676,6 +2696,7 @@ void PowerMonitor(void)
       {   // VMeter was off
         Flag |= (1 << VMETER_ON_FLAG_POS);     // record VMeter On in Flag
       }
+      #endif
     }
   }
 

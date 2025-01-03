@@ -935,7 +935,9 @@
     extern const unsigned char Power_Monitor_str[];
     extern const unsigned char Out_str[];
     extern const unsigned char Power_str[];
+    #ifdef TP_LOGIC
     extern const unsigned char VMeter_str[];
+    #endif
   #endif
 
   #ifdef SW_MENUITEM_TEST_COMPONENT

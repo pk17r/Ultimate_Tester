@@ -2861,8 +2861,10 @@ cycle_start:
 
   #ifdef MAINMENU_AT_POWER_ON
   /* skip first probing after power-on */
+  #ifndef BAT_NONE
   CheckBattery();                     /* check battery voltage */
                                       /* will power off on low battery */
+  #endif
   if (Key == KEY_POWER_ON)         /* first cycle */
   {
     Key = KEY_MAINMENU;            /* signal main menu */

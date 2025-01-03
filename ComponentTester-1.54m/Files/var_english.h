@@ -53,7 +53,9 @@
     const unsigned char Power_Monitor_str[] MEM_TYPE = "Power Monitor";
     const unsigned char Out_str[] MEM_TYPE = "OUT";
     const unsigned char Power_str[] MEM_TYPE = "Power";
+    #ifdef TP_LOGIC
     const unsigned char VMeter_str[] MEM_TYPE = "VMeter";
+    #endif
   #endif
 
   #ifdef SW_MENUITEM_TEST_COMPONENT
