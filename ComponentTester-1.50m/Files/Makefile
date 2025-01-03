@@ -23,14 +23,14 @@ PROJECT = ComponentTester
 # - ATmega 1284            : atmega1284
 # - ATmega 1284P           : atmega1284p
 # - ATmega 2560            : atmega2560
-MCU = atmega2560
+MCU = atmega328
 
 # MCU freqency:
 # - 1MHz  : 1
 # - 8MHz  : 8  
 # - 16MHz : 16
 # - 20MHz : 20
-FREQ = 16
+FREQ = 20
 
 # oscillator type
 # - internal RC oscillator      : RC
@@ -70,7 +70,7 @@ endif
 # - ATmega 1284   : m1284
 # - ATmega 1284P  : m1284p
 # - ATmega 2560   : m2560
-PARTNO = m2560
+PARTNO = m328p
 
 # avrdude: ISP programmer, port and options
 

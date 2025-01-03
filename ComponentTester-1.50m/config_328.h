@@ -897,8 +897,6 @@
 #define TP_BAT           ((1<<MUX2)|(1<<MUX1))       /* test pin for battery (4:1 voltage divider) */  //ADC6
 #define TP_LOGIC         PC4       /* test pin for Logic Probe (4:1 voltage divider) */
 #define TP_CAP           PC9       /* test pin for self-adjustment cap */
-#define TP_I_MEASURE     ((1<<MUX2)|(1<<MUX1)|(1<<MUX0))		//ADC7
-#define TP_VOUT          PC0       /* test pin for VOUT measurement (4:1 voltage divider) */
 
 
 /*

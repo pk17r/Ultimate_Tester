@@ -68,7 +68,7 @@
  *  - uncomment to enable
  */
 
-//#define HW_INCDEC_KEYS
+// #define HW_INCDEC_KEYS
 
 
 /*
@@ -314,9 +314,9 @@
  *  - uncomment to enable and adjust resistor values
  */
 
-// #define HW_LOGIC_PROBE
-#define LOGIC_PROBE_R1        10000
-#define LOGIC_PROBE_R2        3300
+// #define HW_LOGIC_PROBE     //  R1=220000, R2=22000 can measure voltages upto 55V safely
+#define LOGIC_PROBE_R1        10000   // 218500         // 10000
+#define LOGIC_PROBE_R2        3300    // 21990          // 3300
 
 
 /*
@@ -376,8 +376,13 @@
 /*
  *  INA226 Power Monitor
  *  - Measure Out Voltage, Current and Power
+ *  - Displays Battery/External Power Voltage on first line
+ *  - If Voltmeter is in use then first line changes to Voltmeter Measurement while in usage
+ *  - Long Press to zero Current Out Value ultil power off
+ *  - Sets INA226 in pre-calculated calibration setting with Shunt Resistance of 21 milli Ohms and Max Measurable Current value of 3 Amperes and averaging of 16 ADC samples per measurement
+ *  - If you want to change Shunt Resistance value or Max Measurable Current Value then use INA226_setMaxCurrentShunt function in INA226.c to calculate new INA_226_CALIBRATION_VAL and INA_226_MICRO_CURRENT_LSB
+ *  - INA226.c file can be directly used with Arduino Uno with Serial Print statements enabled for any changes in pre-set values
  *  - requires I2C bus with read capability
- *  - Long Press to zero Current Out Value
  *  - uncomment to enable
  */
 
@@ -390,7 +395,6 @@
   #define INA_226_I_OFFSET_MICROA			  -300      /* Excess offset current in microamps measured on shunt  */
   #define INA_226_BUS_V_MULTIPLIER_e4   9849      /* Bus Voltage Calibration */
   #define I2C_RW                                  /* Requires I2C Read Support  */
-  // #define INA_226_SELF_ADJUST_CURRENT             /* Option to add Current Self Adjustment and find out INA_226_I_OFFSET_MICROA */
 #endif
 
 
@@ -684,7 +688,7 @@
  */
 
 #define SW_MONITOR_R          /* just R */
-// #define SW_MONITOR_C          /* just C plus ESR */
+#define SW_MONITOR_C          /* just C plus ESR */
 //#define SW_MONITOR_L          /* just L */
 // #define SW_MONITOR_RCL        /* R plus L, or C plus ESR */
 //#define SW_MONITOR_RL         /* R plus L */
@@ -1281,8 +1285,8 @@
  *  - uncomment one
  */ 
 
-#define DATA_EEPROM           /* store data in EEPROM */
-//#define DATA_FLASH            /* store data in Flash */
+// #define DATA_EEPROM           /* store data in EEPROM */
+#define DATA_FLASH            /* store data in Flash */
 
 
 
@@ -1302,7 +1306,7 @@
  */
 
 #define POWER_SWITCH_SOFT
-//#define POWER_SWITCH_MANUAL
+// #define POWER_SWITCH_MANUAL
 
 
 /*
@@ -1313,8 +1317,8 @@
  *  - uncomment one of the modes
  */
 
-//#define BAT_NONE
-//#define BAT_DIRECT
+// #define BAT_NONE
+// #define BAT_DIRECT
 #define BAT_DIVIDER
 
 
@@ -1352,7 +1356,7 @@
 
 #define BAT_OFFSET       31
 #define USB_OFFSET       188
-#define EXT_POW_IDENTIFIER       4400
+#define EXT_POW_IDENTIFIER      4400    // 6400           // 4400
 
 
 /*
@@ -1511,7 +1515,7 @@
  *  - uncomment to enable
  */
 
-//#define ADC_LARGE_BUFFER_CAP
+// #define ADC_LARGE_BUFFER_CAP
 
 
 
@@ -1610,8 +1614,8 @@
  */
 
 #define I2C_BITBANG                /* bit-bang I2C */
-//#define I2C_HARDWARE               /* MCU's hardware TWI */
-//#define I2C_STANDARD_MODE          /* 100kHz bus speed */
+// #define I2C_HARDWARE               /* MCU's hardware TWI */
+// #define I2C_STANDARD_MODE          /* 100kHz bus speed */
 #define I2C_FAST_MODE              /* 400kHz bus speed */
 // #define I2C_RW                     /* enable I2C read support (untested) */
 

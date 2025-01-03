@@ -83,8 +83,9 @@ uint16_t INA226__readRegister(uint8_t reg)
     #endif
     return I2C_ERROR;
   }
+  I2C_Stop();
   /* repeated start condition */
-  if(I2C_Start(I2C_REPEATED_START) == I2C_ERROR) {
+  if(I2C_Start(I2C_START) == I2C_ERROR) {
     #ifdef INA226_DEBUG_PRINTS
     Serial.print("INA226__readRegister I2C_Start2 Error\n");
     #endif
@@ -404,7 +405,7 @@ uint8_t INA226_setup() {
     #ifdef INA226_DEBUG_PRINTS
     Serial.print("****** INA226_isConnected() ERROR! ******\n");
     #endif
-    return I2C_ERROR;
+    return 5;
   }
 
   // set calibration value
@@ -412,7 +413,7 @@ uint8_t INA226_setup() {
     #ifdef INA226_DEBUG_PRINTS
     Serial.print("****** INA226_CALIBRATION ERROR! ******\n");
     #endif
-    return I2C_ERROR;
+    return 6;
   }
 
   // set averaging
@@ -432,7 +433,7 @@ uint8_t INA226_setup() {
   mask |= (2 << 9);     //    INA226_16_SAMPLES   = 2,
 
   if(INA226__writeRegister(INA226_CONFIGURATION, mask) == I2C_ERROR)
-    return I2C_ERROR;
+    return 7;
 
   return I2C_OK;
 }

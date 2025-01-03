@@ -36,7 +36,7 @@
  *    to match your rotary encoder
  */
 
-// #define HW_ENCODER
+#define HW_ENCODER
 
 
 /*
@@ -68,7 +68,7 @@
  *  - uncomment to enable
  */
 
-#define HW_INCDEC_KEYS
+// #define HW_INCDEC_KEYS
 
 
 /*
@@ -315,8 +315,8 @@
  */
 
 // #define HW_LOGIC_PROBE     //  R1=220000, R2=22000 can measure voltages upto 55V safely
-#define LOGIC_PROBE_R1        218500         // 10000
-#define LOGIC_PROBE_R2        21990          // 3300
+#define LOGIC_PROBE_R1        10000   // 218500         // 10000
+#define LOGIC_PROBE_R2        3300    // 21990          // 3300
 
 
 /*
@@ -1318,8 +1318,8 @@
  */
 
 // #define BAT_NONE
-#define BAT_DIRECT
-// #define BAT_DIVIDER
+// #define BAT_DIRECT
+#define BAT_DIVIDER
 
 
 /*
@@ -1356,7 +1356,7 @@
 
 #define BAT_OFFSET       31
 #define USB_OFFSET       188
-#define EXT_POW_IDENTIFIER       6400           // 4400
+#define EXT_POW_IDENTIFIER      4400    // 6400           // 4400
 
 
 /*
@@ -1515,7 +1515,7 @@
  *  - uncomment to enable
  */
 
-#define ADC_LARGE_BUFFER_CAP
+// #define ADC_LARGE_BUFFER_CAP
 
 
 
@@ -1613,9 +1613,9 @@
  *  - uncomment one of the bus speed modes
  */
 
-// #define I2C_BITBANG                /* bit-bang I2C */
-#define I2C_HARDWARE               /* MCU's hardware TWI */
-//#define I2C_STANDARD_MODE          /* 100kHz bus speed */
+#define I2C_BITBANG                /* bit-bang I2C */
+// #define I2C_HARDWARE               /* MCU's hardware TWI */
+// #define I2C_STANDARD_MODE          /* 100kHz bus speed */
 #define I2C_FAST_MODE              /* 400kHz bus speed */
 // #define I2C_RW                     /* enable I2C read support (untested) */
 
