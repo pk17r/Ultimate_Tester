@@ -395,7 +395,6 @@
   #define INA_226_I_OFFSET_MICROA			  -300      /* Excess offset current in microamps measured on shunt  */
   #define INA_226_BUS_V_MULTIPLIER_e4   9849      /* Bus Voltage Calibration */
   #define I2C_RW                                  /* Requires I2C Read Support  */
-  // #define INA_226_SELF_ADJUST_CURRENT             /* Option to add Current Self Adjustment and find out INA_226_I_OFFSET_MICROA */
 #endif
 
 

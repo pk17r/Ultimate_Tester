@@ -116,10 +116,6 @@ void SetAdjustmentDefaults(void)
   /* this triggers the touch adjustment at startup */
   #endif
 
-  #ifdef INA_226_SELF_ADJUST_CURRENT
-  NV.Ioffset = INA_226_I_OFFSET_MICROA;
-  #endif
-
 }
 
 
@@ -498,12 +494,6 @@ void ShowAdjustmentValues(void)
   Display_NL_EEString_Space(CompOffset_str);      /* display: AComp */
   Display_SignedValue(NV.CompOffset, -3, 'V');    /* display offset */
 
-  #ifdef INA_226_SELF_ADJUST_CURRENT
-  /* display offset of analog comparator (value is in uA) */
-  Display_NL_EEString_Space(Ioffset_str);        /* display: Ioffset */
-  Display_SignedValue(NV.Ioffset, 0, 'u'); Display_Char('A');    /* display offset */
-  #endif
-
   WaitKey();                  /* let the user read */
 }
 
@@ -555,13 +545,6 @@ uint8_t SelfAdjustment(void)
   uint8_t           RefCounter = 0;     /* number of ref/offset runs */
   #endif
 
-  #ifdef INA_226_SELF_ADJUST_CURRENT
-  int32_t           Isense;
-  int32_t           IoffsetSum = 0;   /* sum of Offset in Isense IC output */
-  I2C_Setup();
-  INA226_setup();
-  #endif
-
   #ifdef HW_ADJUST_CAP
     Step = 1;            /* start with step #1 */
   #else
@@ -580,11 +563,7 @@ uint8_t SelfAdjustment(void)
     Step = 10;                /* skip adjustment */
   }
 
-  #ifdef INA_226_SELF_ADJUST_CURRENT
-  while (Step <= 7)      /* loop through steps */
-  #else
   while (Step <= 6)      /* loop through steps */
-  #endif
   {
     Flag = 1;            /* reset loop counter */
 
@@ -845,24 +824,6 @@ uint8_t SelfAdjustment(void)
           }
 
           break;
-        #ifdef INA_226_SELF_ADJUST_CURRENT
-        case 7:     /* Power Meter Current Offset */
-          #ifdef UI_TEST_PAGEMODE
-          if (Flag == 1)                     /* first run */
-          #endif
-          Display_EEString(Power_Monitor_str);
-          #ifndef UI_TEST_PAGEMODE
-          Display_NextLine();
-          Display_EEString_Space(Ioffset_str);
-          #endif
-          Isense = INA226_getCurrent_uA();
-          #ifndef UI_TEST_PAGEMODE
-          Display_SignedValue(Isense, 0, 'u'); Display_Char('A');
-          #endif
-          IoffsetSum += Isense;
-          DisplayFlag = 0;                   /* reset flag */
-          break;
-        #endif
       }
 
       /* reset ports to defaults */
@@ -975,10 +936,6 @@ uint8_t SelfAdjustment(void)
       Flag++;                 /* adjustment done */
     }
   }
-
-  #ifdef INA_226_SELF_ADJUST_CURRENT
-  NV.Ioffset = IoffsetSum / 5;
-  #endif
 
   #ifdef HW_ADJUST_CAP
   if (RefCounter != 5)        /* we expect 5 successful runs */

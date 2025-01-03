@@ -54,9 +54,6 @@
     const unsigned char Out_str[] MEM_TYPE = "OUT";
     const unsigned char Power_str[] MEM_TYPE = "Power";
     const unsigned char VMeter_str[] MEM_TYPE = "VMeter";
-    #ifdef INA_226_SELF_ADJUST_CURRENT
-    const unsigned char Ioffset_str[] MEM_TYPE = "IOff";
-    #endif
   #endif
 
   #ifdef SW_MENUITEM_TEST_COMPONENT

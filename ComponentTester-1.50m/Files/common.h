@@ -515,10 +515,6 @@ typedef struct
   int8_t            CompOffset;    /* voltage offset of analog comparator (mV) */
   uint8_t           Contrast;      /* contrast value of display */
 
-  #ifdef INA_226_SELF_ADJUST_CURRENT
-  int32_t           Ioffset;     /* sum of Offset in INA226 current measurement */
-  #endif
-
   uint8_t           CheckSum;      /* checksum for stored values */
 } Adjust_Type;
 
