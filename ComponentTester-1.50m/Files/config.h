@@ -376,8 +376,13 @@
 /*
  *  INA226 Power Monitor
  *  - Measure Out Voltage, Current and Power
+ *  - Displays Battery/External Power Voltage on first line
+ *  - If Voltmeter is in use then first line changes to Voltmeter Measurement while in usage
+ *  - Long Press to zero Current Out Value ultil power off
+ *  - Sets INA226 in pre-calculated calibration setting with Shunt Resistance of 21 milli Ohms and Max Measurable Current value of 3 Amperes and averaging of 16 ADC samples per measurement
+ *  - If you want to change Shunt Resistance value or Max Measurable Current Value then use INA226_setMaxCurrentShunt function in INA226.c to calculate new INA_226_CALIBRATION_VAL and INA_226_MICRO_CURRENT_LSB
+ *  - INA226.c file can be directly used with Arduino Uno with Serial Print statements enabled for any changes in pre-set values
  *  - requires I2C bus with read capability
- *  - Long Press to zero Current Out Value
  *  - uncomment to enable
  */
 

@@ -2517,7 +2517,8 @@ void PowerMonitor(void)
   uint8_t           Flag;               /* loop control */
   uint8_t           Test;               /* user feedback */
   uint16_t          Vout_mV = 0, Vmeter = 0;
-  int32_t           Isense = 0, Power = 0, Ioffset_local = 0;
+  int32_t           Isense = 0, Power = 0;
+  static int32_t    Ioffset_local = 0;    // if user zero's IOUT, the zero offset will be stored here until tester power off
   unsigned char     Current_Unit = 'm', Power_Unit = 'm';
   int32_t           Value = 0;              /* temporary value */
   uint8_t           counter = 0;
@@ -2591,7 +2592,7 @@ void PowerMonitor(void)
     /* Show Battery or VoltMeter */
 
     if(Vmeter < 100)
-    {   // Show Battery/USB In Voltage
+    {   // Show Battery/External Power Voltage
       if((Flag >> VMETER_ON_FLAG_POS) == 1)
       {   // VMeter was on, clear line and record VMeter turned off
         LCD_ClearLine(1);
