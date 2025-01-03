@@ -223,19 +223,49 @@ int32_t INA226_getCurrent_uA(void)
 
 /*  CALIBRATION
  *  
- *  Pre-calculated values:
+ *  Pre-calculated values using INA226_setMaxCurrentShunt(Imax_input, Resistance_Shunt_Ohms, 1)
  *  
- *  Imax_input = 3A, Resistance_Shunt_Ohms = 0.022
+ *  Resistance_Shunt_Ohms = 0.021     (Used)
  *  
- *  normalize:	 true
- *  initial current_LSB:	91.6 uA / bit
- *  Pre-scale current_LSB:	91.6 uA / bit
- *  After scale current_LSB:	100.0 uA / bit
- *  Final current_LSB:	100.0 uA / bit
- *  Calibration:	2327
- *  Max current:	3.277 A
- *  Shunt:	0.0220 Ohm
- *  ShuntV:	0.0660 Volt
+
+Imax_input = 3A
+*********************************************************
+	Use INA_226_MICRO_CURRENT_LSB = 100
+	Use INA_226_CALIBRATION_VAL = 2438
+	Max current = 3.277
+*********************************************************
+
+ *  
+ *  Resistance_Shunt_Ohms = 0.100     (Found on popular INA226 Modules)
+ *  
+
+Imax_input = 0.75A
+*********************************************************
+	Use INA_226_MICRO_CURRENT_LSB = 50
+	Use INA_226_CALIBRATION_VAL = 1024
+	Max current = 1.638
+*********************************************************
+
+ *  
+ *  Resistance_Shunt_Ohms = 0.010
+ *  
+
+Imax_input = 5A
+*********************************************************
+	Use INA_226_MICRO_CURRENT_LSB = 200
+	Use INA_226_CALIBRATION_VAL = 2560
+	Max current = 6.554
+*********************************************************
+
+ *  
+ *  Resistance_Shunt_Ohms = 0.001
+ *  
+Imax_input = 5A
+*********************************************************
+	Use INA_226_MICRO_CURRENT_LSB = 200
+	Use INA_226_CALIBRATION_VAL = 25600
+	Max current = 6.554
+*********************************************************
  *  
  */
 /*#define printdebug
@@ -258,9 +288,22 @@ uint16_t INA226_setMaxCurrentShunt(float maxCurrent, float shunt, uint8_t normal
   //  fix #16 - datasheet 6.5 Electrical Characteristics
   //            rounded value to 80 mV
   float shuntVoltage = maxCurrent * shunt;
-  if (shuntVoltage > 0.080)         return INA226_ERR_SHUNTVOLTAGE_HIGH;
-  if (maxCurrent < 0.001)           return INA226_ERR_MAXCURRENT_LOW;
-  if (shunt < INA226_MINIMAL_SHUNT) return INA226_ERR_SHUNT_LOW;
+  if (shuntVoltage > 0.080) {
+    Serial.println("*** CALIBRATION ERROR ***");
+    Serial.print("shuntVoltage = maxCurrent * shunt = "); Serial.println(shuntVoltage);
+    Serial.print("[shuntVoltage = "); Serial.print(shuntVoltage); Serial.println("] > Max Value 0.080 V");
+    return INA226_ERR_SHUNTVOLTAGE_HIGH;
+  }
+  if (maxCurrent < 0.001) {
+    Serial.println("*** CALIBRATION ERROR ***");
+    Serial.print("[maxCurrent = "); Serial.print(maxCurrent); Serial.println("] < Min Value 0.001 A");
+    return INA226_ERR_MAXCURRENT_LOW;
+  }
+  if (shunt < INA226_MINIMAL_SHUNT) {
+    Serial.println("*** CALIBRATION ERROR ***");
+    Serial.print("[shunt = "); Serial.print(shunt); Serial.print("] < Min Value"); Serial.print(INA226_MINIMAL_SHUNT); Serial.println(" Ohms");
+    return INA226_ERR_SHUNT_LOW;
+  }
 
   float _current_LSB = maxCurrent * 3.0517578125e-5;      //  maxCurrent / 32768;
 
@@ -345,13 +388,18 @@ uint16_t INA226_setMaxCurrentShunt(float maxCurrent, float shunt, uint8_t normal
     _current_LSB *= 2;
     calib >>= 1;
   }
-  micro_current_LSB = (uint16_t)(_current_LSB * 1e6);
-  Serial.print("micro_current_LSB = "); Serial.println(micro_current_LSB);
-  Serial.print("\ncalib = "); Serial.println(calib); Serial.print("\n");
-  INA226__writeRegister(INA226_CALIBRATION, calib);
-
+  uint16_t micro_current_LSB = (uint16_t)(_current_LSB * 1e6);
   float _maxCurrent = _current_LSB * 32768;
   float _shunt = shunt;
+
+  Serial.println();
+  Serial.println("*********************************************************");
+  Serial.print("\tUse INA_226_MICRO_CURRENT_LSB = "); Serial.println(micro_current_LSB);
+  Serial.print("\tUse INA_226_CALIBRATION_VAL = "); Serial.println(calib);
+  Serial.print("\tMax current = "); Serial.println(_maxCurrent, 3);
+  Serial.println("*********************************************************");
+  Serial.println();
+  INA226__writeRegister(INA226_CALIBRATION, calib);
 
 #ifdef printdebug
   Serial.print("Final current_LSB:\t");

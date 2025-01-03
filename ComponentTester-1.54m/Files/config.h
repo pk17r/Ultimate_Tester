@@ -377,11 +377,11 @@
  *  INA226 Power Monitor
  *  - Measure Out Voltage, Current and Power
  *  - Displays Battery/External Power Voltage on first line
- *  - If Voltmeter is in use then first line changes to Voltmeter Measurement while in usage
+ *  - If Voltmeter (Logic Probe) is in use then first line changes to Voltmeter (Logic Probe) Measurement while in usage
  *  - Long Press to zero Current Out Value ultil power off
- *  - Sets INA226 in pre-calculated calibration setting with Shunt Resistance of 21 milli Ohms and Max Measurable Current value of 3 Amperes and averaging of 16 ADC samples per measurement
+ *  - Sets INA226 in pre-calculated calibration setting with Shunt Resistance of 21 milli Ohms and Max Measurable Current value of 3 Amperes, with averaging of 16 ADC samples per measurement
  *  - If you want to change Shunt Resistance value or Max Measurable Current Value then use INA226_setMaxCurrentShunt function in INA226.c to calculate new INA_226_CALIBRATION_VAL and INA_226_MICRO_CURRENT_LSB
- *  - INA226.c file can be directly used with Arduino Uno with Serial Print statements enabled for any changes in pre-set values
+ *  - INA226.c file can be used with Arduino Uno with Serial Print statements enabled for any changes in pre-set values
  *  - requires I2C bus with read capability
  *  - uncomment to enable
  */
@@ -391,9 +391,9 @@
 #ifdef INA226_POWER_MONITOR
   #define INA_226_I2C_ADDR              0x40      /* A0=GND, A1=GND  */
   #define INA_226_MICRO_CURRENT_LSB     100       /* current_LSB = 100.0 uA / bit. Computed using INA226_setMaxCurrentShunt(2, 0.021, 1). Inputs: maxCurrent=2A, shunt=0.021Ohms, normalize=1   */
-  #define INA_226_CALIBRATION_VAL       2438      /* Input to INA226. Computed using INA226_setMaxCurrentShunt(2, 0.021, 1). Inputs: maxCurrent=2A, shunt=0.021Ohms, normalize=1   */
-  #define INA_226_I_OFFSET_MICROA			  -300      /* Excess offset current in microamps measured on shunt  */
-  #define INA_226_BUS_V_MULTIPLIER_e4   9849      /* Bus Voltage Calibration */
+  #define INA_226_CALIBRATION_VAL       2438      /* Input to INA226. Computed using commented function INA226_setMaxCurrentShunt(3, 0.021, 1). Inputs: maxCurrent=3A, shunt=0.021Ohms, normalize=1   */
+  #define INA_226_I_OFFSET_MICROA      -300       /* Offset current in microamps on shunt at no load that is added to measurement to make it zero */
+  #define INA_226_BUS_V_MULTIPLIER_e4   9849      /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements */
   #define I2C_RW                                  /* Requires I2C Read Support  */
 #endif
 
