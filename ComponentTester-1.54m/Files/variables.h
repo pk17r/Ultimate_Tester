@@ -651,7 +651,9 @@
   extern const unsigned char Failed1_str[];
   extern const unsigned char Failed2_str[];
   extern const unsigned char Done_str[];
+  #ifndef MAINMENU_SHOW_BATTERY_AT_TOP
   extern const unsigned char Select_str[];
+  #endif
   extern const unsigned char Adjustment_str[];
   extern const unsigned char Save_str[];
   extern const unsigned char Load_str[];

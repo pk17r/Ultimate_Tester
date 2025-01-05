@@ -1480,7 +1480,9 @@ uint8_t MenuTool(uint8_t Items, uint8_t Type, void *Menu[], unsigned char *Unit)
   Display_UseTitleColor();    /* use title color */
   #endif
 
-  // Display_Colon();            /* display: <whatever>: */
+  #ifndef MAINMENU_SHOW_BATTERY_AT_TOP
+  Display_Colon();            /* display: <whatever>: */
+  #endif
 
   #ifdef UI_COLORED_TITLES
   Display_UseOldColor();      /* use old color */
@@ -2461,15 +2463,15 @@ uint8_t PresentMainMenu(void)
    */
 
   LCD_Clear();
-  #ifdef UI_COLORED_TITLES
-    /* display "Select" */
-    Display_ColoredEEString(Select_str, COLOR_TITLE);
-  #else
-	#ifndef BAT_NONE
+  #ifdef MAINMENU_SHOW_BATTERY_AT_TOP
     ShowBattery();                      /* display (line #1) battery status */
-	#else
-    Display_EEString(Select_str);       /* display "Select" */
-	#endif
+  #else
+    #ifdef UI_COLORED_TITLES
+      /* display "Select" */
+      Display_ColoredEEString(Select_str, COLOR_TITLE);
+    #else
+      Display_EEString(Select_str);       /* display "Select" */
+    #endif
   #endif
 
   ID = MenuTool(n, 1, Item_Str, NULL);  /* menu dialog */

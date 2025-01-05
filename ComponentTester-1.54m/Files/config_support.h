@@ -3,7 +3,7 @@
  *   support for global configuration
  *
  *   (c) 2012-2024 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz Kübbeler
+ *   based on code from Markus Frejek and Karl-Heinz Kï¿½bbeler
  *
  * ************************************************************************ */
 
@@ -62,7 +62,7 @@
 
 
 /*
- *  number of MCU cycles per µs
+ *  number of MCU cycles per ï¿½s
  *  - min. 1 (for 1MHz)
  *  - max. 20 (for 20MHz)
  */
@@ -515,6 +515,11 @@
   /* no need for battery status in last line */
   #ifdef UI_BATTERY_LASTLINE
     #undef UI_BATTERY_LASTLINE
+  #endif
+
+  /* no need for battery status in mainmenu first line */
+  #ifdef MAINMENU_SHOW_BATTERY_AT_TOP
+    #undef MAINMENU_SHOW_BATTERY_AT_TOP
   #endif
 
 #endif

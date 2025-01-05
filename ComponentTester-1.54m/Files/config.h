@@ -1213,6 +1213,14 @@
 
 
 /*
+ *  show battery as first line of main menu. replaces 'Select:' string
+ *  - uncomment to enable
+ */
+
+#define MAINMENU_SHOW_BATTERY_AT_TOP
+
+
+/*
  *  main menu: power off tester
  *  - uncomment to enable
  */

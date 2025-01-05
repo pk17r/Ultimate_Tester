@@ -31,7 +31,9 @@
   const unsigned char Failed1_str[] MEM_TYPE = "No component";
   const unsigned char Failed2_str[] MEM_TYPE = "found!";
   const unsigned char Done_str[] MEM_TYPE = "done!";
+  #ifndef MAINMENU_SHOW_BATTERY_AT_TOP
   const unsigned char Select_str[] MEM_TYPE = "Select";
+  #endif
   const unsigned char Adjustment_str[] MEM_TYPE = "Adjustment";
   const unsigned char Save_str[] MEM_TYPE = "Save";
   const unsigned char Load_str[] MEM_TYPE = "Load";
