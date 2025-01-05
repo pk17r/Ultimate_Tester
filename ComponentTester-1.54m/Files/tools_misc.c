@@ -2443,6 +2443,7 @@ void Flashlight(void)
 #define REG_VAL_DISP_CHARS       6
 #define X_START_VALUE           (UI.CharMax_X - REG_VAL_DISP_CHARS + 1)
 #define VMETER_ON_FLAG_POS    7
+#define BUZZER_BEEP_ON_FLAG_POS    6
 #define ROW_NO_BATTERY      1
 #define ROW_NO_VOUT         2
 #define ROW_NO_CURRENT      3
@@ -2546,6 +2547,8 @@ void PowerMonitor(void)
   #endif
   Flag = INA226_setup();    //  INA226 setup error is 0 and setup good is 1.
 
+  Flag |= (1 << BUZZER_BEEP_ON_FLAG_POS);     // turn on flag to beep buzzer when power threshold is crossed
+
   DisplayLeftSideLabels();
 
   /*
@@ -2645,6 +2648,25 @@ void PowerMonitor(void)
 
     DisplaySignedPMValue(Power, Power_Unit, 'W', ROW_NO_POWER);
 
+    #ifdef HW_BUZZER
+    if((Flag >> BUZZER_BEEP_ON_FLAG_POS) == 1)
+    {
+      if(((Power_Unit == 'W') && (Power >= INA_226_P_THRESHOLD_mW_BUZZER)) || ((Power_Unit == 'm') && (Power / 1000 >= INA_226_P_THRESHOLD_mW_BUZZER)))
+      {
+        /* buzzer: short beep to indicate over threshold power */
+        #ifdef BUZZER_ACTIVE
+        BUZZER_PORT |= (1 << BUZZER_CTRL);       /* enable: set pin high */
+        MilliSleep(20);                          /* wait for 20 ms */
+        BUZZER_PORT &= ~(1 << BUZZER_CTRL);      /* disable: set pin low */
+        #endif
+
+        #ifdef BUZZER_PASSIVE
+        PassiveBuzzer(BUZZER_FREQ_LOW);          /* low frequency beep */
+        #endif
+      }
+    }
+    #endif
+
     /*
      *  user feedback
      */
@@ -2655,6 +2677,13 @@ void PowerMonitor(void)
     if (Test == KEY_TWICE)         /* two short key presses */
     {
       Flag = 0;                    /* end loop */
+    }
+    else if(Test == KEY_SHORT)
+    {
+      if((Flag >> BUZZER_BEEP_ON_FLAG_POS) == 1)
+        Flag &= ~(1 << BUZZER_BEEP_ON_FLAG_POS);    // turn off buzzer beeps when power threshold is crossed
+      else
+        Flag |= (1 << BUZZER_BEEP_ON_FLAG_POS);     // turn on buzzer beeps when power threshold is crossed
     }
     else if (Test == KEY_LONG)      /* long press -> zero current offset */
     {
@@ -2716,6 +2745,7 @@ void PowerMonitor(void)
 #undef REG_VAL_DISP_CHARS
 #undef X_START_VALUE
 #undef VMETER_ON_FLAG_POS
+#undef BUZZER_BEEP_ON_FLAG_POS
 #undef ROW_NO_BATTERY
 #undef ROW_NO_VOUT
 #undef ROW_NO_CURRENT

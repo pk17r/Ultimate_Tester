@@ -379,7 +379,7 @@
  *  - Displays Battery/External Power Voltage on first line
  *  - If Voltmeter (Logic Probe) is in use then first line changes to Voltmeter (Logic Probe) Measurement while in usage
  *  - Long Press to zero Current Out Value ultil power off
- *  - Sets INA226 in pre-calculated calibration setting with Shunt Resistance of 21 milli Ohms and Max Measurable Current value of 3 Amperes, with averaging of 16 ADC samples per measurement
+//  *  - Sets INA226 in pre-calculated calibration setting with Shunt Resistance of 21 milli Ohms and Max Measurable Current value of 3 Amperes, with averaging of 16 ADC samples per measurement
  *  - If you want to change Shunt Resistance value or Max Measurable Current Value then use INA226_setMaxCurrentShunt function in INA226.c to calculate new INA_226_CALIBRATION_VAL and INA_226_MICRO_CURRENT_LSB
  *  - INA226.c file can be used with Arduino Uno with Serial Print statements enabled for any changes in pre-set values
  *  - requires I2C bus with read capability
@@ -394,6 +394,7 @@
   #define INA_226_CALIBRATION_VAL       2438      /* Input to INA226. Computed using commented function INA226_setMaxCurrentShunt(3, 0.021, 1). Inputs: maxCurrent=3A, shunt=0.021Ohms, normalize=1   */
   #define INA_226_I_OFFSET_MICROA      -300       /* Offset current in microamps on shunt at no load that is added to measurement to make it zero */
   #define INA_226_BUS_V_MULTIPLIER_e4   9849      /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements */
+  #define INA_226_P_THRESHOLD_mW_BUZZER   2500    /* Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beep. */
   #define I2C_RW                                  /* Requires I2C Read Support  */
 #endif
 

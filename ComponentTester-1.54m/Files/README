@@ -2190,18 +2190,29 @@ Hints:
 INA226 is an Ultra-Precise Output Current, Voltage and Power Monitor with 
 Alert. It can measure bus voltages between 0-36V. It outputs 16-Bit measure-
 ments over I2C. It can be used for High-side or Low-side sensing. It operates
-with 2.7V-5.5V power supply. For precise measurements, connect INA226's VCC
-with stable 5V and add 1microF and 100nanoF capacitors between VCC and GND.
-It only uses 0.4mA of current for operation.
+with 2.7V-5.5V power supply.
+
+Functionality of Power Monitor Menu Item -
+  - Displays measured VOUT, IOUT and Power on lines 2, 3 and 4, respectively
+  - Value units automatically switch between V/A/W and mV/mA/mW
+  - Buzzer beeps if Power crosses a preset threshold. Single Test Button press
+    will disable/enable the beeps
+  - Displays Battery voltage on line 1
+  - If TP_LOGIC is defined and it measures a voltage then first line changes
+    to VMeter until the voltage is present across Logic Probe resistors
+  - Long press will zero out current IOUT value until device power-off
+  - Displays negative current and power values. Voltage can only be positive
 
 In this project INA226 is used as as a High-side voltage and current sensor.
 The Alert functionality has not been configured or used. INA226's VBUS pin is
 connected with IN+ pin. Shunt resistor is connected between IN+ and IN- pins.
 Power Supply is applied at IN+ side of Shunt Resistor. VOUT to Load goes from
 IN- side of Shunt Resistor. For Fast I2C (400Kbps) I2C, use 2-5KOhm as Pull-up
-resistors. For Standard I2C (100Kbps), use 10KOhm as Pull-up resistors. If 3.3V
-is available, then 3.3V can be used in place of 5V on VS pin. I2C should still
-function properly.
+resistors. For Standard I2C (100Kbps), use 10KOhm as Pull-up resistors. Connect
+INA226's VS with stable 5V and add 1microF and 100nanoF capacitors between VS
+and GND. It only uses 0.4mA of current for operation. If 3.3V is available,
+then 3.3V can be used in place of 5V on VS pin. I2C should still function
+properly.
 
                         ____________        Power Supply
                        |   INA226   |      /
@@ -2216,29 +2227,21 @@ SCL-------\------------|SCL         |      \---VOUT-----\
                        |____________|                   LOAD
                                              ---GND-----/
 
-Inside Power Monitor menu, Load voltage is calculated by subtracting shunt
-voltage from bus voltage. Power is calculated by multiplying Load voltage with
-measured current. If INA226 measures no current or voltage then a dash is shown
-as measurement. Long pressing the Test Button will zero out the current
-measurement until tester power-off. Current and power automatically switch to
-appropriate units between A/W and mA/mW based upon measurement. The Power
-Monitor will display negative current values if it detects negative current
-flow. Voltage can only be positive. Double press Test Button to get out of
-Power Monitor menu.
-
-Power Monitor menu additionally displays Voltmeter measurement from Logic Probe
-pins on first line if TP_LOGIC ADC Pin has been defined. If a voltage is
-measured across Logic Probe then Voltmeter measurement is displayed, otherwise,
-first line changes to Battery voltage.
+Inside Power Monitor menu, VOUT is measured Load Voltage. Load voltage is
+calculated by subtracting shunt voltage from bus voltage (Power Supply).
+Power is calculated by multiplying Load voltage with measured current
+across shunt resistor.
 
 The default values are configured for a shunt resistor of size 21mOhms. Other
 configuration values with shunt resistors of size 1mOhm,  10mOhm and 100mOhm
-are provided in INA226.c file, above commented Calibration function,
+are provided in INA226.c file above commented Calibration function
 INA226_setMaxCurrentShunt(args). If needed, this file can be imported in
 Arduino IDE and new calibration values can be calculated or the calculations
 can be performed manually. Other constants - INA_226_I_OFFSET_MICROA and
 INA_226_BUS_V_MULTIPLIER_e4 have been calculated experimentally. If not needed,
-these parameters can be made 0 and 10000, respectively.
+these parameters can be made 0 and 10000, respectively. Lastly,
+INA_226_P_THRESHOLD_mW_BUZZER is a user-defined power threshold value, which
+when crossed, will generate buzzer beeps if HW_BUZZER is defined.
 
 
 + Flashlight
