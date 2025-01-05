@@ -1198,6 +1198,7 @@
 
 /*
  *  enter main menu at startup before probing cycle
+ *  - shows battery at top of main menu
  *  - uncomment to enable
  */
 
@@ -1210,14 +1211,6 @@
  */
 
 #define SW_MENUITEM_TEST_COMPONENT
-
-
-/*
- *  show battery as first line of main menu. replaces 'Select:' string
- *  - uncomment to enable
- */
-
-#define MAINMENU_SHOW_BATTERY_AT_TOP
 
 
 /*

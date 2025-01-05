@@ -2711,7 +2711,7 @@ int main(void)
   #ifdef UI_CENTER_ALIGN
     // Display_CenterLine(4);                   /* center block: 4 lines */
     // Display_NextLine();
-    Display_NL_EEString_Center(UltimateTester_str);     /* display: Component Tester */
+    Display_NL_EEString_Center(Ultimate_str);     /* display: Component Tester */
     // Display_NextLine();
     Display_NL_EEString_Center(Tester_str);     /* display: Component Tester */
     // LCD_CharPos(11, 4);
