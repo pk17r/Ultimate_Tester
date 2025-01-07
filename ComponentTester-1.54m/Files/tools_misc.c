@@ -2574,7 +2574,7 @@ void PowerMonitor(void)
     // Voltage
     Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV() * INA_226_BUS_V_MULTIPLIER_e4 / 10000);
     // Current
-    Value = INA226_getCurrent_uA() - INA_226_I_OFFSET_MICROA - Ioffset_local;
+    Value = INA226_getCurrent_uA() - INA_226_I_OFFSET_MICRO_AMP - Ioffset_local;
     if(Value < 300 && Value > -300)
       Value = 0;                // currents under 0.3mA are ignored to keep zero stable
     if(Value < 1000000 && Value > -1000000) {
@@ -2696,7 +2696,7 @@ void PowerMonitor(void)
       while (1)
       {
         // take kNoOfMeasurements current measurements
-        Value += INA226_getCurrent_uA() - INA_226_I_OFFSET_MICROA;
+        Value += INA226_getCurrent_uA() - INA_226_I_OFFSET_MICRO_AMP;
         counter++;
         if(counter == kNoOfMeasurements)
           break;

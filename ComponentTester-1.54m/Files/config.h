@@ -379,9 +379,7 @@
  *  - Displays Battery/External Power Voltage on first line
  *  - If Voltmeter (Logic Probe) is in use then first line changes to Voltmeter (Logic Probe) Measurement while in usage
  *  - Long Press to zero Current Out Value ultil power off
-//  *  - Sets INA226 in pre-calculated calibration setting with Shunt Resistance of 21 milli Ohms and Max Measurable Current value of 3 Amperes, with averaging of 16 ADC samples per measurement
- *  - If you want to change Shunt Resistance value or Max Measurable Current Value then use INA226_setMaxCurrentShunt function in INA226.c to calculate new INA_226_CALIBRATION_VAL and INA_226_MICRO_CURRENT_LSB
- *  - INA226.c file can be used with Arduino Uno with Serial Print statements enabled for any changes in pre-set values
+ *  - Sets INA226 in averaging mode of 16 ADC samples per measurement
  *  - requires I2C bus with read capability
  *  - uncomment to enable
  */
@@ -389,15 +387,34 @@
 #define INA226_POWER_MONITOR
 
 #ifdef INA226_POWER_MONITOR
-  #define INA_226_I2C_ADDR              0x40      /* A0=GND, A1=GND  */
-  #define INA_226_MICRO_CURRENT_LSB     100       /* current_LSB = 100.0 uA / bit. Computed using INA226_setMaxCurrentShunt(2, 0.021, 1). Inputs: maxCurrent=2A, shunt=0.021Ohms, normalize=1   */
-  #define INA_226_CALIBRATION_VAL       2438      /* Input to INA226. Computed using commented function INA226_setMaxCurrentShunt(3, 0.021, 1). Inputs: maxCurrent=3A, shunt=0.021Ohms, normalize=1   */
-  #define INA_226_I_OFFSET_MICROA      -300       /* Offset current in microamps on shunt at no load that is added to measurement to make it zero */
-  #define INA_226_BUS_V_MULTIPLIER_e4   9849      /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements */
-  #define INA_226_P_THRESHOLD_mW_BUZZER   2500    /* Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beep. */
-  #define I2C_RW                                  /* Requires I2C Read Support  */
+  #define INA_226_I2C_ADDR                          0x40      /* 0x40 is address when A0=GND, A1=GND. For other address options, lookup "Table 6-2. Address Pins and Slave Addresses" in INA226 Datasheet  */
+  #define INA_226_R_SHUNT_MILLI_OHM                 100       /* Shunt Resistance in Milli Ohms, can be decimals */
+  #define INA_226_CURRENT_LEAST_COUNT_MICRO_AMP     100       /* Least count is minimum resolution in measurement. Also sets Max Measurable Current = (32768 * INA_226_CURRENT_LEAST_COUNT_MICRO_AMP / 1000000) Amps  */
+  #define INA_226_CALIBRATION_VAL                   (5120000 / (INA_226_R_SHUNT_MILLI_OHM * INA_226_CURRENT_LEAST_COUNT_MICRO_AMP))               /* Do not change */
+  #define INA_226_I_OFFSET_MICRO_AMP                0         /* Offset current in microamps on shunt at no load that is added to measurement to make it zero */
+  #define INA_226_BUS_V_MULTIPLIER_e4               10000     /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements */
+  #define INA_226_P_THRESHOLD_mW_BUZZER             2500      /* Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beep. */
+  #define I2C_RW                                              /* Requires I2C Read Support  */
+  /* HOW TO CALIBRATE INA226 AND SET VALUES
+   * 1. Set INA_226_R_SHUNT_MILLI_OHM equal to shunt resistance in milli ohms.
+   * 2. Set INA_226_CURRENT_LEAST_COUNT_MICRO_AMP equal to your desired least count resolution for IOUT in micro amps.
+   * 3. Set INA_226_I_OFFSET_MICRO_AMP = 0, INA_226_BUS_V_MULTIPLIER_e4 = 10000.
+   * 4. Build firmware and flash microcontroller. Start Power Monitor. Long press Test Button and note ZERO IOUT value. Set INA_226_I_OFFSET_MICRO_AMP = displayed ZERO IOUT value * 1000.
+   * 5. Now measure VOUT using a reliable DMM. Set INA_226_BUS_V_MULTIPLIER_e4 = 10000 / (Displayed VOUT) * (DMM Measured VOUT).
+   * 6. Now set DMM in current measurement mode. Use a resistor that will generate close to 50mA IOUT measurement. Calculate new INA_226_R_SHUNT_MILLI_OHM = INA_226_R_SHUNT_MILLI_OHM * (Displayed IOUT) / (DMM Measured IOUT), upto 2 decimal places.
+   * 7. Set INA_226_P_THRESHOLD_mW_BUZZER = Power threshold in milli Watt at which you want your Tester to give alert beeps.
+   * 8. Build firmware and flash microcontroller. Your INA 226 is now calibrated.
+   */
 #endif
 
+
+// Values for Prashant's Tester (not to be included in Component Tester Build)
+// #define INA_226_R_SHUNT_MILLI_OHM                 21.13        /* Shunt Resistance in Milli Ohms, can be decimals */
+// #define INA_226_CURRENT_LEAST_COUNT_MICRO_AMP     100       /* Least count is minimum resolution in measurement. Also sets Max Measurable Current = (32768 * INA_226_CURRENT_LEAST_COUNT_MICRO_AMP / 1000000) Amps  */
+// #define INA_226_CALIBRATION_VAL                   (5120000 / (INA_226_R_SHUNT_MILLI_OHM * INA_226_CURRENT_LEAST_COUNT_MICRO_AMP))               /* Do not change */
+// #define INA_226_I_OFFSET_MICRO_AMP                -200      /* Offset current in microamps on shunt at no load that is added to measurement to make it zero */
+// #define INA_226_BUS_V_MULTIPLIER_e4               9893      /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements */
+// #define INA_226_P_THRESHOLD_mW_BUZZER             2500      /* Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beep. */
 
 
 

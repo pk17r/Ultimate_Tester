@@ -2199,7 +2199,7 @@ Functionality of Power Monitor Menu Item -
     will disable/enable the beeps
   - Displays Battery voltage on line 1
   - If TP_LOGIC is defined and it measures a voltage then first line changes
-    to VMeter until the voltage is present across Logic Probe resistors
+    to Voltmeter until the voltage is present across Logic Probe resistors
   - Long press will zero out current IOUT value until device power-off
   - Displays negative current and power values. Voltage can only be positive
 
@@ -2237,7 +2237,7 @@ configuration values with shunt resistors of size 1mOhm,  10mOhm and 100mOhm
 are provided in INA226.c file above commented Calibration function
 INA226_setMaxCurrentShunt(args). If needed, this file can be imported in
 Arduino IDE and new calibration values can be calculated or the calculations
-can be performed manually. Other constants - INA_226_I_OFFSET_MICROA and
+can be performed manually. Other constants - INA_226_I_OFFSET_MICRO_AMP and
 INA_226_BUS_V_MULTIPLIER_e4 have been calculated experimentally. If not needed,
 these parameters can be made 0 and 10000, respectively. Lastly,
 INA_226_P_THRESHOLD_mW_BUZZER is a user-defined power threshold value, which
