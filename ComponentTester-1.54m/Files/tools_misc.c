@@ -2572,9 +2572,9 @@ void PowerMonitor(void)
     Vmeter = (uint16_t)Value;          /* keep 2 bytes */
     #endif
     // Voltage
-    Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV() * INA_226_BUS_V_MULTIPLIER_e4 / 10000);
+    Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV() * INA226_BUS_V_MULTIPLIER_e4 / 10000);
     // Current
-    Value = INA226_getCurrent_uA() - INA_226_I_OFFSET_MICRO_AMP - Ioffset_local;
+    Value = INA226_getCurrent_uA() - INA226_I_OFFSET_MICRO_AMP - Ioffset_local;
     if(Value < 300 && Value > -300)
       Value = 0;                // currents under 0.3mA are ignored to keep zero stable
     if(Value < 1000000 && Value > -1000000) {
@@ -2651,7 +2651,7 @@ void PowerMonitor(void)
     #ifdef HW_BUZZER
     if((Flag >> BUZZER_BEEP_ON_FLAG_POS) == 1)
     {
-      if(((Power_Unit == 'W') && (Power >= INA_226_P_THRESHOLD_mW_BUZZER)) || ((Power_Unit == 'm') && (Power / 1000 >= INA_226_P_THRESHOLD_mW_BUZZER)))
+      if(((Power_Unit == 'W') && (Power >= INA226_P_THRESHOLD_mW_BUZZER)) || ((Power_Unit == 'm') && (Power / 1000 >= INA226_P_THRESHOLD_mW_BUZZER)))
       {
         /* buzzer: short beep to indicate over threshold power */
         #ifdef BUZZER_ACTIVE
@@ -2696,7 +2696,7 @@ void PowerMonitor(void)
       while (1)
       {
         // take kNoOfMeasurements current measurements
-        Value += INA226_getCurrent_uA() - INA_226_I_OFFSET_MICRO_AMP;
+        Value += INA226_getCurrent_uA() - INA226_I_OFFSET_MICRO_AMP;
         counter++;
         if(counter == kNoOfMeasurements)
           break;

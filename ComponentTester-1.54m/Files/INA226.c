@@ -74,6 +74,10 @@
 #define INA226_CONF_MODE_MASK             0x0007
 
 
+//  CALIBRATION VAL
+#define INA226_CALIBRATION_VAL                   (5120000 / (INA226_R_SHUNT_MILLI_OHM * INA226_CURRENT_LEAST_COUNT_MICRO_AMP))
+
+
 ////////////////////////////////////////////////////////
 //
 //  PRIVATE
@@ -89,7 +93,7 @@ uint16_t INA226__readRegister(uint8_t reg)
     return I2C_ERROR;
   }
   /* address (7 bit & write) */
-  I2C.Byte = (INA_226_I2C_ADDR << 1);
+  I2C.Byte = (INA226_I2C_ADDR << 1);
   if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
     #ifdef INA226_DEBUG_PRINTS
     Serial.print("INA226__readRegister I2C_WriteByte1 Error\n");
@@ -113,7 +117,7 @@ uint16_t INA226__readRegister(uint8_t reg)
     return I2C_ERROR;
   }
   /* address (7 bit & read) */
-  I2C.Byte = (INA_226_I2C_ADDR << 1);
+  I2C.Byte = (INA226_I2C_ADDR << 1);
   I2C.Byte |= 1;    // set read bit
   if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
     #ifdef INA226_DEBUG_PRINTS
@@ -152,7 +156,7 @@ uint8_t INA226__writeRegister(uint8_t reg, uint16_t value)
     return I2C_ERROR;
   }
   /* address (7 bit & write) */
-  I2C.Byte = (INA_226_I2C_ADDR << 1);
+  I2C.Byte = (INA226_I2C_ADDR << 1);
   if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
     #ifdef INA226_DEBUG_PRINTS
     Serial.print("INA226__writeRegister I2C_WriteByte1 Error\n");
@@ -216,7 +220,7 @@ uint16_t INA226_getLoadVoltage_mV(void)
 int32_t INA226_getCurrent_uA(void)
 {
   int16_t value = INA226__readRegister(INA226_CURRENT);
-  return (((int32_t)value) * INA_226_CURRENT_LEAST_COUNT_MICRO_AMP);
+  return (((int32_t)value) * INA226_CURRENT_LEAST_COUNT_MICRO_AMP);
 }
 
 uint8_t INA226_isConnected(void)
@@ -236,7 +240,7 @@ uint8_t INA226_isConnected(void)
   }
 
   /* address (7 bit & write) */
-  I2C.Byte = (INA_226_I2C_ADDR << 1);
+  I2C.Byte = (INA226_I2C_ADDR << 1);
   if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
     #ifdef INA226_DEBUG_PRINTS
     Serial.print("****** I2C_WriteByte(I2C_ADDRESS) ERROR! ******\n");
@@ -262,7 +266,7 @@ uint8_t INA226_setup() {
   }
 
   // set calibration value
-  if(INA226__writeRegister(INA226_CALIBRATION, INA_226_CALIBRATION_VAL) != I2C_OK){
+  if(INA226__writeRegister(INA226_CALIBRATION, INA226_CALIBRATION_VAL) != I2C_OK){
     #ifdef INA226_DEBUG_PRINTS
     Serial.print("****** INA226_CALIBRATION ERROR! ******\n");
     #endif

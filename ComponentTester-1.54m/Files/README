@@ -2195,8 +2195,8 @@ with 2.7V-5.5V power supply.
 Functionality of Power Monitor Menu Item -
   - Displays measured VOUT, IOUT and Power on lines 2, 3 and 4, respectively
   - Value units automatically switch between V/A/W and mV/mA/mW
-  - Buzzer beeps if Power crosses a preset threshold. Single Test Button press
-    will disable/enable the beeps
+  - Over-Power Alert Beeps - Buzzer beeps if Power crosses a preset threshold
+  - Single Test Button press will disable/enable Over-Power Alert Beeps
   - Displays Battery voltage on line 1
   - If TP_LOGIC is defined and it measures a voltage then first line changes
     to Voltmeter until the voltage is present across Logic Probe resistors
@@ -2232,16 +2232,35 @@ calculated by subtracting shunt voltage from bus voltage (Power Supply).
 Power is calculated by multiplying Load voltage with measured current
 across shunt resistor.
 
-The default values are configured for a shunt resistor of size 21mOhms. Other
-configuration values with shunt resistors of size 1mOhm,  10mOhm and 100mOhm
-are provided in INA226.c file above commented Calibration function
-INA226_setMaxCurrentShunt(args). If needed, this file can be imported in
-Arduino IDE and new calibration values can be calculated or the calculations
-can be performed manually. Other constants - INA_226_I_OFFSET_MICRO_AMP and
-INA_226_BUS_V_MULTIPLIER_e4 have been calculated experimentally. If not needed,
-these parameters can be made 0 and 10000, respectively. Lastly,
-INA_226_P_THRESHOLD_mW_BUZZER is a user-defined power threshold value, which
-when crossed, will generate buzzer beeps if HW_BUZZER is defined.
+Shunt Resistance recommendation -
+- 20mOhms for 0-3A range
+- 10mOhms for 0-5A range
+- 2mOhms for 0-10A range
+
+Steps to Calibrate INA226 and set values in config.h file -
+1. Set INA226_R_SHUNT_MILLI_OHM equal to shunt resistance in milli ohms. This
+   is the shunt resistance between IN+ and IN- pins of INA226 in your setup.
+2. Set INA226_CURRENT_LEAST_COUNT_MICRO_AMP equal to your desired least count
+   resolution for IOUT in micro amps. Expected values- 50, 100, 250, 500, 1000.
+3. Set INA226_I_OFFSET_MICRO_AMP = 0, INA226_BUS_V_MULTIPLIER_e4 = 10000.
+4. Build firmware and flash microcontroller (Your Component Tester).
+5. Attach a power supply with voltage 5-10V to INA226 on VBUS/IN+ and GND pins,
+   without any load.
+6. Start Power Monitor. Long press Test Button and note ZERO IOUT value. Set
+   INA226_I_OFFSET_MICRO_AMP = displayed ZERO IOUT value * 1000 (in micro amps)
+NOTE- Following adjustments shouldn't change values by more than 15-20%.
+7. Now measure VOUT using a reliable DMM. Set INA226_BUS_V_MULTIPLIER_e4 =
+   10000 / (Displayed VOUT on Power Monitor) * (DMM Measured VOUT).
+8. Now set DMM in current measurement mode. Use a resistor that will generate
+   around 50mA IOUT measurement between IN- and GND pins with DMM in series
+   with load. Note current measured on DMM.
+9. Update INA226_R_SHUNT_MILLI_OHM = INA226_R_SHUNT_MILLI_OHM * (Displayed IOUT
+   on Power Monitor) / (DMM Measured IOUT), upto 2 decimal places.
+9. Set INA226_P_THRESHOLD_mW_BUZZER = Power threshold in milli Watt at which
+   you want your Tester to sound Over-Power Alert Beeps.
+10. Build firmware and flash microcontroller. Your INA 226 is now calibrated.
+   It should have less than 1% error in Current and Voltage measurements over
+   a wide range like [5mA, 1A] and [5V, 20V].
 
 
 + Flashlight
