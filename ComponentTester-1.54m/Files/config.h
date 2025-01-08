@@ -413,10 +413,10 @@
 
 
 // Calibration Values for Prashant's Tester (not to be included in Component Tester Build)
-// #define INA226_R_SHUNT_MILLI_OHM                 21.13        /* Shunt Resistance in Milli Ohms, can be decimals */
+// #define INA226_R_SHUNT_MILLI_OHM                 21.12        /* Shunt Resistance in Milli Ohms, can be decimals */
 // #define INA226_CURRENT_LEAST_COUNT_MICRO_AMP     100       /* Least count is minimum resolution in measurement. Also sets Max Measurable Current = (32768 * INA226_CURRENT_LEAST_COUNT_MICRO_AMP / 1000000) Amps  */
 // #define INA226_I_OFFSET_MICRO_AMP                -200      /* Offset current in microamps on shunt at no load that is added to measurement to make it zero */
-// #define INA226_BUS_V_MULTIPLIER_e4               9893      /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements */
+// #define INA226_BUS_V_MULTIPLIER_e4               9855      /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements */
 // #define INA226_P_THRESHOLD_mW_BUZZER             2500      /* Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beep. */
 
 
