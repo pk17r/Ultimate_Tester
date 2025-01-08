@@ -162,7 +162,7 @@ uint8_t INA226__writeRegister(uint8_t reg, uint16_t value)
 int16_t INA226_getBusVoltage_mV(void)
 {
   uint16_t val = INA226__readRegister(INA226_BUS_VOLTAGE);
-  return (int16_t)(((int32_t)val) * 125 / 100);  //  LSB fixed 1.25 mV; Converting into int for lower flash memory consumption in INA226_getLoadVoltage_mV Function, somehow.
+  return (int16_t)(((int32_t)val) * 125 / 100);  //  LSB fixed 1.25 mV
 }
 
 int16_t INA226_getShuntVoltage_mV(void)
@@ -238,16 +238,6 @@ uint8_t INA226_setup() {
 
   return I2C_OK;
 }
-
-// uint16_t INA226_getManufacturerID(void)
-// {
-//  return INA226__readRegister(INA226_MANUFACTURER);
-// }
-// uint16_t INA226_getDieID(void)
-// {
-//  return INA226__readRegister(INA226_DIE_ID);
-// }
-
 
 
 #endif
