@@ -209,12 +209,12 @@ uint8_t INA226_isConnected(void)
  */
 uint8_t INA226_setup() {
   if(INA226_isConnected() != I2C_OK){
-    return 5;
+    return I2C_ERROR;
   }
 
   // set calibration value
   if(INA226__writeRegister(INA226_CALIBRATION, INA226_CALIBRATION_VAL) != I2C_OK){
-    return 6;
+    return I2C_ERROR;
   }
 
   // set averaging
@@ -234,7 +234,7 @@ uint8_t INA226_setup() {
   mask |= (2 << 9);     //    INA226_16_SAMPLES   = 2,
 
   if(INA226__writeRegister(INA226_CONFIGURATION, mask) == I2C_ERROR)
-    return 7;
+    return I2C_ERROR;
 
   return I2C_OK;
 }
