@@ -59,6 +59,7 @@
 #include "font_8x8_hf.h"
 #include "font_8x16_alt_hf.h"
 #include "font_10x16_hf.h"
+#include "font_16x26_hf.h"
 #include "font_6x8_iso8859-2_hf.h"
 #include "font_8x8_iso8859-2_hf.h"
 #include "font_8x12t_iso8859-2_hf.h"
@@ -545,12 +546,12 @@ void LCD_Init(void)
     #ifdef LCD_RES_PORT
       /* /RESX on separate port */
       LCD_RES_PORT &= ~(1 << LCD_RES);       /* set /RESX low */
-      wait10us();                            /* wait 10µs */
+      wait10us();                            /* wait 10ï¿½s */
       LCD_RES_PORT |= (1 << LCD_RES);        /* set /RESX high */
     #else
       /* /RESX on LCD port */
       LCD_PORT &= ~(1 << LCD_RES);           /* set /RESX low */
-      wait10us();                            /* wait 10µs */
+      wait10us();                            /* wait 10ï¿½s */
       LCD_PORT |= (1 << LCD_RES);            /* set /RESX high */
     #endif
 

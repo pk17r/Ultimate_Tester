@@ -315,8 +315,8 @@
  */
 
 // #define HW_LOGIC_PROBE     //  R1=220000, R2=22000 can measure voltages upto 55V safely
-#define LOGIC_PROBE_R1        10000   // 218500         // 10000
-#define LOGIC_PROBE_R2        3300    // 21990          // 3300
+#define LOGIC_PROBE_R1        218900
+#define LOGIC_PROBE_R2        21600
 
 
 /*
@@ -376,6 +376,7 @@
 /*
  *  INA226 Power Monitor
  *  - Measure Out Voltage, Current and Power according to circuit diagram shown in README file
+ *  - Requires minimum 4 line display
  *  - Displays Battery/External Power Voltage on first line
  *  - If Voltmeter (Logic Probe) is in use then first line changes to Voltmeter (Logic Probe) Measurement while in usage
  *  - Over-Power Alert Beeps if HW_BUZZER is defined, single Test Button press to disable/enable alert beeps
@@ -411,13 +412,6 @@
    */
 #endif
 
-
-// Calibration Values for Prashant's Tester (not to be included in Component Tester Build)
-// #define INA226_R_SHUNT_MILLI_OHM                 21.12        /* Shunt Resistance in Milli Ohms, can be decimals */
-// #define INA226_CURRENT_LEAST_COUNT_MICRO_AMP     100       /* Least count is minimum resolution in measurement. Also sets Max Measurable Current = (32768 * INA226_CURRENT_LEAST_COUNT_MICRO_AMP / 1000000) Amps  */
-// #define INA226_I_OFFSET_MICRO_AMP                -200      /* Offset current in microamps on shunt at no load that is added to measurement to make it zero */
-// #define INA226_BUS_V_MULTIPLIER_e4               9855      /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements */
-// #define INA226_P_THRESHOLD_mW_BUZZER             2500      /* Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beep. */
 
 
 

@@ -523,20 +523,23 @@
 //#define LCD_RESET        PB0            /* port pin used for /RES (optional) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
-#define LCD_DOTS_Y       64             /* number of vertical dots */
-#define LCD_OFFSET_X     2              /* enable x offset of 2 or 4 dots */
-#define LCD_FLIP_X                      /* enable horizontal flip */
-#define LCD_FLIP_Y                      /* enable vertical flip */
+#define LCD_DOTS_Y       128             /* number of vertical dots */
+#define LCD_OFFSET_X     0              /* enable x offset of 2 or 4 dots */
+// #define LCD_FLIP_X                      /* enable horizontal flip */
+// #define LCD_FLIP_Y                      /* enable vertical flip */
 //#define LCD_COM_SEQ                     /* COM pin layout: sequential */
 #define LCD_CONTRAST     255            /* default contrast (0-255) */
-/* font and symbols: vertically aligned & flipped, bank-wise grouping */
-#define FONT_8X8_VF                     /* 8x8 font */
+/* font and symbols: vertically aligned & flipped, bank-wise grouping. Choose 1 font. */
+// #define FONT_8X8_VF                               /* 8x8 font */
+// #define FONT_8X12T_WIN1251_VFP                     /* 8x12 font */
+#define FONT_8X16_VFP                             /* 8x16 font */
 #define SYMBOLS_24X24_VFP               /* 24x24 symbols */
 //#define SYMBOLS_24X24_ALT1_VFP          /* 24x24 alternative symbols #1 */
 //#define SYMBOLS_24X24_ALT2_VFP          /* 24x24 alternative symbols #2 */
 /* I2C bus */
 #define I2C_HARDWARE                    /* hardware I2C (MCU's TWI) */
-// #define I2C_STANDARD_MODE               /* 100kHz bus speed */
+#define I2C_FAST_MODE                   /* 400kHz bus speed */
+//#define I2C_STANDARD_MODE
 #endif
 
 
@@ -633,25 +636,27 @@
  *  - I2C interface using hardware I2C
  */
 
-#if 0
+#if 1
 #define LCD_SSD1306                     /* display controller SSD1306 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_I2C                         /* I2C interface */
 #define LCD_I2C_ADDR     0x3c           /* SSD1306's I2C address */
 /* control lines */
-#define LCD_PORT         PORTB          /* port data register */
-#define LCD_DDR          DDRB           /* port data direction register */
-#define LCD_RESET        PB0            /* port pin used for /RES (optional) */
+#define LCD_PORT         PORTD          /* port data register */
+#define LCD_DDR          DDRD           /* port data direction register */
+// #define LCD_RESET        PB0            /* port pin used for /RES (optional) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
-#define LCD_DOTS_Y       64             /* number of vertical dots */
-#define LCD_FLIP_X                      /* enable horizontal flip */
-#define LCD_FLIP_Y                      /* enable vertical flip */
-//#define LCD_COM_SEQ                     /* COM pin layout: sequential */
-//#define LCD_COM_REMAP                   /* COM pin mapping: reversed */
-#define LCD_CONTRAST     127            /* default contrast (0-255) */
-/* font and symbols: vertically aligned & flipped, bank-wise grouping */
-#define FONT_8X8_VF                     /* 8x8 font */
+#define LCD_DOTS_Y       128             /* number of vertical dots */
+// #define LCD_FLIP_X                      /* enable horizontal flip */
+// #define LCD_FLIP_Y                      /* enable vertical flip */
+// #define LCD_COM_SEQ                     /* COM pin layout: sequential */
+// #define LCD_COM_REMAP                   /* COM pin mapping: reversed */
+#define LCD_CONTRAST     255            /* default contrast (0-255) */
+/* font and symbols: vertically aligned & flipped, bank-wise grouping. Choose 1 font. */
+// #define FONT_8X8_VF                               /* 8x8 font */
+// #define FONT_8X12T_WIN1251_VFP                     /* 8x12 font */
+#define FONT_8X16_VFP                             /* 8x16 font */
 #define SYMBOLS_24X24_VFP               /* 24x24 symbols */
 //#define SYMBOLS_24X24_ALT1_VFP          /* 24x24 alternative symbols #1 */
 //#define SYMBOLS_24X24_ALT2_VFP          /* 24x24 alternative symbols #2 */
@@ -785,7 +790,7 @@
  *  - 4 wire SPI interface using hardware SPI
  */
 
-#if 1
+#if 0
 #define LCD_ST7735                      /* display controller ST7735 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_COLOR                       /* color display */

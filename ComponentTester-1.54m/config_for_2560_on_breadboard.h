@@ -376,6 +376,7 @@
 /*
  *  INA226 Power Monitor
  *  - Measure Out Voltage, Current and Power according to circuit diagram shown in README file
+ *  - Requires minimum 4 line display
  *  - Displays Battery/External Power Voltage on first line
  *  - If Voltmeter (Logic Probe) is in use then first line changes to Voltmeter (Logic Probe) Measurement while in usage
  *  - Over-Power Alert Beeps if HW_BUZZER is defined, single Test Button press to disable/enable alert beeps
@@ -411,13 +412,14 @@
    */
 #endif
 
+// default values
+//  #define INA226_I2C_ADDR                          0x40      /* 0x40 is address when A0=GND, A1=GND. For other address options, lookup "Table 6-2. Address Pins and Slave Addresses" in INA226 Datasheet  */
+//  #define INA226_R_SHUNT_MILLI_OHM                 100       /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
+//  #define INA226_CURRENT_LEAST_COUNT_MICRO_AMP     100       /* Least count is minimum resolution in measurement. Also decides Max_Measurable_Current = (32768 * INA226_CURRENT_LEAST_COUNT_MICRO_AMP / 1000000) Amps. Recommended value is 100, but increase this to get bigger range.  */
+//  #define INA226_I_OFFSET_MICRO_AMP                0         /* Offset current in microamps on shunt at no load that is added to measurement to make it zero. Can be negative */
+//  #define INA226_BUS_V_MULTIPLIER_e4               10000     /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements. Only whole numbers accepted */
+//  #define INA226_P_THRESHOLD_mW_BUZZER             2500      /* Over-Power Alert Beeps: Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beeps. */
 
-// Calibration Values for Prashant's Tester (not to be included in Component Tester Build)
-// #define INA226_R_SHUNT_MILLI_OHM                 21.13        /* Shunt Resistance in Milli Ohms, can be decimals */
-// #define INA226_CURRENT_LEAST_COUNT_MICRO_AMP     100       /* Least count is minimum resolution in measurement. Also sets Max Measurable Current = (32768 * INA226_CURRENT_LEAST_COUNT_MICRO_AMP / 1000000) Amps  */
-// #define INA226_I_OFFSET_MICRO_AMP                -200      /* Offset current in microamps on shunt at no load that is added to measurement to make it zero */
-// #define INA226_BUS_V_MULTIPLIER_e4               9893      /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements */
-// #define INA226_P_THRESHOLD_mW_BUZZER             2500      /* Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beep. */
 
 
 
