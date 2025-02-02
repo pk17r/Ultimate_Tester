@@ -386,7 +386,7 @@
  *  - I2C interface using bit-bang I2C
  */
 
-#if 1
+#if 0
 #define LCD_SH1106                      /* display controller SH1106 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_I2C                         /* I2C interface */
@@ -525,18 +525,51 @@
 #define LCD_I2C                         /* I2C interface */
 #define LCD_I2C_ADDR     0x3C           /* SSD1306's I2C address */
 /* control lines */
-//#define LCD_PORT         PORTB          /* port data register */
-//#define LCD_DDR          DDRB           /* port data direction register */
+// #define LCD_PORT         PORTB          /* port data register */
+// #define LCD_DDR          DDRB           /* port data direction register */
 //#define LCD_RESET        PD4            /* port pin used for /RES (optional) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
-#define LCD_DOTS_Y       64             /* number of vertical dots */
+#define LCD_DOTS_Y       128             /* number of vertical dots */
 #define LCD_FLIP_X                      /* enable horizontal flip */
 #define LCD_FLIP_Y                      /* enable vertical flip */
 //#define LCD_COM_SEQ                     /* COM pin layout: sequential */
 //#define LCD_COM_REMAP                   /* COM pin mapping: reversed */
 #define LCD_CONTRAST     255            /* default contrast (0-255) */
 /* font and symbols: vertically aligned & flipped, bank-wise grouping */
+// #define FONT_8X8_VF                               /* 8x8 font */
+// #define FONT_8X12T_WIN1251_VFP                     /* 8x12 font */
+#define FONT_8X16_VFP                             /* 8x16 font */
+#define SYMBOLS_24X24_VFP               /* 24x24 symbols */
+//#define SYMBOLS_24X24_ALT1_VFP          /* 24x24 alternative symbols #1 */
+//#define SYMBOLS_24X24_ALT2_VFP          /* 24x24 alternative symbols #2 */
+#endif
+
+
+
+/*
+ *  SSD1309
+ *  - I2C interface using hardware I2C
+ */
+
+#if 1
+#define LCD_SSD1309                      /* display controller SSD1309 */
+#define LCD_GRAPHIC                     /* graphic display */
+#define LCD_I2C                         /* I2C interface */
+#define LCD_I2C_ADDR     0x3c           /* SSD1309's I2C address */
+/* control lines */
+#define LCD_PORT         PORTD          /* port data register */
+#define LCD_DDR          DDRD           /* port data direction register */
+//#define LCD_RESET        PB0            /* port pin used for /RES (optional) */
+/* display settings */
+#define LCD_DOTS_X       128            /* number of horizontal dots */
+#define LCD_DOTS_Y       64             /* number of vertical dots */
+// #define LCD_OFFSET_X     2              /* enable x offset of 2 or 4 dots */
+#define LCD_FLIP_X                      /* enable horizontal flip */
+#define LCD_FLIP_Y                      /* enable vertical flip */
+// #define LCD_COM_SEQ                     /* COM pin layout: sequential */
+#define LCD_CONTRAST     255            /* default contrast (0-255) */
+/* font and symbols: vertically aligned & flipped, bank-wise grouping. Choose 1 font. */
 // #define FONT_8X8_VF                               /* 8x8 font */
 // #define FONT_8X12T_WIN1251_VFP                     /* 8x12 font */
 #define FONT_8X16_VFP                             /* 8x16 font */
@@ -553,6 +586,7 @@
 #define I2C_SDA          PD6            /* port pin used for SDA */
 #define I2C_SCL          PD7            /* port pin used for SCL */
 #endif
+
 
 
 
@@ -1037,11 +1071,11 @@
 
 /* I2C not set yet (for bit-bang I2C) */
 #ifndef I2C_PORT
-  #define I2C_PORT       PORTD     /* port data register */
-  #define I2C_DDR        DDRD      /* port data direction register */
-  #define I2C_PIN        PIND      /* port input pins register */
-  #define I2C_SDA        PD2       /* pin for SDA */
-  #define I2C_SCL        PD1       /* pin for SCL */
+  #define I2C_PORT         PORTD          /* I2C port data register */
+  #define I2C_DDR          DDRD           /* I2C port data direction register */
+  #define I2C_PIN          PIND           /* I2C port input pins register */
+  #define I2C_SDA          PD6            /* port pin used for SDA */
+  #define I2C_SCL          PD7            /* port pin used for SCL */
 #endif
 
 

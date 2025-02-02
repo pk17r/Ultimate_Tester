@@ -206,6 +206,16 @@
   #endif
 #endif
 
+#ifdef LCD_SSD1309
+  #ifdef DISPLAY_ONE
+    #ifndef DISPLAY_MULTI
+      #define DISPLAY_MULTI
+    #endif
+  #else
+    #define DISPLAY_ONE
+  #endif
+#endif
+
 #ifdef LCD_ST7036
   #ifdef DISPLAY_ONE
     #ifndef DISPLAY_MULTI

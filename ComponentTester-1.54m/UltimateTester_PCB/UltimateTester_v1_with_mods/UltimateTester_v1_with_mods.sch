@@ -3033,7 +3033,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="R23" library=".MyComponents" deviceset="RESISTOR_SMD" device="0603" value="3.3K"/>
 <part name="C14" library=".MyComponents" deviceset="CAPACITOR_SMD" device="0603" value="NC/10pF"/>
 <part name="C15" library=".MyComponents" deviceset="CAPACITOR_SMD" device="0603" value="NC/10pF"/>
-<part name="R28" library=".MyComponents" deviceset="RESISTOR_SMD" device="0603" value="68R"/>
 <part name="GND2" library=".MyComponents" deviceset="TEST-POINT" device="-TH"/>
 <part name="20MHZ" library=".MyComponents" deviceset="CRYSTAL-20MHZ-ECS-200-18-4X-CKM" device="" value="ECS-200-18-4X-CKM"/>
 <part name="C3" library=".MyComponents" deviceset="CAPACITOR_SMD" device="0603" value="22pF"/>
@@ -3409,10 +3408,6 @@ POWER ON</text>
 <instance part="C15" gate="G$1" x="-172.72" y="-55.88" smashed="yes" rot="R180" grouprefs="DISPLAY_GRP">
 <attribute name="NAME" x="-171.069" y="-56.134" size="1.778" layer="95" rot="R270"/>
 <attribute name="VALUE" x="-174.879" y="-56.134" size="1.778" layer="96" rot="R270"/>
-</instance>
-<instance part="R28" gate="G$1" x="-165.1" y="-35.56" smashed="yes" rot="R90" grouprefs="DISPLAY_GRP">
-<attribute name="NAME" x="-166.5986" y="-38.1" size="1.778" layer="95" rot="R90"/>
-<attribute name="VALUE" x="-161.798" y="-38.1" size="1.778" layer="96" rot="R90"/>
 </instance>
 <instance part="GND2" gate="G$1" x="200.66" y="10.16" smashed="yes" grouprefs="5-BOOST-GRP-VOUT">
 <attribute name="NAME" x="201.422" y="11.684" size="1.778" layer="95" rot="R90"/>
@@ -4060,10 +4055,16 @@ POWER ON</text>
 <wire x1="-172.72" y1="-33.02" x2="-172.72" y2="-27.94" width="0.1524" layer="91" grouprefs="DISPLAY_GRP"/>
 <junction x="-172.72" y="-27.94" grouprefs="DISPLAY_GRP"/>
 <label x="-187.96" y="-27.432" size="1.778" layer="95" grouprefs="DISPLAY_GRP"/>
-<wire x1="-165.1" y1="-30.48" x2="-165.1" y2="-27.94" width="0.1524" layer="91" grouprefs="DISPLAY_GRP"/>
 <pinref part="R24" gate="G$1" pin="2"/>
 <pinref part="R23" gate="G$1" pin="2"/>
-<pinref part="R28" gate="G$1" pin="2"/>
+<wire x1="-157.48" y1="-43.18" x2="-157.48" y2="-38.1" width="0.1524" layer="91" grouprefs="DISPLAY_GRP"/>
+<wire x1="-157.48" y1="-43.18" x2="-165.1" y2="-43.18" width="0.1524" layer="91" grouprefs="DISPLAY_GRP"/>
+<junction x="-157.48" y="-43.18" grouprefs="DISPLAY_GRP"/>
+<wire x1="-144.78" y1="-43.18" x2="-157.48" y2="-43.18" width="0.1524" layer="91" grouprefs="DISPLAY_GRP"/>
+<label x="-164.592" y="-42.672" size="1.778" layer="95" grouprefs="DISPLAY_GRP"/>
+<pinref part="DISPLAY" gate="G$1" pin="VCC"/>
+<pinref part="C5" gate="G$1" pin="1"/>
+<wire x1="-165.1" y1="-27.94" x2="-165.1" y2="-43.18" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <label x="-66.04" y="-83.82" size="1.778" layer="95" grouprefs="MCU"/>
@@ -4665,19 +4666,6 @@ POWER ON</text>
 <pinref part="R3" gate="G$1" pin="1"/>
 <wire x1="-60.96" y1="5.08" x2="-58.42" y2="5.08" width="0.1524" layer="91" grouprefs="2-POWER-CTRL-GRP"/>
 <wire x1="-58.42" y1="5.08" x2="-58.42" y2="10.16" width="0.1524" layer="91" grouprefs="2-POWER-CTRL-GRP"/>
-</segment>
-</net>
-<net name="DISPLAY_VCC" class="0">
-<segment>
-<wire x1="-157.48" y1="-43.18" x2="-157.48" y2="-38.1" width="0.1524" layer="91" grouprefs="DISPLAY_GRP"/>
-<wire x1="-157.48" y1="-43.18" x2="-165.1" y2="-43.18" width="0.1524" layer="91" grouprefs="DISPLAY_GRP"/>
-<junction x="-157.48" y="-43.18" grouprefs="DISPLAY_GRP"/>
-<wire x1="-144.78" y1="-43.18" x2="-157.48" y2="-43.18" width="0.1524" layer="91" grouprefs="DISPLAY_GRP"/>
-<label x="-166.878" y="-43.942" size="1.778" layer="95" grouprefs="DISPLAY_GRP"/>
-<wire x1="-165.1" y1="-40.64" x2="-165.1" y2="-43.18" width="0.1524" layer="91" grouprefs="DISPLAY_GRP"/>
-<pinref part="DISPLAY" gate="G$1" pin="VCC"/>
-<pinref part="C5" gate="G$1" pin="1"/>
-<pinref part="R28" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="I2C-SDA" class="0">
