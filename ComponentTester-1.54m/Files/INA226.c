@@ -231,7 +231,13 @@ uint8_t INA226_setup() {
   //};
   uint16_t mask = INA226__readRegister(INA226_CONFIGURATION);
   mask &= ~INA226_CONF_AVERAGE_MASK;
-  mask |= (2 << 9);     //    INA226_16_SAMPLES   = 2,
+  #if INA226_AVERAGING_SAMPLES < 0
+  mask |= (0 << 9);     //    INA226_1_SAMPLE   = 0,
+  #elif INA226_AVERAGING_SAMPLES > 7
+  mask |= (7 << 9);     //    INA226_1024_SAMPLES   = 7,
+  #else
+  mask |= (INA226_AVERAGING_SAMPLES << 9);
+  #endif
 
   if(INA226__writeRegister(INA226_CONFIGURATION, mask) == I2C_ERROR)
     return I2C_ERROR;
