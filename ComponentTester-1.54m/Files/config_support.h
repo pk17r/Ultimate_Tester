@@ -490,6 +490,20 @@
 #endif
 
 
+
+/*
+ *  power monitor
+ */
+
+/* power monitor type: at least one or both of INA226, INA3221 */
+#ifdef HW_POWER_MONITOR
+  #if ! defined (INA226_POWER_MONITOR) && ! defined (INA3221_POWER_MONITOR)
+    #error <<< Power Monitor: select power monitor IC! >>>
+  #endif
+#endif
+
+
+
 /*
  *  MCU clock
  */

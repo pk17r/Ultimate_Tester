@@ -255,6 +255,20 @@ extern int32_t INA226_getCurrent_uA(void);
 
 
 /* ************************************************************************
+ *   functions from INA3221.c
+ * ************************************************************************ */
+
+#ifdef INA3221_POWER_MONITOR
+
+extern uint8_t INA3221_setup();
+extern uint16_t INA3221_getLoadVoltage_mV(uint8_t channel);
+extern int32_t INA3221_getCurrent_uA(uint8_t channel);
+
+#endif
+
+
+
+/* ************************************************************************
  *   functions from display.c
  * ************************************************************************ */
 
@@ -576,7 +590,7 @@ extern int32_t INA226_getCurrent_uA(void);
   extern void Meter_5VDC(void);
   #endif
 
-  #ifdef INA226_POWER_MONITOR
+  #ifdef HW_POWER_MONITOR
   extern void PowerMonitor(void);
   #endif
 

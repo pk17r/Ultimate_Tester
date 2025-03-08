@@ -374,17 +374,21 @@
 
 
 /*
- *  INA226 Power Monitor
- *  - Measure Out Voltage, Current and Power according to circuit diagram shown in README file
- *  - Requires minimum 4 line display
+ *  Power Monitor
+ *  - Works with INA226 1 channel or INA3221 3 channel shunt based current sense ICs
+ *  - Measure Out Voltage, Current and Power (INA226 only) according to circuit diagram shown in README file
  *  - Displays Battery/External Power Voltage on first line
  *  - If Voltmeter (Logic Probe) is in use then first line changes to Voltmeter (Logic Probe) Measurement while in usage
- *  - Over-Power Alert Beeps if HW_BUZZER is defined, single Test Button press to disable/enable alert beeps
- *  - Long Press to zero Current Out Value ultil power off
- *  - Sets INA226 in averaging mode of 16 ADC samples per measurement
+ *  - Requires minimum 4 line display for INA226 or 5 line for INA3221 or 8 line for both
+ *  - For INA226:
+ *    - Over-Power Alert Beeps if HW_BUZZER is defined, single Test Button press to disable/enable alert beeps
+ *    - Long Press to zero Current Out Value ultil power off
  *  - requires I2C bus with read capability
  *  - uncomment to enable
+ *  - select at least one or both of INA226, INA3221
  */
+
+#define HW_POWER_MONITOR
 
 #define INA226_POWER_MONITOR
 
@@ -422,8 +426,16 @@
    */
 #endif
 
+#define INA3221_POWER_MONITOR
 
-
+#ifdef INA3221_POWER_MONITOR
+  #define INA3221_I2C_ADDR                          0x43      /* A0 pin -> GND 0x40, VCC 0x41, SDA 0x42, SCL 0x43  */
+  #define INA3221_CH1_R_SHUNT_MILLI_OHM             10        /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
+  #define INA3221_CH2_R_SHUNT_MILLI_OHM             10        /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
+  #define INA3221_CH3_R_SHUNT_MILLI_OHM             10        /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
+  #define INA3221_AVERAGING_SAMPLES                 0         /* Number of samples per measurement. Range of values 0-7 provides for 1-1024 samples per measurement */
+  #define I2C_RW                                             /* Requires I2C Read Support  */
+#endif
 
 /* ************************************************************************
  *   software options

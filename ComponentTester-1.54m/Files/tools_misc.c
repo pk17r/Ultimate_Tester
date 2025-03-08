@@ -2432,11 +2432,11 @@ void Flashlight(void)
 
 
 /* ************************************************************************
- *   output power supply voltage current power monitor using INA 226
+ *   voltage current power monitor using INA226 or INA3221
  * ************************************************************************ */
 
 
-#ifdef INA226_POWER_MONITOR
+#ifdef HW_POWER_MONITOR
 
 
 #define DISP_CHARS_PER_ROW       UI.CharMax_X       // from SH1106.c   ->   LCD_CHAR_X
@@ -2445,14 +2445,85 @@ void Flashlight(void)
 #define VMETER_ON_FLAG_POS    7
 #define BUZZER_BEEP_ON_FLAG_POS    6
 #define ROW_NO_BATTERY      1
-#define ROW_NO_VOUT         2
-#define ROW_NO_CURRENT      3
-#define ROW_NO_POWER        4
+#ifdef INA226_POWER_MONITOR
+  #define ROW_NO_VOUT         2
+  #define ROW_NO_CURRENT      3
+  #define ROW_NO_POWER        4
+#endif
+#ifdef INA3221_POWER_MONITOR
+  #ifdef INA226_POWER_MONITOR
+    #define INA3221_FIRST_ROW    5
+  #else
+    #define INA3221_FIRST_ROW    2
+  #endif
+#endif
 
 void DisplayDashValue() {
   Display_Char('-'); Display_Space(); Display_Space(); Display_Space(); Display_Space(); Display_Space();
 }
 
+#ifdef INA3221_POWER_MONITOR
+void DisplayINA3221Row(uint8_t channel) {
+  uint8_t row = channel + INA3221_FIRST_ROW;
+  uint16_t Vout_mV = INA3221_getLoadVoltage_mV(channel);
+  LCD_CharPos(1, row); Display_Char(channel + 48);
+  LCD_CharPos(3, row);
+  Display_Space();
+
+  // Display Voltage
+  if(Vout_mV > 10) {
+    uint8_t x_start = 4;
+    if(Vout_mV >= 10000)
+      x_start--;          // 2 digits before decimal
+    LCD_CharPos(x_start, row);
+    Display_Value(Vout_mV / 10, -2, 0);         // show 2 decimal digits
+    Display_Space(); Display_Char('V');
+  }
+  else {
+    Display_Space(); Display_Space(); Display_Space(); Display_Char('-'); Display_Space(); Display_Space();
+  }
+
+  // Display Current
+  int32_t Current = INA3221_getCurrent_uA(channel);
+  unsigned char Unit_first_letter = '-', Unit_second_letter = 'A';
+  if(Current <= 300 && Current >= -300)
+    Current = 0;                // currents under 0.3mA are ignored to keep zero stable
+  if(Current < 1000000 && Current > -1000000) {
+    Unit_first_letter = 'm';   // Current in uA
+  }
+  else {
+    Unit_first_letter = 'A';
+    Current = Current / 1000;    // Current in mA
+  }
+
+  LCD_CharPos(DISP_CHARS_PER_ROW / 2 + 2, row); Display_Space(); Display_Space(); Display_Space();
+  if(Current > 10 || Current < -10) {
+    uint8_t x_start = DISP_CHARS_PER_ROW / 2 + 5;
+    if(Current >= 100000 || Current <= -100000)
+      x_start -= 2;   // 3 digits before decimal
+    else if(Current >= 10000 || Current <= -10000)
+      x_start--;      // 2 digits before decimal
+    if(Current < 0)
+      x_start--;      // minus sign
+    LCD_CharPos(x_start, row);
+    if(Unit_first_letter == 'm') {
+      Display_SignedValue(Current / 1000, 0, 0);    // show 0 decimal digit
+      Display_Space();
+      Display_Char(Unit_first_letter);
+      Display_Char(Unit_second_letter);
+    }
+    else {
+      Display_SignedValue(Current / 10, -2, 0);     // show 2 decimal digits
+      Display_Space(); Display_Char(Unit_first_letter);
+    }
+  }
+  else {
+    DisplayDashValue();
+  }
+}
+#endif
+
+#ifdef INA226_POWER_MONITOR
 void DisplayPMVoltageValue(uint16_t Value, uint8_t row) {
   LCD_CharPos(X_START_VALUE - 1, row); Display_Space();
   if(Value > 10) {
@@ -2493,24 +2564,36 @@ void DisplaySignedPMValue(int32_t Value, unsigned char Unit_first_letter, unsign
     DisplayDashValue();
   }
 }
+#endif
 
 
-void DisplayLeftSideLabels()
+void DisplayLabels()
 {
   LCD_Clear();
 
-  // Print Left Side Row Labels
-  // #ifndef TP_LOGIC
-    #ifdef BAT_NONE
-    LCD_CharPos(1, ROW_NO_BATTERY);
-    Display_EEString_Center(Power_Monitor_str);
-    #endif
-  // #endif
-  LCD_CharPos(1, ROW_NO_VOUT);
-  Display_Char('V'); Display_EEString(Out_str);
-  LCD_CharPos(1, ROW_NO_CURRENT);
-  Display_Char('I'); Display_EEString(Out_str);
-  Display_NL_EEString(Power_str);
+  #ifdef INA226_POWER_MONITOR
+    // Print Left Side Row Labels
+    // #ifndef TP_LOGIC
+      #ifdef BAT_NONE
+      LCD_CharPos(1, ROW_NO_BATTERY);
+      Display_EEString_Center(Power_Monitor_str);
+      #endif
+    // #endif
+    LCD_CharPos(1, ROW_NO_VOUT);
+    Display_Char('V'); Display_EEString(Out_str);
+    LCD_CharPos(1, ROW_NO_CURRENT);
+    Display_Char('I'); Display_EEString(Out_str);
+    Display_NL_EEString(Power_str);
+  #endif
+
+  #ifdef INA3221_POWER_MONITOR
+    LCD_CharPos(1, INA3221_FIRST_ROW);
+    Display_Char('C'); Display_Char('h');
+    LCD_CharPos(DISP_CHARS_PER_ROW / 3 + 2, INA3221_FIRST_ROW);
+    Display_Char('V');
+    LCD_CharPos(DISP_CHARS_PER_ROW * 2 / 3 + 3, INA3221_FIRST_ROW);
+    Display_Char('I');
+  #endif
 }
 
 
@@ -2523,15 +2606,17 @@ void PowerMonitor(void)
 {
   uint8_t           Flag;               /* loop control */
   uint8_t           Test;               /* user feedback */
-  uint16_t          Vout_mV = 0;
   #ifdef TP_LOGIC
   uint16_t          Vmeter = 0;
   #endif
-  int32_t           Isense = 0, Power = 0;
-  static int32_t    Ioffset_local = 0;    // if user zero's IOUT, the zero offset will be stored here until tester power off
-  unsigned char     Current_Unit = 'm', Power_Unit = 'm';
-  int32_t           Value = 0;              /* temporary value */
-  uint8_t           counter = 0;
+  #ifdef INA226_POWER_MONITOR
+    uint16_t          Vout_mV = 0;
+    int32_t           Isense = 0, Power = 0;
+    static int32_t    Ioffset_local = 0;    // if user zero's IOUT, the zero offset will be stored here until tester power off
+    unsigned char     Current_Unit = 'm', Power_Unit = 'm';
+    int32_t           Value = 0;              /* temporary value */
+    uint8_t           counter = 0;
+  #endif
 
   /* local constants for Flag (bitfield) */
   #define RUN_FLAG            0b00000001     /* run / otherwise end */
@@ -2545,11 +2630,18 @@ void PowerMonitor(void)
   #ifdef TP_LOGIC
   ADC_DDR &= ~(1 << TP_LOGIC);          /* set pin to HiZ */
   #endif
-  Flag = INA226_setup();    //  INA226 setup error is 0 and setup good is 1.
+
+  #ifdef INA226_POWER_MONITOR
+  Flag &= INA226_setup();    //  INA226 setup error is 0 and setup good is 1.
+  #endif
+
+  #ifdef INA3221_POWER_MONITOR
+  Flag &= INA3221_setup();    //  INA3221 setup error is 0 and setup good is 1.
+  #endif
 
   Flag |= (1 << BUZZER_BEEP_ON_FLAG_POS);     // turn on flag to beep buzzer when power threshold is crossed
 
-  DisplayLeftSideLabels();
+  DisplayLabels();
 
   /*
    *  processing loop
@@ -2565,36 +2657,38 @@ void PowerMonitor(void)
      /* get voltage */
     /* TP LOGIC consider voltage divider */
     #ifdef TP_LOGIC
-    Vmeter = ReadU(TP_LOGIC);          /* read voltage */
-    Value = (((int32_t)(LOGIC_PROBE_R1 + LOGIC_PROBE_R2) * 1000) / (LOGIC_PROBE_R2));  /* factor (0.0001) */
-    Value *= Vmeter;                   /* voltage (0.001 mV) */
-    Value /= 1000;                       /* scale to mV */
-    Vmeter = (uint16_t)Value;          /* keep 2 bytes */
+      Vmeter = ReadU(TP_LOGIC);          /* read voltage */
+      Value = (((int32_t)(LOGIC_PROBE_R1 + LOGIC_PROBE_R2) * 1000) / (LOGIC_PROBE_R2));  /* factor (0.0001) */
+      Value *= Vmeter;                   /* voltage (0.001 mV) */
+      Value /= 1000;                       /* scale to mV */
+      Vmeter = (uint16_t)Value;          /* keep 2 bytes */
     #endif
-    // Voltage
-    Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV() * INA226_BUS_V_MULTIPLIER_e4 / 10000);
-    // Current
-    Value = INA226_getCurrent_uA() - INA226_I_OFFSET_MICRO_AMP - Ioffset_local;
-    if(Value < 300 && Value > -300)
-      Value = 0;                // currents under 0.3mA are ignored to keep zero stable
-    if(Value < 1000000 && Value > -1000000) {
-      Current_Unit = 'm';
-      Isense = Value; // Isense in uA
-    }
-    else {
-      Current_Unit = 'A';
-      Isense = Value / 1000;    // Isense in mA
-    }
-    // Power
-    Value = (int32_t)(Vout_mV / 10) * (Value / 100);
-    if(Value < 1000000 && Value > -1000000) {
-      Power_Unit = 'm';
-      Power = Value;   // Power in uW
-    }
-    else {
-      Power_Unit = 'W';
-      Power = Value / 1000;    // Power in mW
-    }
+    #ifdef INA226_POWER_MONITOR
+      // Voltage
+      Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV() * INA226_BUS_V_MULTIPLIER_e4 / 10000);
+      // Current
+      Value = INA226_getCurrent_uA() - INA226_I_OFFSET_MICRO_AMP - Ioffset_local;
+      if(Value <= 300 && Value >= -300)
+        Value = 0;                // currents under 0.3mA are ignored to keep zero stable
+      if(Value < 1000000 && Value > -1000000) {
+        Current_Unit = 'm';
+        Isense = Value; // Isense in uA
+      }
+      else {
+        Current_Unit = 'A';
+        Isense = Value / 1000;    // Isense in mA
+      }
+      // Power
+      Value = (int32_t)(Vout_mV / 10) * (Value / 100);
+      if(Value < 1000000 && Value > -1000000) {
+        Power_Unit = 'm';
+        Power = Value;   // Power in uW
+      }
+      else {
+        Power_Unit = 'W';
+        Power = Value / 1000;    // Power in mW
+      }
+    #endif
 
     /* Show Battery or VoltMeter */
     #ifdef TP_LOGIC
@@ -2634,37 +2728,45 @@ void PowerMonitor(void)
 
     /* display values */
 
-    DisplayPMVoltageValue(Vout_mV, ROW_NO_VOUT);
+    #ifdef INA226_POWER_MONITOR
+      DisplayPMVoltageValue(Vout_mV, ROW_NO_VOUT);
+      DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
+      // display active current output sign
+      LCD_CharPos(X_START_VALUE - 5, ROW_NO_CURRENT);
+      if((Isense != 0) && (counter % 4 < 2))
+        Display_Char('*');
+      else
+        Display_Space();
+      counter++;
+      DisplaySignedPMValue(Power, Power_Unit, 'W', ROW_NO_POWER);
+    #endif
 
-    DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
+    #ifdef INA3221_POWER_MONITOR
+      DisplayINA3221Row(1);
+      DisplayINA3221Row(2);
+      DisplayINA3221Row(3);
+    #endif
 
-    // display active current output sign
-    LCD_CharPos(X_START_VALUE - 5, ROW_NO_CURRENT);
-    if((Isense != 0) && (counter % 4 < 2))
-      Display_Char('*');
-    else
-      Display_Space();
-    counter++;
 
-    DisplaySignedPMValue(Power, Power_Unit, 'W', ROW_NO_POWER);
+    #ifdef INA226_POWER_MONITOR
+      #ifdef HW_BUZZER
+        if((Flag >> BUZZER_BEEP_ON_FLAG_POS) == 1)
+        {
+          if(((Power_Unit == 'W') && (Power >= INA226_P_THRESHOLD_mW_BUZZER)) || ((Power_Unit == 'm') && (Power / 1000 >= INA226_P_THRESHOLD_mW_BUZZER)))
+          {
+            /* buzzer: short beep to indicate over threshold power */
+            #ifdef BUZZER_ACTIVE
+            BUZZER_PORT |= (1 << BUZZER_CTRL);       /* enable: set pin high */
+            MilliSleep(20);                          /* wait for 20 ms */
+            BUZZER_PORT &= ~(1 << BUZZER_CTRL);      /* disable: set pin low */
+            #endif
 
-    #ifdef HW_BUZZER
-    if((Flag >> BUZZER_BEEP_ON_FLAG_POS) == 1)
-    {
-      if(((Power_Unit == 'W') && (Power >= INA226_P_THRESHOLD_mW_BUZZER)) || ((Power_Unit == 'm') && (Power / 1000 >= INA226_P_THRESHOLD_mW_BUZZER)))
-      {
-        /* buzzer: short beep to indicate over threshold power */
-        #ifdef BUZZER_ACTIVE
-        BUZZER_PORT |= (1 << BUZZER_CTRL);       /* enable: set pin high */
-        MilliSleep(20);                          /* wait for 20 ms */
-        BUZZER_PORT &= ~(1 << BUZZER_CTRL);      /* disable: set pin low */
-        #endif
-
-        #ifdef BUZZER_PASSIVE
-        PassiveBuzzer(BUZZER_FREQ_LOW);          /* low frequency beep */
-        #endif
-      }
-    }
+            #ifdef BUZZER_PASSIVE
+            PassiveBuzzer(BUZZER_FREQ_LOW);          /* low frequency beep */
+            #endif
+          }
+        }
+      #endif
     #endif
 
     /*
@@ -2685,6 +2787,7 @@ void PowerMonitor(void)
       else
         Flag |= (1 << BUZZER_BEEP_ON_FLAG_POS);     // turn on buzzer beeps when power threshold is crossed
     }
+    #ifdef INA226_POWER_MONITOR
     else if (Test == KEY_LONG)      /* long press -> zero current offset */
     {
       LCD_Clear();
@@ -2714,7 +2817,7 @@ void PowerMonitor(void)
       }
       DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
       wait1000ms();
-      DisplayLeftSideLabels();
+      DisplayLabels();
       #ifdef TP_LOGIC
       // reset Voltmeter
       if((Flag >> VMETER_ON_FLAG_POS) == 1)
@@ -2727,6 +2830,7 @@ void PowerMonitor(void)
       }
       #endif
     }
+    #endif
   }
 
 
@@ -2750,8 +2854,9 @@ void PowerMonitor(void)
 #undef ROW_NO_VOUT
 #undef ROW_NO_CURRENT
 #undef ROW_NO_POWER
+#undef INA3221_FIRST_ROW
 
-#endif    // INA226_POWER_MONITOR
+#endif    // HW_POWER_MONITOR
 
 
 

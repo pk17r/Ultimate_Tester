@@ -2105,7 +2105,7 @@ uint8_t PresentMainMenu(void)
     #define ITEM_38      0
   #endif
 
-  #ifdef INA226_POWER_MONITOR
+  #ifdef HW_POWER_MONITOR
     #define ITEM_39      1
   #else
     #define ITEM_39      0
@@ -2152,7 +2152,7 @@ uint8_t PresentMainMenu(void)
   n++;
   #endif
 
-  #ifdef INA226_POWER_MONITOR
+  #ifdef HW_POWER_MONITOR
    /* output power supply voltage current power measure */
   Item_Str[n] = (void*)Power_Monitor_str;
   Item_ID[n] = MENUITEM_POWER_MONITOR;
@@ -2889,7 +2889,7 @@ uint8_t MainMenu(void)
       break;
     #endif
 
-    #ifdef INA226_POWER_MONITOR
+    #ifdef HW_POWER_MONITOR
     /* output power supply voltage current power measure */
     case MENUITEM_POWER_MONITOR:
       PowerMonitor();

@@ -1,16 +1,16 @@
 //    FILE: INA226.c
+//  AUTHOR: Prashant Kumar
+//    DATE: 2024-12-23
+//     URL: https://github.com/pk17r
+//
+//  MADE USING ARDUINO LIBRARY BY:
 //  AUTHOR: Rob Tillaart
 // VERSION: 0.6.0
 //    DATE: 2021-05-18
 // PURPOSE: Arduino library for INA226 power sensor
 //     URL: https://github.com/RobTillaart/INA226
 //
-//  MODIFIED AND ADAPTED TO COMPONENT TESTER PROJECT
-//      By: Prashant Kumar    https://github.com/pk17r
-//    DATE: 2024-12-23
-//
 //  Read the datasheet for the details
-//  
 //  
 //  MIT License     (Date 2025-01-02)
 //  

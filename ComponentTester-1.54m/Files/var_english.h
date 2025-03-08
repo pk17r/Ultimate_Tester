@@ -49,12 +49,14 @@
   const unsigned char PUT_str[] MEM_TYPE = "PUT";
   const unsigned char Bye_str[] MEM_TYPE = "Bye!";
 
-  #ifdef INA226_POWER_MONITOR
+  #ifdef HW_POWER_MONITOR
     const unsigned char Power_Monitor_str[] MEM_TYPE = "Power Monitor";
-    const unsigned char Out_str[] MEM_TYPE = "OUT";
-    const unsigned char Power_str[] MEM_TYPE = "Power";
     #ifdef TP_LOGIC
-    const unsigned char VMeter_str[] MEM_TYPE = "VMeter";
+      const unsigned char VMeter_str[] MEM_TYPE = "VMeter";
+    #endif
+    #ifdef INA226_POWER_MONITOR
+      const unsigned char Out_str[] MEM_TYPE = "OUT";
+      const unsigned char Power_str[] MEM_TYPE = "Power";
     #endif
   #endif
 
