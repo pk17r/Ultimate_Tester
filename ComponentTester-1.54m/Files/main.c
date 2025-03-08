@@ -2305,7 +2305,8 @@ void ShowBattery(void)
       Char1 = LCD_CHAR_BAT_LH;          /* left: high */
       Char2 = LCD_CHAR_BAT_RL;          /* right: low */
     }
-    else if (Cfg.Vbat > EXT_POW_IDENTIFIER)       /* usb power in */
+    #ifdef SHOW_EXTERNAL_POWER_SYMBOL
+    else if (Cfg.Vbat > EXT_POW_IDENTIFIER)       /* external power in */
     {
       #ifdef LCD_COLOR
       UI.PenColor = COLOR_BAT_OK;     /* set OK color */
@@ -2313,6 +2314,7 @@ void ShowBattery(void)
       Char1 = LCD_CHAR_EXT_POW_L;          /* left */
       Char2 = LCD_CHAR_EXT_POW_R;          /* right */
     }
+    #endif
     else                                /* ok */
     {
       #ifdef LCD_COLOR
@@ -2382,9 +2384,11 @@ void CheckBattery(void)
   Temp /= 1000;                    /* Uin (mV) */
   U_Bat = (uint16_t)Temp;          /* keep 2 bytes */
   #endif
+  #ifdef SHOW_EXTERNAL_POWER_SYMBOL
   if(U_Bat > EXT_POW_IDENTIFIER)
-    U_Bat += USB_OFFSET;             /* add offset for voltage drop */
+    U_Bat += EXT_POW_VOLTAGE_OFFSET;   /* add offset for voltage drop */
   else
+  #endif
     U_Bat += BAT_OFFSET;             /* add offset for voltage drop */
   Cfg.Vbat = U_Bat;                /* save battery voltage */
   Cfg.BatTimer = 100;              /* reset timer for next battery check (in 100ms) */
@@ -3166,10 +3170,12 @@ cycle_control:
   {
     Key = KEY_MAINMENU;            /* signal main menu */
   }
+  #ifdef LONG_KEY_PRESS_POWER_OFF
   else if (Key == KEY_LONG)        /* long key press */
   {
     Key = KEY_POWER_OFF;           /* signal power off */
   }
+  #endif
   #ifdef HW_KEYS
   else if (Key == KEY_LEFT)        /* rotary encoder: left turn */
   {

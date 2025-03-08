@@ -3,7 +3,7 @@
  *   ATmega 324/644/1284 specific global configuration, setup and settings
  *
  *   (c) 2012-2024 by Markus Reschke
- *   based on code from Markus Frejek and Karl-Heinz Kübbeler
+ *   based on code from Markus Frejek and Karl-Heinz Kï¿½bbeler
  *
  * ************************************************************************ */
 
@@ -125,7 +125,7 @@
 #define LCD_OFFSET_X      32            /* x offset of 32 dots (160-128) */
 //#define LCD_FLIP_X                      /* enable horizontal flip */
 #define LCD_FLIP_Y                      /* enable vertical flip */
-#define LCD_ROTATE                      /* switch X and Y (rotate by 90°) */
+#define LCD_ROTATE                      /* switch X and Y (rotate by 90ï¿½) */
 #define LCD_BGR                         /* reverse red and blue color channels */
 //#define LCD_LATE_ON                     /* turn on LCD after clearing it */
 /* font and symbols: horizonally aligned & flipped */
@@ -155,7 +155,7 @@
  *  - SPI interface using hardware SPI
  */
 
-//#if 0
+#if 0
 #define LCD_ILI9341                     /* display controller ILI9341/ILI9342 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_COLOR                       /* color display */
@@ -174,7 +174,7 @@
 #define LCD_DOTS_Y       240            /* number of vertical dots */
 //#define LCD_FLIP_X                      /* enable horizontal flip */
 //#define LCD_FLIP_Y                      /* enable vertical flip */
-//#define LCD_ROTATE                      /* switch X and Y (rotate by 90°) */
+//#define LCD_ROTATE                      /* switch X and Y (rotate by 90ï¿½) */
 //#define LCD_BGR                         /* reverse red and blue color channels */
 //#define LCD_EXT_CMD_OFF                 /* extended commands disabled */
 /* font and symbols: horizontally aligned & flipped */
@@ -187,7 +187,7 @@
 #define SYMBOLS_32X39_HF                /* 32x39 symbols */
 /* SPI bus */
 #define SPI_HARDWARE                    /* hardware SPI */
-//#endif
+#endif
 
 
 
@@ -230,7 +230,7 @@
 #define LCD_DOTS_Y       480            /* number of vertical dots */
 //#define LCD_FLIP_X                      /* enable horizontal flip */
 //#define LCD_FLIP_Y                      /* enable vertical flip */
-#define LCD_ROTATE                      /* switch X and Y (rotate by 90°) */
+#define LCD_ROTATE                      /* switch X and Y (rotate by 90ï¿½) */
 #define LCD_BGR                         /* reverse red and blue color channels */
 /* font and symbols: horizontally aligned & flipped */
 #define FONT_16X26_HF                   /* 16x26 font */
@@ -270,7 +270,7 @@
 #define LCD_DOTS_Y       480            /* number of vertical dots */
 //#define LCD_FLIP_X                      /* enable horizontal flip */
 //#define LCD_FLIP_Y                      /* enable vertical flip */
-#define LCD_ROTATE                      /* switch X and Y (rotate by 90°) */
+#define LCD_ROTATE                      /* switch X and Y (rotate by 90ï¿½) */
 //#define LCD_BGR                         /* reverse red and blue color channels */
 /* font and symbols: horizontally aligned & flipped */
 #define FONT_16X26_HF                   /* 16x26 font */
@@ -289,7 +289,7 @@
 /*
  *  PCD8544
  *  - SPI interface using hardware SPI
- *  - for a 180° rotated display (LCD_ROT180)
+ *  - for a 180ï¿½ rotated display (LCD_ROT180)
  *    - comment out "_VF" font and "_VFP" symbols
  *    - uncomment "_V_F" font and "_VP_F" symbols
  */
@@ -316,7 +316,7 @@
 #define SYMBOLS_24X24_VFP               /* 24x24 symbols */
 //#define SYMBOLS_24X24_ALT1_VFP          /* 24x24 alternative symbols #1 */
 //#define SYMBOLS_24X24_ALT2_VFP          /* 24x24 alternative symbols #2 */
-//#define LCD_ROT180                      /* rotate output by 180° (not supported yet) */
+//#define LCD_ROT180                      /* rotate output by 180ï¿½ (not supported yet) */
 /* font and symbols: vertically aligned, bank-wise grouping, hor. flipped */
 //#define FONT_6X8_V_F                    /* 6x8 font */
 //#define FONT_6X8_ISO8859_2_V_F          /* 6x8 Central European font */
@@ -461,7 +461,7 @@
  *  - I2C interface using hardware I2C
  */
 
-#if 0
+#if 1
 #define LCD_SH1106                      /* display controller SH1106 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_I2C                         /* I2C interface */
@@ -472,20 +472,22 @@
 //#define LCD_RESET        PB2            /* port pin used for /RES (optional) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
-#define LCD_DOTS_Y       64             /* number of vertical dots */
-#define LCD_OFFSET_X     2              /* enable x offset of 2 or 4 dots */
-#define LCD_FLIP_X                      /* enable horizontal flip */
-#define LCD_FLIP_Y                      /* enable vertical flip */
+#define LCD_DOTS_Y       128             /* number of vertical dots */
+#define LCD_OFFSET_X     0              /* enable x offset of 2 or 4 dots */
+// #define LCD_FLIP_X                      /* enable horizontal flip */
+// #define LCD_FLIP_Y                      /* enable vertical flip */
 //#define LCD_COM_SEQ                     /* COM pin layout: sequential */
-#define LCD_CONTRAST     127            /* default contrast (0-255) */
-/* font and symbols: vertically aligned & flipped, bank-wise grouping */
-#define FONT_8X8_VF                     /* 8x8 font */
+#define LCD_CONTRAST     255            /* default contrast (0-255) */
+/* font and symbols: vertically aligned & flipped, bank-wise grouping. Choose 1 font. */
+// #define FONT_8X8_VF                               /* 8x8 font */
+// #define FONT_8X12T_WIN1251_VFP                     /* 8x12 font */
+#define FONT_8X16_VFP                             /* 8x16 font */
 #define SYMBOLS_24X24_VFP               /* 24x24 symbols */
 //#define SYMBOLS_24X24_ALT1_VFP          /* 24x24 alternative symbols #1 */
 //#define SYMBOLS_24X24_ALT2_VFP          /* 24x24 alternative symbols #2 */
 /* I2C bus */
-#define I2C_HARDWARE                    /* hardware I2C (MCU's TWI) */
-#define I2C_STANDARD_MODE               /* 100kHz bus speed */
+// #define I2C_HARDWARE                    /* hardware I2C (MCU's TWI) */
+#define I2C_FAST_MODE                   /* 400kHz bus speed */
 #endif
 
 
@@ -612,6 +614,44 @@
 
 
 /*
+ *  SSD1309
+ *  - I2C interface using hardware I2C
+ */
+
+#if 0
+ #define LCD_SSD1309                      /* display controller SSD1309 */
+ #define LCD_GRAPHIC                     /* graphic display */
+ #define LCD_I2C                         /* I2C interface */
+ #define LCD_I2C_ADDR     0x3c           /* SSD1309's I2C address */
+ /* control lines */
+ #define LCD_PORT         PORTB          /* port data register */
+ #define LCD_DDR          DDRB           /* port data direction register */
+ //#define LCD_RESET        PB0            /* port pin used for /RES (optional) */
+ /* display settings */
+ #define LCD_DOTS_X       128            /* number of horizontal dots */
+ #define LCD_DOTS_Y       64             /* number of vertical dots */
+ // #define LCD_OFFSET_X     2              /* enable x offset of 2 or 4 dots */
+ #define LCD_FLIP_X                      /* enable horizontal flip */
+ #define LCD_FLIP_Y                      /* enable vertical flip */
+ // #define LCD_COM_SEQ                     /* COM pin layout: sequential */
+ #define LCD_CONTRAST     255            /* default contrast (0-255) */
+ /* font and symbols: vertically aligned & flipped, bank-wise grouping. Choose 1 font. */
+ // #define FONT_8X8_VF                               /* 8x8 font */
+ // #define FONT_8X12T_WIN1251_VFP                     /* 8x12 font */
+ #define FONT_8X16_VFP                             /* 8x16 font */
+ #define SYMBOLS_24X24_VFP               /* 24x24 symbols */
+ //#define SYMBOLS_24X24_ALT1_VFP          /* 24x24 alternative symbols #1 */
+ //#define SYMBOLS_24X24_ALT2_VFP          /* 24x24 alternative symbols #2 */
+ /* I2C bus */
+ // #define I2C_HARDWARE                    /* hardware I2C (MCU's TWI) */
+ // #define I2C_FAST_MODE                   /* 400kHz bus speed */
+ //#define I2C_STANDARD_MODE
+ #endif
+ 
+ 
+ 
+ 
+ /*
  *  ST7036
  *  - 4 bit parallel interface
  *  - enable LCD_DB_STD when using port pins 0-3 for LCD_DB4/5/6/7
@@ -754,7 +794,7 @@
 //#define LCD_OFFSET_Y     2               /* enable y offset of 1 or 2 dots */
 //#define LCD_FLIP_X                      /* enable horizontal flip */
 #define LCD_FLIP_Y                      /* enable vertical flip */
-#define LCD_ROTATE                      /* switch X and Y (rotate by 90°) */
+#define LCD_ROTATE                      /* switch X and Y (rotate by 90ï¿½) */
 //#define LCD_BGR                         /* reverse red and blue color channels */
 //#define LCD_LATE_ON                     /* turn on LCD after clearing it */
 /* font and symbols: horizontally aligned & flipped */
@@ -782,7 +822,7 @@
 /*
  *  ST7920
  *  - SPI interface using hardware SPI
- *  - for a 180° rotated display (LCD_ROT180)
+ *  - for a 180ï¿½ rotated display (LCD_ROT180)
  *    - comment out "_H" font and symbol
  *    - uncomment "_HF" font and symbol
  */
@@ -807,7 +847,7 @@
 #define SYMBOLS_24X24_H                 /* 24x24 symbols */
 //#define SYMBOLS_24X24_ALT1_H            /* alternative 24x24 symbols #1 */
 //#define SYMBOLS_24X24_ALT2_H            /* alternative 24x24 symbols #2 */
-//#define LCD_ROT180                      /* rotate output by 180° */
+//#define LCD_ROT180                      /* rotate output by 180ï¿½ */
 /* font and symbols: horizonally aligned & flipped */
 //#define FONT_8X8_HF                     /* 8x8 font */
 //#define FONT_8X8_ISO8859_2_HF           /* 8x8 Central European font */
@@ -824,7 +864,7 @@
  *  ST7920
  *  - 4 bit parallel interface
  *  - enable LCD_DB_STD when using port pins 0-3 for LCD_DB4/5/6/7
- *  - for a 180° rotated display (LCD_ROT180)
+ *  - for a 180ï¿½ rotated display (LCD_ROT180)
  *    - comment out "_H" font and symbol
  *    - uncomment "_HF" font and symbol
  */
@@ -853,7 +893,7 @@
 #define SYMBOLS_24X24_H                 /* 24x24 symbols */
 //#define SYMBOLS_24X24_ALT1_H            /* alternative 24x24 symbols #1 */
 //#define SYMBOLS_24X24_ALT2_H            /* alternative 24x24 symbols #2 */
-//#define LCD_ROT180                      /* rotate output by 180° */
+//#define LCD_ROT180                      /* rotate output by 180ï¿½ */
 /* font and symbols: horizonally aligned & flipped */
 //#define FONT_8X8_HF                     /* 8x8 font */
 //#define SYMBOLS_24X24_HF                /* 24x24 symbols */
@@ -948,7 +988,7 @@
 #define TOUCH_PEN        PB1       /* port pin used for /PENIRQ */
 //#define TOUCH_FLIP_X               /* enable horizontal flip */
 //#define TOUCH_FLIP_Y               /* enable vertical flip */
-//#define TOUCH_ROTATE               /* switch X and Y (rotate by 90°) */
+//#define TOUCH_ROTATE               /* switch X and Y (rotate by 90ï¿½) */
 #define SPI_HARDWARE               /* hardware SPI */
 #define SPI_RW                     /* enable SPI read support */
 #endif
@@ -970,15 +1010,15 @@
 #define ADC_PORT         PORTA     /* port data register */
 #define ADC_DDR          DDRA      /* port data direction register */
 #define ADC_PIN          PINA      /* port input pins register */
-#define TP1              PA0       /* test pin / probe #1 */
-#define TP2              PA1       /* test pin / probe #2 */
-#define TP3              PA2       /* test pin / probe #3 */
+#define TP1              PA1       /* test pin / probe #1 */
+#define TP2              PA2       /* test pin / probe #2 */
+#define TP3              PA3       /* test pin / probe #3 */
 
-#define TP_ZENER         PA3       /* test pin for for Zener check (10:1 voltage divider) */
-#define TP_REF           PA4       /* test pin for 2.5V reference and relay */
-#define TP_BAT           PA5       /* test pin for battery (4:1 voltage divider) */
+// #define TP_ZENER         PA6       /* test pin for for Zener check (10:1 voltage divider) */
+#define TP_REF           PA0       /* test pin for 2.5V reference and relay */
+#define TP_BAT           PA4       /* test pin for battery (4:1 voltage divider) */
 #define TP_CAP           PA7       /* test pin for self-adjustment cap */
-#define TP_LOGIC         PA6       /* test pin for Logic Probe (4:1 voltage divider) */
+// #define TP_LOGIC         PA5       /* test pin for Logic Probe (4:1 voltage divider) */
 
 
 /*
@@ -1014,7 +1054,7 @@
 
 #define POWER_PORT       PORTC     /* port data register */
 #define POWER_DDR        DDRC      /* port data direction register */
-#define POWER_CTRL       PC6       /* control pin (1: on / 0: off) */
+#define POWER_CTRL       PC3       /* control pin (1: on / 0: off) */
 
 
 /*
@@ -1025,7 +1065,7 @@
 #define BUTTON_PORT      PORTC     /* port data register */
 #define BUTTON_DDR       DDRC      /* port data direction register */
 #define BUTTON_PIN       PINC      /* port input pins register */
-#define TEST_BUTTON      PC7       /* test/start push button (low active) */
+#define TEST_BUTTON      PC6       /* test/start push button (low active) */
 
 
 /*
@@ -1035,8 +1075,8 @@
 #define ENCODER_PORT     PORTC     /* port data register */
 #define ENCODER_DDR      DDRC      /* port data direction register */
 #define ENCODER_PIN      PINC      /* port input pins register */
-#define ENCODER_A        PC3       /* rotary encoder A signal */
-#define ENCODER_B        PC4       /* rotary encoder B signal */
+#define ENCODER_A        PC4       /* rotary encoder A signal */
+#define ENCODER_B        PC5       /* rotary encoder B signal */
 
 
 /*
@@ -1047,7 +1087,7 @@
 #define KEY_DDR          DDRC      /* port data direction register */
 #define KEY_PIN          PINC      /* port input pins register */
 #define KEY_INC          PC4       /* increase push button (low active) */
-#define KEY_DEC          PC3       /* decrease push button (low active) */
+#define KEY_DEC          PC5       /* decrease push button (low active) */
 
 
 /*
@@ -1182,7 +1222,7 @@
 
 #define ADJUST_PORT      PORTC     /* port data register */
 #define ADJUST_DDR       DDRC      /* port data direction register */
-#define ADJUST_RH        PC5       /* Rh (470k) for fixed cap */
+#define ADJUST_RH        PC7       /* Rh (470k) for fixed cap */
 
 
 /*
@@ -1225,9 +1265,9 @@
  *  flashlight / general purpose switched output
  */
 
-#define FLASHLIGHT_PORT  PORTC     /* port data register */
-#define FLASHLIGHT_DDR   DDRC      /* port data direction register */
-#define FLASHLIGHT_CTRL  PC2       /* control pin */
+#define FLASHLIGHT_PORT  PORTB     /* port data register */
+#define FLASHLIGHT_DDR   DDRB      /* port data direction register */
+#define FLASHLIGHT_CTRL  PB1       /* control pin */
 
 
 /*
@@ -1319,7 +1359,7 @@
  *  ATmega 1284/1284P
  */
 
-#elif defined (__AVR_ATmega1284__)
+#elif defined (__AVR_ATmega1284P__)
 
   /* estimated internal resistance of port to GND (in 0.1 Ohms) */
   #define R_MCU_LOW           200  /* 209 */

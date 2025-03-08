@@ -389,6 +389,15 @@
 #define INA226_POWER_MONITOR
 
 #ifdef INA226_POWER_MONITOR
+//  default values:
+//  #define INA226_I2C_ADDR                          0x40      /* 0x40 is address when A0=GND, A1=GND. For other address options, lookup "Table 6-2. Address Pins and Slave Addresses" in INA226 Datasheet  */
+//  #define INA226_R_SHUNT_MILLI_OHM                 100       /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
+//  #define INA226_CURRENT_LEAST_COUNT_MICRO_AMP     100       /* Least count is minimum resolution in measurement. Also decides Max_Measurable_Current = (32768 * INA226_CURRENT_LEAST_COUNT_MICRO_AMP / 1000000) Amps. Recommended value is 100, but increase this to get bigger range.  */
+//  #define INA226_AVERAGING_SAMPLES                 0         /* Number of samples per measurement. Range of values 0-7 provides for 1-1024 samples per measurement */
+//  #define INA226_I_OFFSET_MICRO_AMP                0         /* Offset current in microamps on shunt at no load that is added to measurement to make it zero. Can be negative */
+//  #define INA226_BUS_V_MULTIPLIER_e4               10000     /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements. Only whole numbers accepted */
+//  #define INA226_P_THRESHOLD_mW_BUZZER             2500      /* Over-Power Alert Beeps: Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beeps. */
+//  #define I2C_RW                                             /* Requires I2C Read Support  */
   #define INA226_I2C_ADDR                          0x40      /* 0x40 is address when A0=GND, A1=GND. For other address options, lookup "Table 6-2. Address Pins and Slave Addresses" in INA226 Datasheet  */
   #define INA226_R_SHUNT_MILLI_OHM                 21.07     /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
   #define INA226_CURRENT_LEAST_COUNT_MICRO_AMP     100       /* Least count is minimum resolution in measurement. Also decides Max_Measurable_Current = (32768 * INA226_CURRENT_LEAST_COUNT_MICRO_AMP / 1000000) Amps. Recommended value is 100.  */
@@ -412,14 +421,6 @@
    * 10. Build firmware and flash microcontroller. Your INA 226 is now calibrated. It should have less than 1% error in Current and Voltage measurements over a wide range like [5mA, 1A] and [5V, 20V].
    */
 #endif
-
-// default values
-//  #define INA226_I2C_ADDR                          0x40      /* 0x40 is address when A0=GND, A1=GND. For other address options, lookup "Table 6-2. Address Pins and Slave Addresses" in INA226 Datasheet  */
-//  #define INA226_R_SHUNT_MILLI_OHM                 100       /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
-//  #define INA226_CURRENT_LEAST_COUNT_MICRO_AMP     100       /* Least count is minimum resolution in measurement. Also decides Max_Measurable_Current = (32768 * INA226_CURRENT_LEAST_COUNT_MICRO_AMP / 1000000) Amps. Recommended value is 100, but increase this to get bigger range.  */
-//  #define INA226_I_OFFSET_MICRO_AMP                0         /* Offset current in microamps on shunt at no load that is added to measurement to make it zero. Can be negative */
-//  #define INA226_BUS_V_MULTIPLIER_e4               10000     /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements. Only whole numbers accepted */
-//  #define INA226_P_THRESHOLD_mW_BUZZER             2500      /* Over-Power Alert Beeps: Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beeps. */
 
 
 
@@ -1380,8 +1381,6 @@
  */  
 
 #define BAT_OFFSET       31
-#define USB_OFFSET       188
-#define EXT_POW_IDENTIFIER      6400           // 4400
 
 
 /*
@@ -1400,6 +1399,24 @@
  */
 
 #define BAT_LOW          3000 
+
+
+/*
+ *  Show external power symbol when VIN/Battery Voltage measurement
+ *  crosses a certain threshold. This is for hardware that has single
+ *  3.7V Lithium battery as power source and VIN auto switches to external
+ *  voltage when USB is used as input to charge device. This option
+ *  replaces battery symbol with external power symbol.
+ *  - Uncomment to enable
+ *  - Enter VIN voltage at which battery symbol will be replaced
+ *    with external power symbol
+ *  - Use a DMM to measure any voltage drop in circuit until voltage
+ *    reaches measurement ADC pin
+ */  
+
+#define SHOW_EXTERNAL_POWER_SYMBOL
+#define EXT_POW_IDENTIFIER          6400    // 6400           // 4400
+#define EXT_POW_VOLTAGE_OFFSET       188
 
 
 /*
