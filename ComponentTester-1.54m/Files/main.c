@@ -2863,17 +2863,26 @@ cycle_start:
    *  skip to main menu
    */
 
-  #ifdef MAINMENU_AT_POWER_ON
+  #if defined (MAINMENU_AT_POWER_ON)  || defined (POWER_MONITOR_AT_POWER_ON)
   /* skip first probing after power-on */
   #ifndef BAT_NONE
   CheckBattery();                     /* check battery voltage */
                                       /* will power off on low battery */
   #endif
+  #ifdef MAINMENU_AT_POWER_ON
   if (Key == KEY_POWER_ON)         /* first cycle */
   {
     Key = KEY_MAINMENU;            /* signal main menu */
     goto cycle_control_main_menu;            /* skip probing and go to main menu */
   }
+  #elif defined (POWER_MONITOR_AT_POWER_ON)
+  if (Key == KEY_POWER_ON)         /* first cycle */
+  {
+    PowerMonitor();
+    Key = KEY_MAINMENU;            /* signal main menu */
+    goto cycle_control_main_menu;            /* skip probing and go to main menu */
+  }
+  #endif
   #endif
 
 

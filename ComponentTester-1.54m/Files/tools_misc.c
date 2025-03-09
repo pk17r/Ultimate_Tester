@@ -2470,14 +2470,14 @@ void DisplayINA3221Row(uint8_t channel) {
   LCD_CharPos(3, row);
   Display_Space();
 
-  // Display Voltage
-  if(Vout_mV > 10) {
+  // Display Voltage - if >= 1V: 3 decimal digits + 1 or 2 integer digits = total 5 or 6 places + 1 place for char V,   or if < 1V: show no decimal and only mV value = 1 to 3 digits + 2 places for mV
+  if(Vout_mV > 0) {
     uint8_t x_start = 4;
     if(Vout_mV >= 10000)
       x_start--;          // 2 digits before decimal
     LCD_CharPos(x_start, row);
-    Display_Value(Vout_mV / 10, -2, 0);         // show 2 decimal digits
-    Display_Space(); Display_Char('V');
+    Display_Value(Vout_mV, -3, 0);         // show 3 decimal digits
+    Display_Char('V');
   }
   else {
     Display_Space(); Display_Space(); Display_Space(); Display_Char('-'); Display_Space(); Display_Space();
@@ -2498,7 +2498,7 @@ void DisplayINA3221Row(uint8_t channel) {
 
   LCD_CharPos(DISP_CHARS_PER_ROW / 2 + 2, row); Display_Space(); Display_Space(); Display_Space();
   if(Current > 10 || Current < -10) {
-    uint8_t x_start = DISP_CHARS_PER_ROW / 2 + 5;
+    uint8_t x_start = DISP_CHARS_PER_ROW / 2 + 6;
     if(Current >= 100000 || Current <= -100000)
       x_start -= 2;   // 3 digits before decimal
     else if(Current >= 10000 || Current <= -10000)
@@ -2508,13 +2508,12 @@ void DisplayINA3221Row(uint8_t channel) {
     LCD_CharPos(x_start, row);
     if(Unit_first_letter == 'm') {
       Display_SignedValue(Current / 1000, 0, 0);    // show 0 decimal digit
-      Display_Space();
       Display_Char(Unit_first_letter);
       Display_Char(Unit_second_letter);
     }
     else {
       Display_SignedValue(Current / 10, -2, 0);     // show 2 decimal digits
-      Display_Space(); Display_Char(Unit_first_letter);
+      Display_Char(Unit_first_letter);
     }
   }
   else {
@@ -2527,11 +2526,11 @@ void DisplayINA3221Row(uint8_t channel) {
 void DisplayPMVoltageValue(uint16_t Value, uint8_t row) {
   LCD_CharPos(X_START_VALUE - 1, row); Display_Space();
   if(Value > 10) {
-    uint8_t x_start = X_START_VALUE;
+    uint8_t x_start = X_START_VALUE - 1;
     if(Value >= 10000)
       x_start--;          // 2 digits before decimal
     LCD_CharPos(x_start, row);
-    Display_Value(Value / 10, -2, 0);         // show 2 decimal digits
+    Display_Value(Value, -3, 0);         // show 2 decimal digits
     Display_Space(); Display_Char('V');
   }
   else {
@@ -2556,7 +2555,7 @@ void DisplaySignedPMValue(int32_t Value, unsigned char Unit_first_letter, unsign
       Display_Char(Unit_second_letter);
     }
     else {
-      Display_SignedValue(Value / 10, -2, 0);     // show 2 decimal digits
+      Display_SignedValue(Value, -3, 0);     // show 3 decimal digits
       Display_Space(); Display_Char(Unit_first_letter);
     }
   }

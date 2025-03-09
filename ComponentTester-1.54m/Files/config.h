@@ -1242,6 +1242,16 @@
 
 
 /*
+ *  enter power monitor at startup before probing cycle
+ *  - shows battery at top of main menu
+ *  - uncomment to enable
+ *  - need to comment out MAINMENU_AT_POWER_ON
+ */
+
+// #define POWER_MONITOR_AT_POWER_ON
+
+
+/*
  *  show test component menu item at top of menu and hide Menu Exit item
  *  - uncomment to enable
  */
