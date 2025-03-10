@@ -2473,11 +2473,9 @@ void DisplayINA3221Row(uint8_t channel) {
   // Display Voltage - if >= 1V: 3 decimal digits + 1 or 2 integer digits = total 5 or 6 places + 1 place for char V,   or if < 1V: show no decimal and only mV value = 1 to 3 digits + 2 places for mV
   if(Vout_mV > 0) {
     uint8_t x_start = 4;
-    if(Vout_mV >= 10000)
-      x_start--;          // 2 digits before decimal
     LCD_CharPos(x_start, row);
     Display_Value(Vout_mV, -3, 0);         // show 3 decimal digits
-    Display_Char('V');
+    Display_Char('V'); Display_Space(); Display_Space(); Display_Space();
   }
   else {
     Display_Space(); Display_Space(); Display_Space(); Display_Char('-'); Display_Space(); Display_Space();
@@ -2496,7 +2494,7 @@ void DisplayINA3221Row(uint8_t channel) {
     Current = Current / 1000;    // Current in mA
   }
 
-  LCD_CharPos(DISP_CHARS_PER_ROW / 2 + 2, row); Display_Space(); Display_Space(); Display_Space();
+  LCD_CharPos(DISP_CHARS_PER_ROW / 2 + 2, row); Display_Space(); Display_Space(); Display_Space(); Display_Space(); Display_Space();
   if(Current > 10 || Current < -10) {
     uint8_t x_start = DISP_CHARS_PER_ROW / 2 + 6;
     if(Current >= 100000 || Current <= -100000)
@@ -2517,6 +2515,7 @@ void DisplayINA3221Row(uint8_t channel) {
     }
   }
   else {
+    LCD_CharPos(DISP_CHARS_PER_ROW / 2 + 5, row);
     DisplayDashValue();
   }
 }
@@ -2524,16 +2523,33 @@ void DisplayINA3221Row(uint8_t channel) {
 
 #ifdef INA226_POWER_MONITOR
 void DisplayPMVoltageValue(uint16_t Value, uint8_t row) {
-  LCD_CharPos(X_START_VALUE - 1, row); Display_Space();
-  if(Value > 10) {
+  // display 3 decimal point voltage value
+  LCD_CharPos(X_START_VALUE - 2, row); Display_Space(); Display_Space();
+  if(Value > 0) {
     uint8_t x_start = X_START_VALUE - 1;
-    if(Value >= 10000)
-      x_start--;          // 2 digits before decimal
-    LCD_CharPos(x_start, row);
-    Display_Value(Value, -3, 0);         // show 2 decimal digits
-    Display_Space(); Display_Char('V');
+    LCD_CharPos(x_start - 1, row);
+    uint8_t exponent = 4;
+    uint16_t divider = 10000;
+    while(1) {
+      uint8_t this_digit = Value / divider;
+      unsigned char this_digit_char = (char)(this_digit + 48);
+      Value -= this_digit * divider;
+      if(exponent == 4 && this_digit == 0)
+        Display_Space();
+      else
+        Display_Char(this_digit_char);
+      if(exponent == 3)
+        Display_Char('.');
+      if(exponent == 0)
+        break;
+      exponent--;
+      divider /= 10;
+    }
+    Display_Space();
+    Display_Char('V');
   }
   else {
+    LCD_CharPos(X_START_VALUE, row);
     DisplayDashValue();
   }
 }
