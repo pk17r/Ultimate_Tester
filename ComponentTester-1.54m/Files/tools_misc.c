@@ -2564,13 +2564,15 @@ void DisplaySignedPMValue(int32_t Value, unsigned char Unit_first_letter, unsign
       x_start--;      // 2 digits before decimal
     if(Value < 0)
       x_start--;      // minus sign
-    LCD_CharPos(x_start, row);
     if(Unit_first_letter == 'm') {
+      LCD_CharPos(x_start, row);
       Display_SignedValue(Value / 100, -1, 0);    // show 1 decimal digit
       Display_Space(); Display_Char(Unit_first_letter);
       Display_Char(Unit_second_letter);
     }
     else {
+      x_start--;
+      LCD_CharPos(x_start, row);
       Display_SignedValue(Value, -3, 0);     // show 3 decimal digits
       Display_Space(); Display_Char(Unit_first_letter);
     }

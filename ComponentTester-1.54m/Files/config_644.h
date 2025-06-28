@@ -373,7 +373,7 @@
  *  - untested
  */
 
-#if 0
+#if 1
 #define LCD_SH1106                      /* display controller SH1106 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_SPI                         /* SPI interface */
@@ -387,15 +387,15 @@
 #define LCD_SI           PB5            /* port pin used for SI (data input) */
 /* display settings */
 #define LCD_DOTS_X       128            /* number of horizontal dots */
-#define LCD_DOTS_Y       64             /* number of vertical dots */
-#define LCD_OFFSET_X     2              /* enable x offset of 2 or 4 dots */
-#define LCD_FLIP_X                      /* enable horizontal flip */
-#define LCD_FLIP_Y                      /* enable vertical flip */
+#define LCD_DOTS_Y       128             /* number of vertical dots */
+#define LCD_OFFSET_X     0              /* enable x offset of 2 or 4 dots */
+// #define LCD_FLIP_X                      /* enable horizontal flip */
+// #define LCD_FLIP_Y                      /* enable vertical flip */
 //#define LCD_COM_SEQ                     /* COM pin layout: sequential */
-#define LCD_CONTRAST     127            /* default contrast (0-255) */
+#define LCD_CONTRAST     255            /* default contrast (0-255) */
 /* font and symbols: vertically aligned & flipped, bank-wise grouping */
 //#define FONT_6X8_VF                      /* 6x8 font */
-#define FONT_8X8_VF                     /* 8x8 font */
+// #define FONT_8X8_VF                     /* 8x8 font */
 //#define FONT_8X16_VFP                   /* 8x16 font */
 //#define FONT_6X8_ISO8859_2_VF           /* 6x8 Central European font */
 //#define FONT_8X8_ISO8859_2_VF           /* 8x8 Central European font */
@@ -406,9 +406,11 @@
 //#define FONT_8X8T_WIN1251_VF            /* thin 8x8 cyrillic font */
 //#define FONT_8X12T_WIN1251_VFP          /* thin 8x12 cyrillic font */
 //#define FONT_8X16_WIN1251_VFP           /* 8x16 cyrillic font */
-#define SYMBOLS_24X24_VFP               /* 24x24 symbols */
+// #define SYMBOLS_24X24_VFP               /* 24x24 symbols */
 //#define SYMBOLS_24X24_ALT1_VFP          /* 24x24 alternative symbols #1 */
 //#define SYMBOLS_24X24_ALT2_VFP          /* 24x24 alternative symbols #2 */
+#define FONT_8X16_VFP                             /* 8x16 font */
+#define SYMBOLS_24X24_VFP               /* 24x24 symbols */
 /* SPI bus */
 #define SPI_HARDWARE                    /* hardware SPI */
 #endif
@@ -461,7 +463,7 @@
  *  - I2C interface using hardware I2C
  */
 
-#if 1
+#if 0
 #define LCD_SH1106                      /* display controller SH1106 */
 #define LCD_GRAPHIC                     /* graphic display */
 #define LCD_I2C                         /* I2C interface */
