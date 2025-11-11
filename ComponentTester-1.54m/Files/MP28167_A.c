@@ -88,63 +88,132 @@
 //
 //  PRIVATE
 //
-uint8_t MP28167_A_readRegister(uint8_t reg)
+
+
+/*
+ *  write to MP28167_A register
+ *
+ *  requires:
+ *  - Register: 8 bit register address
+ *  - Value: 8 bit register value
+ *
+ *  returns:
+ *  - 1 on success
+ *  - 0 on any problem
+ */
+
+uint8_t MP28167_A_writeRegister(uint8_t Register, uint8_t Value)
 {
-  if(I2C_Start(I2C_START) == I2C_ERROR) {
-    return I2C_ERROR;
+  uint8_t           Flag = I2C_ERROR;   /* return value */
+  uint8_t           OldTimeout;         /* old ACK timeout */
+
+  OldTimeout = I2C.Timeout;             /* save old timeout */
+  I2C.Timeout = 1;                      /* ACK timeout 10�s */
+
+  /*
+   *  procedure to write register:
+   *  - address MP28167_A in write mode
+   *  - select register
+   *  - send value byte-wise
+   */
+
+  if (I2C_Start(I2C_START) == I2C_OK)             /* start */
+  {
+    /* send address & write bit, expect ACK from MP28167_A */
+    I2C.Byte = MP28167_A_I2C_ADDRESS << 1;        /* address (7 bits) & write (0) */
+    if (I2C_WriteByte(I2C_ADDRESS) == I2C_ACK)    /* address MP28167_A */
+    {
+      /* send register address, expect ACK from MP28167_A */
+      I2C.Byte = Register;                        /* set register address */
+      if (I2C_WriteByte(I2C_DATA) == I2C_ACK)     /* send data */
+      {      
+        /* send register value, expect ACK from MP28167_A */
+        I2C.Byte = Value;                     /* set Value */
+        if (I2C_WriteByte(I2C_DATA) == I2C_ACK)   /* send data */
+        {
+          Flag = I2C_OK;                                  /* signal success */
+        }
+      }
+    }
   }
-  /* address (7 bit & write) */
-  I2C.Byte = (MP28167_A_I2C_ADDRESS << 1);
-  if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
-    return I2C_ERROR;
-  }
-  /* register address to write */
-  I2C.Byte = reg;
-  if(I2C_WriteByte(I2C_DATA) != I2C_ACK) {
-    return I2C_ERROR;
-  }
-  I2C_Stop();
-  /* repeated start condition */
-  if(I2C_Start(I2C_START) == I2C_ERROR) {
-    return I2C_ERROR;
-  }
-  /* address (7 bit & read) */
-  I2C.Byte = (MP28167_A_I2C_ADDRESS << 1);
-  I2C.Byte |= 1;    // set read bit
-  if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
-    return I2C_ERROR;
-  }
-  if(I2C_ReadByte(I2C_ACK) == I2C_ERROR) {
-    return I2C_ERROR;
-  }
-  I2C_Stop();
-  return I2C.Byte;
+
+  I2C_Stop();                                     /* stop */
+
+  I2C.Timeout = OldTimeout;             /* restore old timeout */
+
+  return Flag;
 }
 
 
-uint8_t MP28167_A_writeRegister(uint8_t reg, uint8_t value)
+
+/*
+ *  read from MP28167_A register
+ *
+ *  requires:
+ *  - Register: 8 bit register address
+ *  - Value: pointer to 8 bit value
+ *
+ *  returns:
+ *  - 1 on success
+ *  - 0 on any problem
+ */
+
+uint8_t MP28167_A_readRegister(uint8_t Register, uint8_t *Value)
 {
-  if(I2C_Start(I2C_START) == I2C_ERROR) {
-    return I2C_ERROR;
+  uint8_t           Flag = I2C_ERROR;   /* return value */
+  uint8_t           OldTimeout;         /* old ACK timeout */
+
+  OldTimeout = I2C.Timeout;             /* save old timeout */
+  I2C.Timeout = 1;                      /* ACK timeout 10�s */
+
+  /*
+   *  procedure to read register:
+   *  - address MP28167_A in write mode
+   *  - select register
+   *  - restart I2C transfer
+   *  - address MP28167_A in read mode
+   *  - read register value byte-wise
+   */
+
+  if (I2C_Start(I2C_START) == I2C_OK)             /* start */
+  {
+    /* send address & write bit, expect ACK from MP28167_A */
+    I2C.Byte = MP28167_A_I2C_ADDRESS << 1;              /* address (7 bits) & write (0) */
+    if (I2C_WriteByte(I2C_ADDRESS) == I2C_ACK)    /* address MP28167_A */
+    {
+      /* send register address, expect ACK from MP28167_A */
+      I2C.Byte = Register;                        /* set register address */
+      if (I2C_WriteByte(I2C_DATA) == I2C_ACK)     /* send data */
+      {
+        /* end transfer for selecting register */
+        // I2C_Stop();                               /* stop */
+
+        /* new transfer for reading register */
+        if (I2C_Start(I2C_REPEATED_START) == I2C_OK)       /* start */
+        {
+          /* send address & read bit, expect ACK from MP28167_A */
+          I2C.Byte = (MP28167_A_I2C_ADDRESS << 1) | 0b00000001;   /* address (7 bits) & read (1) */
+          if (I2C_WriteByte(I2C_ADDRESS) == I2C_ACK)        /* address MP28167_A */
+          {
+            /* read high byte and ACK */
+            if (I2C_ReadByte(I2C_NACK) == I2C_OK)  /* read byte */
+            {
+              *Value = I2C.Byte;                  /* save result */
+              Flag = I2C_OK;                      /* signal success */
+            }
+          }
+        }
+      }
+    }
   }
-  /* address (7 bit & write) */
-  I2C.Byte = (MP28167_A_I2C_ADDRESS << 1);
-  if(I2C_WriteByte(I2C_ADDRESS) != I2C_ACK) {
-    return I2C_ERROR;
-  }
-  /* register address to write */
-  I2C.Byte = reg;
-  if(I2C_WriteByte(I2C_DATA) != I2C_ACK) {
-    return I2C_ERROR;
-  }
-  /* value to write */
-  I2C.Byte = value;
-  if(I2C_WriteByte(I2C_DATA) != I2C_ACK) {
-    return I2C_ERROR;
-  }
-  I2C_Stop();
-  return I2C_OK;
+
+  I2C_Stop();                                     /* stop */
+
+  I2C.Timeout = OldTimeout;             /* restore old timeout */
+
+  return Flag;
 }
+
 
 
 ////////////////////////////////////////////////////////
@@ -167,6 +236,7 @@ uint8_t MP28167_A_begin()
   MP28167_A_writeRegister(MP28167_A_CTL1, 0x74);   // 0x74 = b01110100 = CTL1 Register = EN / OCP-OVP-HICCUP_LATCH-OFF / DISCHG_EN / MODE_Forced-PWM_Auto-PFM-PWM / FREQ_00-500kHz_01-750kHz / 00_Reserved
   // set Vout to 1V after MP28167_A_disable - good practice
   MP28167_A_setVout_mV(5050);
+  // MP28167_A_setILim_mA(300 /*mA*/);
   MP28167_A_writeRegister(MP28167_A_IOUT_LIM, 0x06);    // 300mA
   return I2C_OK;
 }
@@ -213,53 +283,78 @@ uint16_t MP28167_A_VrefToVout_mV(uint16_t Vref_mV)
 //
 
 void MP28167_A_enable() {
-  // Serial.print("BEFORE interrupt_register=");Serial.println(MP28167_A_readRegister(MP28167_A_INTERRUPT), BIN);
-  MP28167_A_writeRegister(MP28167_A_INTERRUPT, 0xFF);  // clear previous interrupts
-
-  // uint8_t ctrl1_register = MP28167_A_readRegister(MP28167_A_CTL1);
-  // // Serial.print("BEFORE ctrl1_register=");Serial.println(ctrl1_register, BIN);
-  // ctrl1_register = (ctrl1_register | MP28167_A_CTL1_ENABLE);
-  // MP28167_A_writeRegister(MP28167_A_CTL1, ctrl1_register);
-
   MP28167_A_writeRegister(MP28167_A_CTL1, 0xF4);
+  wait10ms();
+
+  MP28167_A_writeRegister(MP28167_A_INTERRUPT, 0xFF);  // clear previous interrupts
 }
 
 
 void MP28167_A_disable() {
-  // uint8_t ctrl1_register = MP28167_A_readRegister(MP28167_A_CTL1);
-  // // Serial.print("BEFORE ctrl1_register=");Serial.println(ctrl1_register, BIN);
-  // ctrl1_register = (ctrl1_register & MP28167_A_CTL1_DISABLE);
-  // MP28167_A_writeRegister(MP28167_A_CTL1, ctrl1_register);
   MP28167_A_writeRegister(MP28167_A_CTL1, 0x74);
+
   // set Vout to 1V after MP28167_A_disable - good practice
   // MP28167_A_setVout_mV(1000);
 }
 
 
+uint8_t MP28167_A_toggle() {
+  uint8_t ctrl1_register = 0;
+  if(MP28167_A_readRegister(MP28167_A_CTL1, &ctrl1_register) == I2C_OK) {
+    uint8_t enable_bit = (ctrl1_register >> 7);
+    if(enable_bit == 1) {
+      MP28167_A_disable();
+      return 0;
+    }
+    else {
+      MP28167_A_enable();
+      return 1;
+    }
+  }
+  return 0;
+}
+
+
 uint8_t MP28167_A_CCMode() {
-  return ((MP28167_A_readRegister(MP28167_A_STATUS) & MP28167_A_STATUS_CONSTANT_CURRENT) >> 4);
+  uint8_t status_register = 0;
+  if(MP28167_A_readRegister(MP28167_A_STATUS, &status_register) == I2C_OK) {
+    return ((status_register & MP28167_A_STATUS_CONSTANT_CURRENT) >> 4);
+  }
+  return 0;
 }
 
 
 uint8_t MP28167_A_PG() {
-  return ((MP28167_A_readRegister(MP28167_A_STATUS) & MP28167_A_STATUS_POWER_GOOD) >> 7);
+  uint8_t status_register = 0;
+  if(MP28167_A_readRegister(MP28167_A_STATUS, &status_register) == I2C_OK) {
+    return ((status_register & MP28167_A_STATUS_POWER_GOOD) >> 7);
+  }
+  return 0;
 }
 
 
 uint8_t MP28167_A_OCP() {
-  uint8_t ocp = ((MP28167_A_readRegister(MP28167_A_INTERRUPT) & MP28167_A_INTERRUPT_OVER_CURRENT_ENTER) >> 5);
-  MP28167_A_writeRegister(MP28167_A_INTERRUPT, 0xFF);    // clear current interrupts
-  return ocp;
+  uint8_t interrupt_register = 0;
+  if(MP28167_A_readRegister(MP28167_A_INTERRUPT, &interrupt_register) == I2C_OK) {
+    uint8_t ocp = ((interrupt_register & MP28167_A_INTERRUPT_OVER_CURRENT_ENTER) >> 5);
+    MP28167_A_writeRegister(MP28167_A_INTERRUPT, 0xFF);    // clear current interrupts
+    return ocp;
+  }
+  return 0;
 }
 
 
 uint16_t MP28167_A_getVref_mV()
 {
-  uint8_t vref_l = MP28167_A_readRegister(MP28167_A_VREF_L);
-  uint8_t vref_h = MP28167_A_readRegister(MP28167_A_VREF_H);
-  uint16_t vref_register_val = ((vref_h << 3) | (vref_l & 0x07));
-  uint16_t vref_mV = vref_register_val * 4 / 5;   // * 0.8
-  return vref_mV;
+  uint8_t vref_l = 0, vref_h = 0;
+  if(MP28167_A_readRegister(MP28167_A_VREF_L, &vref_l) == I2C_OK) {
+    if(MP28167_A_readRegister(MP28167_A_VREF_H, &vref_h) == I2C_OK) {
+      uint16_t vref_register_val = ((vref_h << 3) | (vref_l & 0x07));
+      uint16_t vref_mV = vref_register_val * 4 / 5;   // * 0.8
+      return vref_mV;
+    }
+  }
+  return 0;
 }
 
 
@@ -348,7 +443,11 @@ uint16_t MP28167_A_getILim_mA()
 
 uint8_t MP28167_A_getILimReg()
 {
-  return (0x7F & MP28167_A_readRegister(MP28167_A_IOUT_LIM));
+  uint8_t iout_lim_register = 0;
+  if(MP28167_A_readRegister(MP28167_A_IOUT_LIM, &iout_lim_register) == I2C_OK) {
+    return (0x7F & iout_lim_register);
+  }
+  return 0;
 }
 
 

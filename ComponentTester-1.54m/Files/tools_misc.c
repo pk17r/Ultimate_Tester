@@ -2649,11 +2649,13 @@ void PowerMonitor(void)
   #endif
 
   #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+  // if (MP28167_A_isConnected() != I2C_OK)
+  //   return;
   // MP28167_A_begin();
   // MP28167_A_setILim_mA(300 /*mA*/);
   // MP28167_A_setVout_mV(5050);
-  MP28167_A_enable();
-  // MP28167_A_setILim_mA(300 /*mA*/);
+  // MP28167_A_enable();
+
   #endif
 
   #ifdef INA226_POWER_MONITOR
@@ -2815,34 +2817,49 @@ void PowerMonitor(void)
     #ifdef INA226_POWER_MONITOR
     else if (Test == KEY_LONG)      /* long press -> zero current offset */
     {
-      LCD_Clear();
-      LCD_CharPos(4, ROW_NO_VOUT);
-      Display_Char('Z'); Display_Char('E'); Display_Char('R'); Display_Char('0'); Display_Space(); Display_Char('I'); Display_EEString(Out_str);
-      Value = 0;
-      counter = 0;
-      const uint8_t kNoOfMeasurements = 5;
-      while (1)
-      {
-        // take kNoOfMeasurements current measurements
-        Value += INA226_getCurrent_uA() - INA226_I_OFFSET_MICRO_AMP;
-        counter++;
-        if(counter == kNoOfMeasurements)
-          break;
-        wait200ms();
-      }
-      Value /= kNoOfMeasurements;
-      Ioffset_local = Value;
-      if(Value < 1000000 && Value > -1000000) {
-        Current_Unit = 'm';
-        Isense = Value; // Isense in uA
-      }
-      else {
-        Current_Unit = 'A';
-        Isense = Value / 1000;    // Isense in mA
-      }
-      DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
-      wait1000ms();
-      DisplayLabels();
+      #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+        LCD_Clear();
+        LCD_CharPos(4, ROW_NO_VOUT);
+        if(MP28167_A_toggle()) {
+          // enable
+          Display_Char('V'); Display_EEString(Out_str); Display_Space(); Display_Char('O'); Display_Char('N');
+        }
+        else {
+          // disable
+          Display_Char('V'); Display_EEString(Out_str); Display_Space(); Display_Char('O'); Display_Char('F'); Display_Char('F');
+        }
+        wait1000ms();
+        DisplayLabels();
+      #else
+        LCD_Clear();
+        LCD_CharPos(4, ROW_NO_VOUT);
+        Display_Char('Z'); Display_Char('E'); Display_Char('R'); Display_Char('0'); Display_Space(); Display_Char('I'); Display_EEString(Out_str);
+        Value = 0;
+        counter = 0;
+        const uint8_t kNoOfMeasurements = 5;
+        while (1)
+        {
+          // take kNoOfMeasurements current measurements
+          Value += INA226_getCurrent_uA() - INA226_I_OFFSET_MICRO_AMP;
+          counter++;
+          if(counter == kNoOfMeasurements)
+            break;
+          wait200ms();
+        }
+        Value /= kNoOfMeasurements;
+        Ioffset_local = Value;
+        if(Value < 1000000 && Value > -1000000) {
+          Current_Unit = 'm';
+          Isense = Value; // Isense in uA
+        }
+        else {
+          Current_Unit = 'A';
+          Isense = Value / 1000;    // Isense in mA
+        }
+        DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
+        wait1000ms();
+        DisplayLabels();
+      #endif
       #ifdef TP_LOGIC
       // reset Voltmeter
       if((Flag >> VMETER_ON_FLAG_POS) == 1)

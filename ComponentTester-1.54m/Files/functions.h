@@ -271,6 +271,7 @@ extern uint8_t MP28167_A_setVout_mV(uint16_t vout_mV);
 extern uint8_t MP28167_A_setILim_mA(uint16_t IoutLim_mA);
 extern uint16_t MP28167_A_getILim_mA();
 extern uint8_t MP28167_A_getILimReg();
+extern uint8_t MP28167_A_toggle();
 
 #endif
 
