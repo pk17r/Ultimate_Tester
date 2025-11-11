@@ -2623,6 +2623,7 @@ void PowerMonitor(void)
 {
   uint8_t           Flag;               /* loop control */
   uint8_t           Test;               /* user feedback */
+  uint16_t          Step;               /* step size */
   #ifdef TP_LOGIC
   uint16_t          Vmeter = 0;
   #endif
@@ -2760,7 +2761,7 @@ void PowerMonitor(void)
       DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
       // display active current output sign
       LCD_CharPos(X_START_VALUE - 5, ROW_NO_CURRENT);
-      if((Isense != 0) && (counter % 4 < 2))
+      if((Isense != 0) && (counter % 10 < 5))
         Display_Char('*');
       else
         Display_Space();
@@ -2801,7 +2802,21 @@ void PowerMonitor(void)
      */
 
      /* check for user feedback and slow down update rate */
-    Test = TestKey(250, CHECK_KEY_TWICE | CHECK_BAT);
+    Test = TestKey(100, CHECK_KEY_TWICE | CHECK_BAT);
+
+    /* consider rotary encoder's turning velocity */
+    Step = UI.KeyStep;             /* get velocity (1-7) */
+
+    if (Step > 5)                  /* larger step */
+    {
+      /* increase step size based on turning velocity */
+
+      /* step^2 : 4 9 16 */
+      Step *= Step;                /* ^2 */
+      // Step *= 4;                /* *2 */
+      // Step *= Step;                /* ^2 */
+    }
+    Step *= 5;
 
     if (Test == KEY_TWICE)         /* two short key presses */
     {
@@ -2815,11 +2830,11 @@ void PowerMonitor(void)
         Flag |= (1 << BUZZER_BEEP_ON_FLAG_POS);     // turn on buzzer beeps when power threshold is crossed
     }
     #ifdef INA226_POWER_MONITOR
-    else if (Test == KEY_LONG)      /* long press -> zero current offset */
+    else if (Test == KEY_LONG)      /* long press -> toggle VOUT or zero current offset */
     {
       #ifdef MP28167_A_BUCK_BOOST_CONVERTER
         LCD_Clear();
-        LCD_CharPos(4, ROW_NO_VOUT);
+        LCD_CharPos(5, ROW_NO_POWER);
         if(MP28167_A_toggle()) {
           // enable
           Display_Char('V'); Display_EEString(Out_str); Display_Space(); Display_Char('O'); Display_Char('N');
@@ -2871,6 +2886,16 @@ void PowerMonitor(void)
         Flag |= (1 << VMETER_ON_FLAG_POS);     // record VMeter On in Flag
       }
       #endif
+    }
+    #endif
+    #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+    else if (Test == KEY_RIGHT)      /* Right Key -> increase VOUT */
+    {
+      MP28167_A_inc_dec_Vout(Step, 1);
+    }
+    else if (Test == KEY_LEFT)      /* Left Key -> decrease VOUT */
+    {
+      MP28167_A_inc_dec_Vout(Step, 0);
     }
     #endif
   }

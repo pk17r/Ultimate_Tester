@@ -388,6 +388,51 @@ uint8_t MP28167_A_setVref_mV(uint16_t vref_mV)
 }
 
 
+void MP28167_A_increase_Vref(uint16_t steps)
+{
+  uint16_t vref_mV = MP28167_A_getVref_mV();
+  if((steps > VREF_MAX_mV) || ((vref_mV + steps) > VREF_MAX_mV))
+    vref_mV = VREF_MAX_mV;
+  else
+    vref_mV += steps;
+  MP28167_A_setVref_mV(vref_mV);
+}
+
+
+void MP28167_A_decrease_Vref(uint16_t steps)
+{
+  uint16_t vref_mV = MP28167_A_getVref_mV();
+  if((vref_mV + VREF_MIN_mV) < steps)
+    vref_mV = VREF_MIN_mV;
+  else
+    vref_mV -= steps;
+  MP28167_A_setVref_mV(vref_mV);
+}
+
+
+void MP28167_A_inc_dec_Vout(uint16_t steps, uint8_t increase)
+{
+  uint16_t vout_mV = MP28167_A_getVout_mV();
+  if(increase == 1) {
+    if((steps > VOUT_MAX_mV) || ((vout_mV + steps) > VOUT_MAX_mV))
+      vout_mV = VOUT_MAX_mV;
+    else
+      vout_mV += steps;
+  }
+  else {
+    if((vout_mV + VOUT_MIN_mV) < steps)
+      vout_mV = VOUT_MIN_mV;
+    else
+      vout_mV -= steps;
+  }
+  if(vout_mV < VOUT_MIN_mV)
+    vout_mV = VOUT_MIN_mV;
+  else if(vout_mV > VOUT_MAX_mV)
+    vout_mV = VOUT_MAX_mV;
+  MP28167_A_setVout_mV(vout_mV);
+}
+
+
 uint16_t MP28167_A_getVout_mV()
 {
   return MP28167_A_VrefToVout_mV(MP28167_A_getVref_mV());
