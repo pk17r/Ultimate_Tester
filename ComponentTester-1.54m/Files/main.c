@@ -3014,6 +3014,7 @@ show_component:
   #ifdef UI_PROBING_DONE_BEEP
     /* buzzer: short beep for probing result (probing done) */
     #ifdef BUZZER_ACTIVE
+    BUZZER_DDR |= (1 << BUZZER_CTRL);     /* enable output */
     BUZZER_PORT |= (1 << BUZZER_CTRL);       /* enable: set pin high */
     MilliSleep(20);                          /* wait for 20 ms */
     BUZZER_PORT &= ~(1 << BUZZER_CTRL);      /* disable: set pin low */

@@ -2312,6 +2312,7 @@ void ContinuityCheck(void)
 
       #ifdef BUZZER_ACTIVE
       /* enable buzzer */
+      BUZZER_DDR |= (1 << BUZZER_CTRL);     /* enable output */
       BUZZER_PORT |= (1 << BUZZER_CTRL);     /* set pin high */
       #endif
 
@@ -2325,6 +2326,7 @@ void ContinuityCheck(void)
 
       #ifdef BUZZER_ACTIVE
       /* enable buzzer */
+      BUZZER_DDR |= (1 << BUZZER_CTRL);     /* enable output */
       BUZZER_PORT |= (1 << BUZZER_CTRL);     /* set pin high */
       Flag |= BEEP_SHORT;                    /* set flag */
       #endif
@@ -2339,6 +2341,7 @@ void ContinuityCheck(void)
 
       #ifdef BUZZER_ACTIVE
       /* disable buzzer */
+      BUZZER_DDR |= (1 << BUZZER_CTRL);     /* enable output */
       BUZZER_PORT &= ~(1 << BUZZER_CTRL);    /* set pin low */
       #endif
     }
@@ -2353,6 +2356,7 @@ void ContinuityCheck(void)
     if (Flag & BEEP_SHORT)              /* short beep */
     {
       /* disable buzzer */
+      BUZZER_DDR |= (1 << BUZZER_CTRL);     /* enable output */
       BUZZER_PORT &= ~(1 << BUZZER_CTRL);    /* set pin low */
       Flag &= ~BEEP_SHORT;                   /* clear flag */
     }
@@ -2415,6 +2419,7 @@ void Flashlight(void)
   Flag &= (1 << FLASHLIGHT_CTRL);  /* filter pin */
 
   /* set output based on current state */
+  FLASHLIGHT_DDR |= (1 << FLASHLIGHT_CTRL);     /* enable output */
   if (Flag)                   /* pin high */
   {
     /* toggle off */
@@ -2784,6 +2789,7 @@ void PowerMonitor(void)
           {
             /* buzzer: short beep to indicate over threshold power */
             #ifdef BUZZER_ACTIVE
+            BUZZER_DDR |= (1 << BUZZER_CTRL);     /* enable output */
             BUZZER_PORT |= (1 << BUZZER_CTRL);       /* enable: set pin high */
             MilliSleep(20);                          /* wait for 20 ms */
             BUZZER_PORT &= ~(1 << BUZZER_CTRL);      /* disable: set pin low */
