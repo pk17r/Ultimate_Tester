@@ -253,6 +253,27 @@ extern int32_t INA226_getCurrent_uA(void);
 #endif
 
 
+/* ************************************************************************
+ *   functions from MP28167_A.c
+ * ************************************************************************ */
+
+#ifdef MP28167_A_BUCK_BOOST_CONVERTER
+
+extern uint8_t MP28167_A_begin();
+extern uint8_t MP28167_A_isConnected();
+extern void MP28167_A_enable();
+extern void MP28167_A_disable();
+extern uint8_t MP28167_A_CCMode();
+extern uint8_t MP28167_A_PG();
+extern uint8_t MP28167_A_OCP();
+extern uint16_t MP28167_A_getVout_mV();
+extern uint8_t MP28167_A_setVout_mV(uint16_t vout_mV);
+extern uint8_t MP28167_A_setILim_mA(uint16_t IoutLim_mA);
+extern uint16_t MP28167_A_getILim_mA();
+extern uint8_t MP28167_A_getILimReg();
+
+#endif
+
 
 /* ************************************************************************
  *   functions from INA3221.c

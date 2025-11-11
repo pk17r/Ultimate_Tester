@@ -940,6 +940,11 @@
       extern const unsigned char Out_str[];
       extern const unsigned char Power_str[];
     #endif
+    #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+      extern const unsigned char CC_str[];
+      extern const unsigned char OCP_str[];
+      extern const unsigned char PG_str[];
+    #endif
   #endif
 
   #ifdef SW_MENUITEM_TEST_COMPONENT

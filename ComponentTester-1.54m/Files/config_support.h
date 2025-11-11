@@ -502,6 +502,11 @@
   #endif
 #endif
 
+#ifdef MP28167_A_BUCK_BOOST_CONVERTER
+  #if ! defined (HW_POWER_MONITOR) || ! defined (INA226_POWER_MONITOR)
+    #error <<< MP28167_A_BUCK_BOOST_CONVERTER: Enable HW_POWER_MONITOR and INA226_POWER_MONITOR! >>>
+  #endif
+#endif
 
 
 /*

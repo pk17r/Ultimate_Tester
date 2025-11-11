@@ -2648,6 +2648,14 @@ void PowerMonitor(void)
   ADC_DDR &= ~(1 << TP_LOGIC);          /* set pin to HiZ */
   #endif
 
+  #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+  // MP28167_A_begin();
+  // MP28167_A_setILim_mA(300 /*mA*/);
+  // MP28167_A_setVout_mV(5050);
+  MP28167_A_enable();
+  // MP28167_A_setILim_mA(300 /*mA*/);
+  #endif
+
   #ifdef INA226_POWER_MONITOR
   Flag &= INA226_setup();    //  INA226 setup error is 0 and setup good is 1.
   #endif

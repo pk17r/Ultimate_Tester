@@ -58,6 +58,11 @@
       const unsigned char Out_str[] MEM_TYPE = "OUT";
       const unsigned char Power_str[] MEM_TYPE = "Power";
     #endif
+    #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+      const unsigned char CC_str[] MEM_TYPE = "CC";
+      const unsigned char OCP_str[] MEM_TYPE = "OCP";
+      const unsigned char PG_str[] MEM_TYPE = "PG";
+    #endif
   #endif
 
   #ifdef SW_MENUITEM_TEST_COMPONENT
