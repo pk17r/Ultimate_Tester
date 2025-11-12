@@ -440,8 +440,8 @@
 #define MP28167_A_BUCK_BOOST_CONVERTER
 
 #ifdef MP28167_A_BUCK_BOOST_CONVERTER
-  #define MP28167_A_R1                              430           /* in kOhms */
-  #define MP28167_A_R2                              107           /* in kOhms */
+  #define MP28167_A_R1                              5900           /* in kOhms */
+  #define MP28167_A_R2                              503            /* in kOhms */
 #endif
 
 

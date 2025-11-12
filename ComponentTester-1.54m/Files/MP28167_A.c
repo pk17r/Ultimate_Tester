@@ -224,8 +224,8 @@ uint8_t MP28167_A_readRegister(uint8_t Register, uint8_t *Value)
 
 uint8_t MP28167_A_begin()
 {
-  if (MP28167_A_isConnected() != I2C_OK)
-    return I2C_ERROR;
+  // if (MP28167_A_isConnected() != I2C_OK)
+  //   return I2C_ERROR;
   // set ALT pin Masks
   // MP28167_A_writeRegister(MP28167_A_MASK, 0x1F);
 
@@ -235,7 +235,7 @@ uint8_t MP28167_A_begin()
   // ctrl1_register = (ctrl1_register & MP28167_A_CTL1_DISABLE);       // MP28167_A_disable
   MP28167_A_writeRegister(MP28167_A_CTL1, 0x74);   // 0x74 = b01110100 = CTL1 Register = EN / OCP-OVP-HICCUP_LATCH-OFF / DISCHG_EN / MODE_Forced-PWM_Auto-PFM-PWM / FREQ_00-500kHz_01-750kHz / 00_Reserved
   // set Vout to 1V after MP28167_A_disable - good practice
-  MP28167_A_setVout_mV(5050);
+  MP28167_A_setVout_mV(5010);
   // MP28167_A_setILim_mA(300 /*mA*/);
   MP28167_A_writeRegister(MP28167_A_IOUT_LIM, 0x06);    // 300mA
   return I2C_OK;

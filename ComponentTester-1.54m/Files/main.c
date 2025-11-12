@@ -2435,10 +2435,6 @@ void CheckBattery(void)
 
 int main(void)
 {
-  uint8_t           Test;          /* test value */
-  uint8_t           Key;           /* user feedback */
-
-
   /*
    *  init hardware
    */
@@ -2454,7 +2450,19 @@ int main(void)
     #endif
   #endif
 
-  /* set up MCU */
+  #ifdef HW_I2C
+  /* hardware or bitbang I2C */
+  I2C_Setup();                          /* set up I2C bus */
+  #endif
+
+  #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+  MP28167_A_begin();
+  #endif
+
+  uint8_t           Test;          /* test value */
+  uint8_t           Key;           /* user feedback */
+
+ /* set up MCU */
   MCUCR = (1 << PUD);                   /* disable pull-up resistors globally */
   ADCSRA = (1 << ADEN) | ADC_CLOCK_DIV; /* enable ADC and set clock divider */
 
@@ -2500,14 +2508,14 @@ int main(void)
   Serial_Setup();                       /* set up TTL serial interface */
   #endif
 
-  #ifdef HW_I2C
-  /* hardware or bitbang I2C */
-  I2C_Setup();                          /* set up I2C bus */
-  #endif
+  // #ifdef HW_I2C
+  // /* hardware or bitbang I2C */
+  // I2C_Setup();                          /* set up I2C bus */
+  // #endif
 
-  #ifdef MP28167_A_BUCK_BOOST_CONVERTER
-  MP28167_A_begin();
-  #endif
+  // #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+  // MP28167_A_begin();
+  // #endif
 
   #ifdef HW_SPI
   /* hardware or bitbang SPI */
