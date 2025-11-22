@@ -1453,7 +1453,7 @@
  *    reaches measurement ADC pin
  */
 
-// #define SHOW_EXTERNAL_POWER_SYMBOL
+#define SHOW_EXTERNAL_POWER_SYMBOL
 #define EXT_POW_IDENTIFIER          4300           // 6400
 #define EXT_POW_VOLTAGE_OFFSET       188
 

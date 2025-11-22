@@ -1060,6 +1060,17 @@
 
 
 /*
+ *  MP28167_A_BUCK_BOOST_CONVERTER output control using output shorting mosfet
+ *  - can't be same port as ADC_PORT or R_PORT
+ */
+
+#ifdef MP28167_A_BUCK_BOOST_CONVERTER
+  #define MP28167_A_PORT       PORTC     /* port data register */
+  #define MP28167_A_DDR        DDRC      /* port data direction register */
+  #define MP28167_A_DISABLE    PC2       /* control pin (0: on / 1: off) */
+#endif
+
+/*
  *  test push button
  *  - can't be same port as ADC_PORT or R_PORT
  */

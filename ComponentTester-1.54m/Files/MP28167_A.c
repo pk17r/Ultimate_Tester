@@ -226,8 +226,11 @@ uint8_t MP28167_A_begin()
 {
   // if (MP28167_A_isConnected() != I2C_OK)
   //   return I2C_ERROR;
-  // set ALT pin Masks
-  // MP28167_A_writeRegister(MP28167_A_MASK, 0x1F);
+
+  /* set disable pin as output */
+  MP28167_A_DDR |= (1 << MP28167_A_DISABLE);     /* enable output */
+  /* disable by turning grounding mosfet high */
+  MP28167_A_PORT |= (1 << MP28167_A_DISABLE);    /* set pin high */
 
   // set 750kHz Frequency and MP28167_A_disable converter
   // uint8_t ctrl1_register = MP28167_A_readRegister(MP28167_A_CTL1);
@@ -283,6 +286,11 @@ uint16_t MP28167_A_VrefToVout_mV(uint16_t Vref_mV)
 //
 
 void MP28167_A_enable() {
+  /* set disable pin as output */
+  MP28167_A_DDR |= (1 << MP28167_A_DISABLE);     /* enable output */
+  /* enable by turning grounding mosfet low */
+  MP28167_A_PORT &= ~(1 << MP28167_A_DISABLE);   /* set pin low */
+
   MP28167_A_writeRegister(MP28167_A_CTL1, 0xF4);
   wait10ms();
 
@@ -291,10 +299,19 @@ void MP28167_A_enable() {
 
 
 void MP28167_A_disable() {
+  // disable via I2C
   MP28167_A_writeRegister(MP28167_A_CTL1, 0x74);
 
   // set Vout to 1V after MP28167_A_disable - good practice
   // MP28167_A_setVout_mV(1000);
+
+  // wait at least 50ms to allow MP28167_A to drain output via resistive path
+  wait100ms();
+
+  /* set disable pin as output */
+  MP28167_A_DDR |= (1 << MP28167_A_DISABLE);     /* enable output */
+  /* disable by turning grounding mosfet high */
+  MP28167_A_PORT |= (1 << MP28167_A_DISABLE);    /* set pin high */
 }
 
 
