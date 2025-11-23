@@ -2664,7 +2664,9 @@ void PowerMonitor(void)
   Flag &= INA3221_setup();    //  INA3221 setup error is 0 and setup good is 1.
   #endif
 
+  #if defined (HW_BUZZER) && !defined (MP28167_A_BUCK_BOOST_CONVERTER)
   Flag |= (1 << BUZZER_BEEP_ON_FLAG_POS);     // turn on flag to beep buzzer when power threshold is crossed
+  #endif
 
   #ifdef MP28167_A_BUCK_BOOST_CONVERTER
   // if (MP28167_A_isConnected() != I2C_OK)
@@ -2820,7 +2822,7 @@ void PowerMonitor(void)
 
 
     #ifdef INA226_POWER_MONITOR
-      #ifdef HW_BUZZER
+      #if defined (HW_BUZZER) && !defined (MP28167_A_BUCK_BOOST_CONVERTER)
         if(((Flag & (1 << BUZZER_BEEP_ON_FLAG_POS)) >> BUZZER_BEEP_ON_FLAG_POS) == 1)
         {
           if(((Power_Unit == 'W') && (Power >= INA226_P_THRESHOLD_mW_BUZZER)) || ((Power_Unit == 'm') && (Power / 1000 >= INA226_P_THRESHOLD_mW_BUZZER)))
