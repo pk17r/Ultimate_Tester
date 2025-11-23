@@ -75,8 +75,9 @@
 #define MP28167_A_STATUS_CONSTANT_CURRENT         0x10
 
 #define MP28167_A_INTERRUPT_OVER_CURRENT_ENTER    0x20
+#define MP28167_A_INTERRUPT_UVP_FALLING           0x08
 
-#define VOUT_MIN_mV         1000
+#define VOUT_MIN_mV         1200
 #define VOUT_MAX_mV         20470
 #define VREF_MIN_mV         80
 #define VREF_MAX_mV         1637
@@ -295,6 +296,8 @@ void MP28167_A_enable() {
   wait10ms();
 
   MP28167_A_writeRegister(MP28167_A_INTERRUPT, 0xFF);  // clear previous interrupts
+
+  MP28167_A_writeRegister(MP28167_A_MASK, 0x01);  // Masks off the PG indication function on ALT. This is required to disable ALT pin when VOUT [1V, 2.8V] with R1/R2 = 11.5
 }
 
 
@@ -353,11 +356,32 @@ uint8_t MP28167_A_PG() {
 uint8_t MP28167_A_OCP() {
   uint8_t interrupt_register = 0;
   if(MP28167_A_readRegister(MP28167_A_INTERRUPT, &interrupt_register) == I2C_OK) {
-    uint8_t ocp = ((interrupt_register & MP28167_A_INTERRUPT_OVER_CURRENT_ENTER) >> 5);
-    MP28167_A_writeRegister(MP28167_A_INTERRUPT, 0xFF);    // clear current interrupts
-    return ocp;
+    return ((interrupt_register & MP28167_A_INTERRUPT_OVER_CURRENT_ENTER) >> 5);
   }
   return 0;
+}
+
+
+uint8_t MP28167_A_UVP() {
+  uint8_t interrupt_register = 0;
+  if(MP28167_A_readRegister(MP28167_A_INTERRUPT, &interrupt_register) == I2C_OK) {
+    return ((interrupt_register & MP28167_A_INTERRUPT_UVP_FALLING) >> 3);
+  }
+  return 0;
+}
+
+
+void MP28167_A_GetVoutInRange() {
+  uint16_t Vout_mV = MP28167_A_getVout_mV();
+  if(Vout_mV < VOUT_MIN_mV)
+    MP28167_A_setVout_mV(VOUT_MIN_mV + 10);
+  else if(Vout_mV > VOUT_MAX_mV)
+    MP28167_A_setVout_mV(VOUT_MAX_mV - 100);
+}
+
+
+void MP28167_A_Clear_Interrupts() {
+  MP28167_A_writeRegister(MP28167_A_INTERRUPT, 0xFF);    // clear current interrupts
 }
 
 

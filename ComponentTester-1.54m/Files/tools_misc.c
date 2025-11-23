@@ -2803,6 +2803,30 @@ void PowerMonitor(void)
       #endif
     #endif
 
+    #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+    // Status messages
+    LCD_CharPos(10, 1);
+    if(MP28167_A_CCMode()) {
+      Display_Char('C'); Display_Char('C');
+    }
+    else if(MP28167_A_PG()) {
+      Display_Char('P'); Display_Char('G');
+    }
+    else {
+      Display_Space(); Display_Space();
+    }
+    Display_Space();
+    if(MP28167_A_OCP()) {
+      Display_Char('O'); Display_Char('C'); Display_Char('P');
+    }
+    else {
+      Display_Space(); Display_Space(); Display_Space();
+    }
+    MP28167_A_Clear_Interrupts();
+    // get Vout in range if out of range
+    MP28167_A_GetVoutInRange();
+    #endif
+
     /*
      *  user feedback
      */
