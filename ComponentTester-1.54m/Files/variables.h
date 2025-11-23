@@ -948,6 +948,8 @@
       extern const unsigned char ILIM_str[];
       extern const unsigned char MIN_str[];
       extern const unsigned char MAX_str[];
+      extern const unsigned char ON_str[];
+      extern const unsigned char OFF_str[];
     #endif
   #endif
 

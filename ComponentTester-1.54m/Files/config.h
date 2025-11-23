@@ -1332,7 +1332,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_TEST_PAGEMODE
+#define UI_TEST_PAGEMODE
 
 
 /*
@@ -1530,7 +1530,7 @@
  *  - uncomment to enable
  */
 
-// #define R_MULTIOFFSET
+#define R_MULTIOFFSET
 
 
 /* 

@@ -66,6 +66,8 @@
       const unsigned char ILIM_str[] MEM_TYPE = "ILIM";
       const unsigned char MIN_str[] MEM_TYPE = "MIN";
       const unsigned char MAX_str[] MEM_TYPE = "MAX";
+      const unsigned char ON_str[] MEM_TYPE = "ON";
+      const unsigned char OFF_str[] MEM_TYPE = "OFF";
     #endif
   #endif
 

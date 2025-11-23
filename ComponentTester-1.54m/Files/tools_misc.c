@@ -2773,7 +2773,13 @@ void PowerMonitor(void)
       else
         Display_Space();
       #endif
-      DisplayPMVoltageValue(Vout_mV, ROW_NO_VOUT);
+      if((Vout_mV > 100) || (((Flag & (1 << MP28167_A_ENABLE_FLAG_POS)) >> MP28167_A_ENABLE_FLAG_POS) == 1)) {
+        DisplayPMVoltageValue(Vout_mV, ROW_NO_VOUT);
+      }
+      else {
+        Display_Space(); Display_Space(); Display_Space();
+        Display_EEString(OFF_str); Display_Space(); Display_Space(); Display_Space(); Display_Space();
+      }
       DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
       // display active current output sign
       LCD_CharPos(X_START_VALUE - 5, ROW_NO_CURRENT);
@@ -2856,12 +2862,15 @@ void PowerMonitor(void)
       Display_EEString(CC_str);
     else if(MP28167_A_PG())
       Display_EEString(PG_str);
+    else if(((Flag & (1 << MP28167_A_ENABLE_FLAG_POS)) >> MP28167_A_ENABLE_FLAG_POS) == 1) {
+      Display_Char('X'); Display_Char('X');
+    }
     else {
       Display_Space(); Display_Space();
     }
     MP28167_A_Clear_Interrupts();
     // get Vout in range if out of range
-    MP28167_A_GetVoutInRange();
+    MP28167_A_GetVout_And_ILim_InRange(Cfg.Vbat);
     #endif
 
     /*
@@ -2874,19 +2883,24 @@ void PowerMonitor(void)
     /* consider rotary encoder's turning velocity */
     Step = UI.KeyStep;             /* get velocity (1-7) */
 
-    if (Step > 5)                  /* larger step */
-    {
-      /* increase step size based on turning velocity */
-
-      /* step^2 : 4 9 16 */
-      Step *= Step;                /* ^2 */
-      // Step *= 4;                /* *2 */
-      // Step *= Step;                /* ^2 */
-    }
+    // take larger steps only for Vout changes, not ILimit changes
     #ifdef MP28167_A_BUCK_BOOST_CONVERTER
     if(((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0)
+    {
     #endif
+      if (Step > 5)                  /* larger step */
+      {
+        /* increase step size based on turning velocity */
+
+        /* step^2 : 4 9 16 */
+        Step *= Step;                /* ^2 */
+        // Step *= 4;                /* *2 */
+        // Step *= Step;                /* ^2 */
+      }
       Step *= 5;
+    #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+    }
+    #endif
 
     if (Test == KEY_TWICE)         /* two short key presses */
     {
@@ -2931,12 +2945,12 @@ void PowerMonitor(void)
         Display_Char('V'); Display_EEString(Out_str); Display_Space();
         if(MP28167_A_toggle()) {
           // enable
-          Display_Char('O'); Display_Char('N');
+          Display_EEString(ON_str);
           Flag |= (1 << MP28167_A_ENABLE_FLAG_POS);   // enable bit true
         }
         else {
           // disable
-          Display_Char('O'); Display_Char('F'); Display_Char('F');
+          Display_EEString(OFF_str);
           Flag &= ~(1 << MP28167_A_ENABLE_FLAG_POS);  // eable bit false
         }
         wait1000ms();

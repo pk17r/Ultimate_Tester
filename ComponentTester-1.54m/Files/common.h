@@ -368,16 +368,16 @@
 #define LCD_CHAR_RESISTOR_R   7    /* resistor icon right part ']' */
 
 /* optional custom chars */
-#define LCD_CHAR_1_INV        8    /* 1 (reversed color) */
-#define LCD_CHAR_2_INV        9    /* 2 (reversed color) */
-#define LCD_CHAR_3_INV       10    /* 3 (reversed color) */
-#define LCD_CHAR_X_INV       11    /* x (reversed color) */
-#define LCD_CHAR_BAT_LL      12    /* battery icon left part: low */
-#define LCD_CHAR_BAT_LH      13    /* battery icon left part: high */
-#define LCD_CHAR_BAT_RL      14    /* battery icon right part: low */
-#define LCD_CHAR_BAT_RH      15    /* battery icon right part: high */
-#define LCD_CHAR_EXT_POW_L       16    /* usb icon left part */
-#define LCD_CHAR_EXT_POW_R       17    /* usb icon right part */
+#define LCD_CHAR_1_INV       0x08    /* 1 (reversed color) */
+#define LCD_CHAR_2_INV       0x09    /* 2 (reversed color) */
+#define LCD_CHAR_3_INV       0x0a    /* 3 (reversed color) */
+#define LCD_CHAR_X_INV       0x0b    /* x (reversed color) */
+#define LCD_CHAR_BAT_LL      0x0c    /* battery icon left part: low */
+#define LCD_CHAR_BAT_LH      0x0d    /* battery icon left part: high */
+#define LCD_CHAR_BAT_RL      0x0e    /* battery icon right part: low */
+#define LCD_CHAR_BAT_RH      0x0f    /* battery icon right part: high */
+#define LCD_CHAR_EXT_POW_L   0x10    /* usb icon left part */
+#define LCD_CHAR_EXT_POW_R   0x11    /* usb icon right part */
 
 
 /* basic component symbols */
