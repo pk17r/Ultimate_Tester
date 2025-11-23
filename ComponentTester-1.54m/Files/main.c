@@ -2161,6 +2161,17 @@ void CheckVoltageRefs(void)
 
 void PowerOff(void)
 {
+  // disable buck boost converter if On
+  #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+  if(MP28167_A_GetEnableStatus() == 1) {
+    MP28167_A_disable();
+    LCD_Clear();
+    LCD_CharPos(5, 4);
+    Display_Char('V'); Display_EEString(Out_str); Display_Space(); Display_EEString(OFF_str);
+    wait2s();
+  }
+  #endif
+
   /* display feedback (otherwise the user will wait :) */
   LCD_Clear();
   #ifdef LCD_COLOR
@@ -2172,6 +2183,9 @@ void PowerOff(void)
   #else
     Display_EEString(Bye_str);          /* display: Bye! */
   #endif
+
+  wait2s();
+  LCD_Clear();
 
   /* disable stuff */
   cli();                                /* disable interrupts */
