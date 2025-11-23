@@ -84,12 +84,13 @@
 #define MP28167_A_VREF_REG_MIN        0
 #define MP28167_A_VREF_REG_MAX        2047
 
-#define MP28167_A_ILIM_MIN_mA         300
+#define MP28167_A_ILIM_MIN_mA         200
 #define MP28167_A_ILIM_MAX_mA         3000
 #define MP28167_A_I_IN_MAX_mA         4000
 #define MP28167_A_EFFICIENCY_100      90
 
 uint16_t Current_Ilim_mA = 0;
+uint16_t Iout_Max_mA = 0;
 
 ////////////////////////////////////////////////////////
 //
@@ -552,7 +553,7 @@ uint16_t MP28167_A_getILimMax_mA(uint16_t Vin_mV)
   uint16_t Vout_mV = MP28167_A_getVout_mV();
   uint32_t Power_In_Max_mmW = (uint32_t)Vin_mV * MP28167_A_I_IN_MAX_mA;
   uint32_t Power_Out_Max_mmW = Power_In_Max_mmW * MP28167_A_EFFICIENCY_100 / 100;
-  uint16_t Iout_Max_mA = Power_Out_Max_mmW / Vout_mV;
+  Iout_Max_mA = Power_Out_Max_mmW / Vout_mV;
   if(Iout_Max_mA > MP28167_A_ILIM_MAX_mA)
     Iout_Max_mA = MP28167_A_ILIM_MAX_mA;
   return Iout_Max_mA;
@@ -561,6 +562,26 @@ uint16_t MP28167_A_getILimMax_mA(uint16_t Vin_mV)
 uint16_t MP28167_A_getILimMin_mA()
 {
   return MP28167_A_ILIM_MIN_mA;
+}
+
+void MP28167_A_change_ILim(uint16_t steps, uint8_t increase)
+{
+  uint16_t IoutLim_new_mA = 0;
+  uint16_t IoutLim_change_mA = 50*steps;
+  if(increase)
+    IoutLim_new_mA = Current_Ilim_mA + IoutLim_change_mA;
+  else {
+    if(IoutLim_change_mA > Current_Ilim_mA)
+      IoutLim_new_mA = MP28167_A_ILIM_MIN_mA;
+    else
+      IoutLim_new_mA = Current_Ilim_mA - IoutLim_change_mA;
+  }
+  if(IoutLim_new_mA > Iout_Max_mA)
+    IoutLim_new_mA = Iout_Max_mA;
+  else if(IoutLim_new_mA < MP28167_A_ILIM_MIN_mA)
+    IoutLim_new_mA = MP28167_A_ILIM_MIN_mA;
+  MP28167_A_setILim_mA(IoutLim_new_mA);
+  MP28167_A_getILim_mA(/*fetch = */ 1);
 }
 
 #endif

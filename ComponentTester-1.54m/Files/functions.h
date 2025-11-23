@@ -280,6 +280,7 @@ extern void MP28167_A_decrease_Vref(uint16_t steps);
 extern void MP28167_A_inc_dec_Vout(uint16_t steps, uint8_t increase);
 extern uint16_t MP28167_A_getILimMax_mA(uint16_t Vin_mV);
 extern uint16_t MP28167_A_getILimMin_mA();
+extern void MP28167_A_change_ILim(uint16_t steps, uint8_t increase);
 
 #endif
 

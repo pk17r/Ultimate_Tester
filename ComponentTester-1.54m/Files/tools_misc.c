@@ -2749,7 +2749,7 @@ void PowerMonitor(void)
     else
     {
       // Show Volt Meter Voltage
-      if((Flag >> VMETER_ON_FLAG_POS) == 0)
+      if(((Flag & (1 << VMETER_ON_FLAG_POS)) >> VMETER_ON_FLAG_POS) == 0)
       {   // VMeter was off, clear line and record VMeter turned on
         LCD_ClearLine(1);
         Flag |= (1 << VMETER_ON_FLAG_POS);     // record VMeter On in Flag
@@ -2778,7 +2778,11 @@ void PowerMonitor(void)
       if((Isense == 0) || (counter % 25 < 12) || (((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 1)) {
         LCD_CharPos(1, ROW_NO_POWER);
         Display_EEString(ILIM_str); Display_Space();
-        DisplaySignedPMValue(((int32_t)MP28167_A_getILim_mA(/*fetch = */ 0))*1000, 'm', 'A', ROW_NO_POWER);
+        int32_t Ilim_uA = (int32_t)MP28167_A_getILim_mA(/*fetch = */ 0) * 1000;
+        if(Ilim_uA < 1000000)
+          DisplaySignedPMValue(Ilim_uA, 'm', 'A', ROW_NO_POWER);
+        else
+          DisplaySignedPMValue(Ilim_uA / 1000, 'A', 'A', ROW_NO_POWER);
       }
       else {
         LCD_CharPos(1, ROW_NO_POWER);
@@ -2805,7 +2809,7 @@ void PowerMonitor(void)
 
     #ifdef INA226_POWER_MONITOR
       #ifdef HW_BUZZER
-        if((Flag >> BUZZER_BEEP_ON_FLAG_POS) == 1)
+        if(((Flag & (1 << BUZZER_BEEP_ON_FLAG_POS)) >> BUZZER_BEEP_ON_FLAG_POS) == 1)
         {
           if(((Power_Unit == 'W') && (Power >= INA226_P_THRESHOLD_mW_BUZZER)) || ((Power_Unit == 'm') && (Power / 1000 >= INA226_P_THRESHOLD_mW_BUZZER)))
           {
@@ -2865,7 +2869,10 @@ void PowerMonitor(void)
       // Step *= 4;                /* *2 */
       // Step *= Step;                /* ^2 */
     }
-    Step *= 5;
+    #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+    if(((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0)
+    #endif
+      Step *= 5;
 
     if (Test == KEY_TWICE)         /* two short key presses */
     {
@@ -2962,13 +2969,19 @@ void PowerMonitor(void)
     }
     #endif
     #ifdef MP28167_A_BUCK_BOOST_CONVERTER
-    else if (Test == KEY_RIGHT)      /* Right Key -> increase VOUT */
+    else if (Test == KEY_RIGHT)      /* Right Key -> increase VOUT or ILIM */
     {
-      MP28167_A_inc_dec_Vout(Step, 1);
+      if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0))
+        MP28167_A_inc_dec_Vout(Step, 1);
+      else
+        MP28167_A_change_ILim(Step, 1);
     }
-    else if (Test == KEY_LEFT)      /* Left Key -> decrease VOUT */
+    else if (Test == KEY_LEFT)      /* Left Key -> decrease VOUT or ILIM */
     {
-      MP28167_A_inc_dec_Vout(Step, 0);
+      if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0))
+        MP28167_A_inc_dec_Vout(Step, 0);
+      else
+        MP28167_A_change_ILim(Step, 0);
     }
     #endif
   }
