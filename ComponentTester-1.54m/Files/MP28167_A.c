@@ -326,20 +326,25 @@ void MP28167_A_disable() {
 }
 
 
-uint8_t MP28167_A_toggle() {
-  uint8_t ctrl1_register = 0;
-  if(MP28167_A_readRegister(MP28167_A_CTL1, &ctrl1_register) == I2C_OK) {
-    uint8_t enable_bit = (ctrl1_register >> 7);
-    if(enable_bit == 1) {
-      MP28167_A_disable();
-      return 0;
-    }
-    else {
-      MP28167_A_enable();
-      return 1;
-    }
+uint8_t MP28167_A_GetEnableStatus() {
+  uint8_t ctl1_register = 0;
+  if(MP28167_A_readRegister(MP28167_A_CTL1, &ctl1_register) == I2C_OK) {
+    return (ctl1_register >> 7);
   }
   return 0;
+}
+
+
+uint8_t MP28167_A_toggle() {
+  uint8_t enable_bit = MP28167_A_GetEnableStatus();
+  if(enable_bit == 1) {
+    MP28167_A_disable();
+    return 0;
+  }
+  else {
+    MP28167_A_enable();
+    return 1;
+  }
 }
 
 

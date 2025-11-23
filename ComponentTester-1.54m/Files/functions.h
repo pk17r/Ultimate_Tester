@@ -263,6 +263,7 @@ extern uint8_t MP28167_A_begin();
 extern uint8_t MP28167_A_isConnected();
 extern void MP28167_A_enable();
 extern void MP28167_A_disable();
+extern uint8_t MP28167_A_GetEnableStatus();
 extern uint8_t MP28167_A_CCMode();
 extern uint8_t MP28167_A_PG();
 extern uint8_t MP28167_A_OCP();

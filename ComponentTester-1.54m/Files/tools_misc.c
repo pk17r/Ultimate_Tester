@@ -2450,6 +2450,7 @@ void Flashlight(void)
 #define VMETER_ON_FLAG_POS    7
 #define BUZZER_BEEP_ON_FLAG_POS    6
 #define MP28167_A_SET_ILIM_FLAG_POS    5
+#define MP28167_A_ENABLE_FLAG_POS    4
 #define ROW_NO_BATTERY      1
 #ifdef INA226_POWER_MONITOR
   #define ROW_NO_VOUT         2
@@ -2655,16 +2656,6 @@ void PowerMonitor(void)
   ADC_DDR &= ~(1 << TP_LOGIC);          /* set pin to HiZ */
   #endif
 
-  #ifdef MP28167_A_BUCK_BOOST_CONVERTER
-  // if (MP28167_A_isConnected() != I2C_OK)
-  //   return;
-  // MP28167_A_begin();
-  // MP28167_A_setILim_mA(300 /*mA*/);
-  // MP28167_A_setVout_mV(5050);
-  // MP28167_A_enable();
-
-  #endif
-
   #ifdef INA226_POWER_MONITOR
   Flag &= INA226_setup();    //  INA226 setup error is 0 and setup good is 1.
   #endif
@@ -2674,6 +2665,16 @@ void PowerMonitor(void)
   #endif
 
   Flag |= (1 << BUZZER_BEEP_ON_FLAG_POS);     // turn on flag to beep buzzer when power threshold is crossed
+
+  #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+  // if (MP28167_A_isConnected() != I2C_OK)
+  //   return;
+  // MP28167_A_begin();
+  // MP28167_A_setILim_mA(300 /*mA*/);
+  // MP28167_A_setVout_mV(5050);
+  // MP28167_A_enable();
+  Flag |= (MP28167_A_GetEnableStatus() << MP28167_A_ENABLE_FLAG_POS);   // recording enable state in flag
+  #endif
 
   DisplayLabels();
 
@@ -2763,6 +2764,13 @@ void PowerMonitor(void)
     /* display values */
 
     #ifdef INA226_POWER_MONITOR
+      #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+      LCD_CharPos(6, ROW_NO_VOUT);
+      if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0) && (((Flag & (1 << MP28167_A_ENABLE_FLAG_POS)) >> MP28167_A_ENABLE_FLAG_POS) == 1))
+        Display_Char('*');
+      else
+        Display_Space();
+      #endif
       DisplayPMVoltageValue(Vout_mV, ROW_NO_VOUT);
       DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
       // display active current output sign
@@ -2778,6 +2786,10 @@ void PowerMonitor(void)
       if((Isense == 0) || (counter % 25 < 12) || (((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 1)) {
         LCD_CharPos(1, ROW_NO_POWER);
         Display_EEString(ILIM_str); Display_Space();
+        if(((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 1)
+          Display_Char('*');
+        else
+          Display_Space();
         int32_t Ilim_uA = (int32_t)MP28167_A_getILim_mA(/*fetch = */ 0) * 1000;
         if(Ilim_uA < 1000000)
           DisplaySignedPMValue(Ilim_uA, 'm', 'A', ROW_NO_POWER);
@@ -2914,13 +2926,16 @@ void PowerMonitor(void)
       #ifdef MP28167_A_BUCK_BOOST_CONVERTER
         LCD_Clear();
         LCD_CharPos(5, ROW_NO_POWER);
+        Display_Char('V'); Display_EEString(Out_str); Display_Space();
         if(MP28167_A_toggle()) {
           // enable
-          Display_Char('V'); Display_EEString(Out_str); Display_Space(); Display_Char('O'); Display_Char('N');
+          Display_Char('O'); Display_Char('N');
+          Flag |= (1 << MP28167_A_ENABLE_FLAG_POS);   // enable bit true
         }
         else {
           // disable
-          Display_Char('V'); Display_EEString(Out_str); Display_Space(); Display_Char('O'); Display_Char('F'); Display_Char('F');
+          Display_Char('O'); Display_Char('F'); Display_Char('F');
+          Flag &= ~(1 << MP28167_A_ENABLE_FLAG_POS);  // eable bit false
         }
         wait1000ms();
         Flag &= ~(1 << MP28167_A_SET_ILIM_FLAG_POS);  // disable ILim Set Menu
@@ -2971,15 +2986,19 @@ void PowerMonitor(void)
     #ifdef MP28167_A_BUCK_BOOST_CONVERTER
     else if (Test == KEY_RIGHT)      /* Right Key -> increase VOUT or ILIM */
     {
-      if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0))
-        MP28167_A_inc_dec_Vout(Step, 1);
+      if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0)) {
+        if(((Flag & (1 << MP28167_A_ENABLE_FLAG_POS)) >> MP28167_A_ENABLE_FLAG_POS) == 1)   // change Vout only if converter is enabled
+          MP28167_A_inc_dec_Vout(Step, 1);
+      }
       else
         MP28167_A_change_ILim(Step, 1);
     }
     else if (Test == KEY_LEFT)      /* Left Key -> decrease VOUT or ILIM */
     {
-      if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0))
-        MP28167_A_inc_dec_Vout(Step, 0);
+      if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0)) {
+        if(((Flag & (1 << MP28167_A_ENABLE_FLAG_POS)) >> MP28167_A_ENABLE_FLAG_POS) == 1)   // change Vout only if converter is enabled
+          MP28167_A_inc_dec_Vout(Step, 0);
+      }
       else
         MP28167_A_change_ILim(Step, 0);
     }
