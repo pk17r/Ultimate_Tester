@@ -62,6 +62,10 @@
       const unsigned char CC_str[] MEM_TYPE = "CC";
       const unsigned char OCP_str[] MEM_TYPE = "OCP";
       const unsigned char PG_str[] MEM_TYPE = "PG";
+      const unsigned char SET_str[] MEM_TYPE = "SET";
+      const unsigned char ILIM_str[] MEM_TYPE = "ILIM";
+      const unsigned char MIN_str[] MEM_TYPE = "MIN";
+      const unsigned char MAX_str[] MEM_TYPE = "MAX";
     #endif
   #endif
 

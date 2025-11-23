@@ -272,12 +272,14 @@ extern void MP28167_A_GetVoutInRange();
 extern uint16_t MP28167_A_getVout_mV();
 extern uint8_t MP28167_A_setVout_mV(uint16_t vout_mV);
 extern uint8_t MP28167_A_setILim_mA(uint16_t IoutLim_mA);
-extern uint16_t MP28167_A_getILim_mA();
+extern uint16_t MP28167_A_getILim_mA(uint8_t fetch);
 extern uint8_t MP28167_A_getILimReg();
 extern uint8_t MP28167_A_toggle();
 extern void MP28167_A_increase_Vref(uint16_t steps);
 extern void MP28167_A_decrease_Vref(uint16_t steps);
 extern void MP28167_A_inc_dec_Vout(uint16_t steps, uint8_t increase);
+extern uint16_t MP28167_A_getILimMax_mA(uint16_t Vin_mV);
+extern uint16_t MP28167_A_getILimMin_mA();
 
 #endif
 

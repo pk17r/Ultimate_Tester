@@ -2449,6 +2449,7 @@ void Flashlight(void)
 #define X_START_VALUE           (UI.CharMax_X - REG_VAL_DISP_CHARS + 1)
 #define VMETER_ON_FLAG_POS    7
 #define BUZZER_BEEP_ON_FLAG_POS    6
+#define MP28167_A_SET_ILIM_FLAG_POS    5
 #define ROW_NO_BATTERY      1
 #ifdef INA226_POWER_MONITOR
   #define ROW_NO_VOUT         2
@@ -2701,8 +2702,8 @@ void PowerMonitor(void)
       Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV() * INA226_BUS_V_MULTIPLIER_e4 / 10000);
       // Current
       Value = INA226_getCurrent_uA() - INA226_I_OFFSET_MICRO_AMP - Ioffset_local;
-      if(Value <= 300 && Value >= -300)
-        Value = 0;                // currents under 0.3mA are ignored to keep zero stable
+      if(Value <= 400 && Value >= -400)
+        Value = 0;                // currents under 0.4mA are ignored to keep zero stable
       if(Value < 1000000 && Value > -1000000) {
         Current_Unit = 'm';
         Isense = Value; // Isense in uA
@@ -2766,18 +2767,39 @@ void PowerMonitor(void)
       DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
       // display active current output sign
       LCD_CharPos(X_START_VALUE - 5, ROW_NO_CURRENT);
+      #ifndef MP28167_A_BUCK_BOOST_CONVERTER
       if((Isense != 0) && (counter % 10 < 5))
         Display_Char('*');
       else
         Display_Space();
+      #endif
       counter++;
-      DisplaySignedPMValue(Power, Power_Unit, 'W', ROW_NO_POWER);
+      #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+      if((Isense == 0) || (counter % 25 < 12) || (((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 1)) {
+        LCD_CharPos(1, ROW_NO_POWER);
+        Display_EEString(ILIM_str); Display_Space();
+        DisplaySignedPMValue(((int32_t)MP28167_A_getILim_mA(/*fetch = */ 0))*1000, 'm', 'A', ROW_NO_POWER);
+      }
+      else {
+        LCD_CharPos(1, ROW_NO_POWER);
+        Display_EEString(Power_str);
+      #endif
+        DisplaySignedPMValue(Power, Power_Unit, 'W', ROW_NO_POWER);
+      #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+      }
+      #endif
     #endif
 
     #ifdef INA3221_POWER_MONITOR
+      #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+      if(((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0) {
+      #endif
       DisplayINA3221Row(1);
       DisplayINA3221Row(2);
       DisplayINA3221Row(3);
+      #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+      }
+      #endif
     #endif
 
 
@@ -2805,22 +2827,19 @@ void PowerMonitor(void)
 
     #ifdef MP28167_A_BUCK_BOOST_CONVERTER
     // Status messages
-    LCD_CharPos(10, 1);
-    if(MP28167_A_CCMode()) {
-      Display_Char('C'); Display_Char('C');
-    }
-    else if(MP28167_A_PG()) {
-      Display_Char('P'); Display_Char('G');
-    }
-    else {
-      Display_Space(); Display_Space();
-    }
-    Display_Space();
-    if(MP28167_A_OCP()) {
-      Display_Char('O'); Display_Char('C'); Display_Char('P');
-    }
+    LCD_CharPos(11, 1);
+    if(MP28167_A_OCP())
+      Display_EEString(OCP_str);
     else {
       Display_Space(); Display_Space(); Display_Space();
+    }
+    LCD_CharPos(15, 1);
+    if(MP28167_A_CCMode())
+      Display_EEString(CC_str);
+    else if(MP28167_A_PG())
+      Display_EEString(PG_str);
+    else {
+      Display_Space(); Display_Space();
     }
     MP28167_A_Clear_Interrupts();
     // get Vout in range if out of range
@@ -2854,10 +2873,33 @@ void PowerMonitor(void)
     }
     else if(Test == KEY_SHORT)
     {
-      if((Flag >> BUZZER_BEEP_ON_FLAG_POS) == 1)
-        Flag &= ~(1 << BUZZER_BEEP_ON_FLAG_POS);    // turn off buzzer beeps when power threshold is crossed
-      else
-        Flag |= (1 << BUZZER_BEEP_ON_FLAG_POS);     // turn on buzzer beeps when power threshold is crossed
+      #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+        if(((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0) {
+          Flag |= (1 << MP28167_A_SET_ILIM_FLAG_POS);   // enable ILim Set Menu
+          // clear INA3221 lines
+          LCD_ClearLine(INA3221_FIRST_ROW);
+          LCD_ClearLine(INA3221_FIRST_ROW+1);
+          LCD_ClearLine(INA3221_FIRST_ROW+2);
+          LCD_ClearLine(INA3221_FIRST_ROW+3);
+
+          uint16_t Iout_Max_mA = MP28167_A_getILimMax_mA(Cfg.Vbat);
+          LCD_CharPos(5, INA3221_FIRST_ROW+1);
+          Display_EEString(SET_str); Display_Space(); Display_EEString(ILIM_str);
+          LCD_CharPos(1, INA3221_FIRST_ROW+2);
+          Display_EEString(ILIM_str); Display_Space(); Display_EEString(MIN_str); Display_Space(); Display_Value(MP28167_A_getILimMin_mA() / 10, -2, 'A');
+          LCD_CharPos(1, INA3221_FIRST_ROW+3);
+          Display_EEString(ILIM_str); Display_Space(); Display_EEString(MAX_str); Display_Space(); Display_Value(Iout_Max_mA / 10, -2, 'A');
+        }
+        else {
+          Flag &= ~(1 << MP28167_A_SET_ILIM_FLAG_POS);  // disable ILim Set Menu
+          DisplayLabels();
+        }
+      #else
+        if((Flag >> BUZZER_BEEP_ON_FLAG_POS) == 1)
+          Flag &= ~(1 << BUZZER_BEEP_ON_FLAG_POS);    // turn off buzzer beeps when power threshold is crossed
+        else
+          Flag |= (1 << BUZZER_BEEP_ON_FLAG_POS);     // turn on buzzer beeps when power threshold is crossed
+      #endif
     }
     #ifdef INA226_POWER_MONITOR
     else if (Test == KEY_LONG)      /* long press -> toggle VOUT or zero current offset */
@@ -2874,6 +2916,7 @@ void PowerMonitor(void)
           Display_Char('V'); Display_EEString(Out_str); Display_Space(); Display_Char('O'); Display_Char('F'); Display_Char('F');
         }
         wait1000ms();
+        Flag &= ~(1 << MP28167_A_SET_ILIM_FLAG_POS);  // disable ILim Set Menu
         DisplayLabels();
       #else
         LCD_Clear();

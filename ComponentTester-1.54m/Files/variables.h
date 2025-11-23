@@ -944,6 +944,10 @@
       extern const unsigned char CC_str[];
       extern const unsigned char OCP_str[];
       extern const unsigned char PG_str[];
+      extern const unsigned char SET_str[];
+      extern const unsigned char ILIM_str[];
+      extern const unsigned char MIN_str[];
+      extern const unsigned char MAX_str[];
     #endif
   #endif
 
