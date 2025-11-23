@@ -1003,7 +1003,7 @@ uint8_t TestKey(uint16_t Timeout, uint8_t Mode)
     if (Test == 0)            /* test button pressed */
     {
       Ticks = 0;              /* reset counter */
-      MilliSleep(30);         /* time to debounce */
+      MilliSleep(50);         /* time to debounce */
 
       while (Run)             /* detect how long key is pressed */
       {

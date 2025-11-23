@@ -1077,7 +1077,7 @@
  *  - uncomment to enable, also adjust timeout (in s)
  */
 
-#define POWER_OFF_TIMEOUT     120
+#define POWER_OFF_TIMEOUT     60
 
 
 /*
