@@ -440,8 +440,8 @@
 #define MP28167_A_BUCK_BOOST_CONVERTER
 
 #ifdef MP28167_A_BUCK_BOOST_CONVERTER
-  #define MP28167_A_R1                              5900           /* in kOhms */
-  #define MP28167_A_R2                              503            /* in kOhms */
+  #define MP28167_A_R1                              470           /* in kOhms */
+  #define MP28167_A_R2                              47            /* in kOhms */
 #endif
 
 
@@ -1371,7 +1371,7 @@
  *  - uncomment to enable
  */
 
-//  #define LONG_KEY_PRESS_POWER_OFF
+ #define LONG_KEY_PRESS_POWER_OFF
 
  
 /*

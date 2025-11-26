@@ -77,8 +77,8 @@
 #define MP28167_A_INTERRUPT_OVER_CURRENT_ENTER    0x20
 #define MP28167_A_INTERRUPT_UVP_FALLING           0x08
 
-#define MP28167_A_VOUT_MIN_mV         1200
-#define MP28167_A_VOUT_MAX_mV         20470
+#define MP28167_A_VOUT_MIN_mV         1030
+#define MP28167_A_VOUT_MAX_mV         18000
 #define MP28167_A_VREF_MIN_mV         80
 #define MP28167_A_VREF_MAX_mV         1637
 #define MP28167_A_VREF_REG_MIN        0

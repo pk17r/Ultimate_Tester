@@ -2145,13 +2145,6 @@ uint8_t PresentMainMenu(void)
    *  test/check/signal features
    */
 
-  #ifdef SW_MENUITEM_TEST_COMPONENT
-   /* output power supply voltage current power measure */
-  Item_Str[n] = (void*)Test_Component_str;
-  Item_ID[n] = MENUITEM_TEST_COMPONENT;
-  n++;
-  #endif
-
   #ifdef HW_POWER_MONITOR
    /* output power supply voltage current power measure */
   Item_Str[n] = (void*)Power_Monitor_str;
@@ -2159,10 +2152,17 @@ uint8_t PresentMainMenu(void)
   n++;
   #endif
 
-  #ifdef HW_FLASHLIGHT
-  /* flashlight / general purpose switched output */
-  Item_Str[n] = (void*)Flashlight_str;
-  Item_ID[n] = MENUITEM_FLASHLIGHT;
+  #ifdef SW_MENUITEM_TEST_COMPONENT
+   /* output power supply voltage current power measure */
+  Item_Str[n] = (void*)Test_Component_str;
+  Item_ID[n] = MENUITEM_TEST_COMPONENT;
+  n++;
+  #endif
+
+  #ifdef SW_MONITOR_R
+  /* monitor R */
+  Item_Str[n] = (void *)Monitor_R_str;
+  Item_ID[n] = MENUITEM_MONITOR_R;
   n++;
   #endif
 
@@ -2170,6 +2170,13 @@ uint8_t PresentMainMenu(void)
   /* continuity check */
   Item_Str[n] = (void*)ContinuityCheck_str;
   Item_ID[n] = MENUITEM_CONTINUITY;
+  n++;
+  #endif
+
+  #ifdef HW_FLASHLIGHT
+  /* flashlight / general purpose switched output */
+  Item_Str[n] = (void*)Flashlight_str;
+  Item_ID[n] = MENUITEM_FLASHLIGHT;
   n++;
   #endif
 
@@ -2212,13 +2219,6 @@ uint8_t PresentMainMenu(void)
   /* cap leakage */
   Item_Str[n] = (void *)CapLeak_str;
   Item_ID[n] = MENUITEM_CAP_LEAKAGE;
-  n++;
-  #endif
-
-  #ifdef SW_MONITOR_R
-  /* monitor R */
-  Item_Str[n] = (void *)Monitor_R_str;
-  Item_ID[n] = MENUITEM_MONITOR_R;
   n++;
   #endif
 

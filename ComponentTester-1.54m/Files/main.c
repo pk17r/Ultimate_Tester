@@ -2168,7 +2168,7 @@ void PowerOff(void)
     LCD_Clear();
     LCD_CharPos(5, 4);
     Display_Char('V'); Display_EEString(Out_str); Display_Space(); Display_EEString(OFF_str);
-    wait2s();
+    wait1s();
   }
   #endif
 
@@ -2184,7 +2184,7 @@ void PowerOff(void)
     Display_EEString(Bye_str);          /* display: Bye! */
   #endif
 
-  wait2s();
+  wait500ms();
   LCD_Clear();
 
   /* disable stuff */
