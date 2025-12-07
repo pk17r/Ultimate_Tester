@@ -2168,7 +2168,7 @@ void PowerOff(void)
     LCD_Clear();
     LCD_CharPos(5, 4);
     Display_Char('V'); Display_EEString(Out_str); Display_Space(); Display_EEString(OFF_str);
-    wait1s();
+    wait500ms();
   }
   #endif
 
@@ -2616,40 +2616,42 @@ int main(void)
 
   Key = 0;                              /* reset key press type */
 
-  /* catch key press */
-  if (!(BUTTON_PIN & (1 << TEST_BUTTON)))    /* test button pressed */
-  {
-    Test = 0;                      /* ticks counter */
-
-    while (Key == 0)               /* loop until we got a type */
+  #ifdef SW_INITIAL_TEST_BTN_PRESS_DURATION_OPTIONS
+    /* catch key press */
+    if (!(BUTTON_PIN & (1 << TEST_BUTTON)))    /* test button pressed */
     {
-      MilliSleep(20);                   /* wait 20ms */
+      Test = 0;                      /* ticks counter */
 
-      if (!(BUTTON_PIN & (1 << TEST_BUTTON)))     /* button still pressed */
+      while (Key == 0)               /* loop until we got a type */
       {
-        Test++;                         /* increase counter */
-        if (Test > 100) Key = 3;        /* >2000ms */
-      }
-      else                                        /* button released */
-      {
-        Key = 1;                        /* <300ms */
-        if (Test > 15) Key = 2;         /* >300ms */
+        MilliSleep(20);                   /* wait 20ms */
+
+        if (!(BUTTON_PIN & (1 << TEST_BUTTON)))     /* button still pressed */
+        {
+          Test++;                         /* increase counter */
+          if (Test > 100) Key = 3;        /* >2000ms */
+        }
+        else                                        /* button released */
+        {
+          Key = 1;                        /* <300ms */
+          if (Test > 15) Key = 2;         /* >300ms */
+        }
       }
     }
-  }
 
-  #ifndef UI_SERIAL_COMMANDS
-  /* key press >300ms selects alternative operation mode */
-  if (Key > 1)
-  {
-    #ifdef UI_AUTOHOLD
-      /* change mode to continuous */
-      Cfg.OP_Mode &= ~OP_AUTOHOLD;      /* clear auto-hold */
-    #else
-      /* change mode to auto-hold */
-      Cfg.OP_Mode |= OP_AUTOHOLD;       /* set auto-hold */
+    #ifndef UI_SERIAL_COMMANDS
+    /* key press >300ms selects alternative operation mode */
+    if (Key > 1)
+    {
+      #ifdef UI_AUTOHOLD
+        /* change mode to continuous */
+        Cfg.OP_Mode &= ~OP_AUTOHOLD;      /* clear auto-hold */
+      #else
+        /* change mode to auto-hold */
+        Cfg.OP_Mode |= OP_AUTOHOLD;       /* set auto-hold */
+      #endif
+    }
     #endif
-  }
   #endif
 
   #ifdef POWER_OFF_TIMEOUT
@@ -2714,15 +2716,19 @@ int main(void)
    *  load saved adjustment offsets and values
    */
 
+  #ifdef SW_INITIAL_TEST_BTN_PRESS_DURATION_OPTIONS
   if (Key == 3)               /* key press >2s resets to defaults */
   {
     SetAdjustmentDefaults();       /* set default values */
   }
   else                        /* normal mode */
   {
+    #endif
     /* load adjustment values: profile #1 */
     ManageAdjustmentStorage(STORAGE_LOAD, 1);
+    #ifdef SW_INITIAL_TEST_BTN_PRESS_DURATION_OPTIONS
   }
+  #endif
 
   /* set extra stuff */
   #ifdef SW_CONTRAST
@@ -2765,7 +2771,7 @@ int main(void)
   UI.PenColor = COLOR_PEN;              /* set pen color */
   #endif
 
-  MilliSleep(1500);                     /* let the user read the display */
+  MilliSleep(500);                     /* let the user read the display */
 
 
   /*

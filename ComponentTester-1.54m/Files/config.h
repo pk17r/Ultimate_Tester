@@ -809,7 +809,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_R_TRIMMER
+#define SW_R_TRIMMER
 
 
 /*
@@ -973,7 +973,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_HEX_UPPERCASE
+#define UI_HEX_UPPERCASE
 
 
 /*
@@ -1269,6 +1269,14 @@
 
 
 /*
+ *  set continous mode or default values based upon initial Test Button Press Duration
+ *  - uncomment to enable
+ */
+
+// #define SW_INITIAL_TEST_BTN_PRESS_DURATION_OPTIONS
+
+
+/*
  *  main menu: power off tester
  *  - uncomment to enable
  */
@@ -1454,7 +1462,7 @@
  */
 
 #define SHOW_EXTERNAL_POWER_SYMBOL
-#define EXT_POW_IDENTIFIER          4300           // 6400
+#define EXT_POW_IDENTIFIER          4250           // 6400
 #define EXT_POW_VOLTAGE_OFFSET       300
 
 
