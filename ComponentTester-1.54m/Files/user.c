@@ -1860,6 +1860,7 @@ void AdjustmentMenu(uint8_t Mode)
 #define MENUITEM_METER_5VDC       42
 #define MENUITEM_POWER_MONITOR    43
 #define MENUITEM_TEST_COMPONENT   44
+#define MENUITEM_ABOUT_PAGE       45
 
 
 /*
@@ -2117,13 +2118,20 @@ uint8_t PresentMainMenu(void)
     #define ITEM_40      0
   #endif
 
+  #ifdef SW_ABOUT_PAGE
+    #define ITEM_41      1
+  #else
+    #define ITEM_41      0
+  #endif
+
   #define ITEMS_PACK_0   (ITEM_01 + ITEM_02 + ITEM_03 + ITEM_04 + ITEM_05 + ITEM_06 + ITEM_07 + ITEM_08 + ITEM_09 + ITEM_10)
   #define ITEMS_PACK_1   (ITEM_11 + ITEM_12 + ITEM_13 + ITEM_14 + ITEM_15 + ITEM_16 + ITEM_17 + ITEM_18 + ITEM_19 + ITEM_20)
   #define ITEMS_PACK_2   (ITEM_21 + ITEM_22 + ITEM_23 + ITEM_24 + ITEM_25 + ITEM_26 + ITEM_27 + ITEM_28 + ITEM_29 + ITEM_30)
   #define ITEMS_PACK_3   (ITEM_31 + ITEM_32 + ITEM_33 + ITEM_34 + ITEM_35 + ITEM_36 + ITEM_37 + ITEM_38 + ITEM_39 + ITEM_40)
+  #define ITEMS_PACK_4   (ITEM_41)
 
   /* number of menu items */
-  #define MENU_ITEMS     (ITEMS_BASIC + ITEMS_PACK_0 + ITEMS_PACK_1 + ITEMS_PACK_2 + ITEMS_PACK_3)
+  #define MENU_ITEMS     (ITEMS_BASIC + ITEMS_PACK_0 + ITEMS_PACK_1 + ITEMS_PACK_2 + ITEMS_PACK_3 + ITEMS_PACK_4)
 
 
   /*
@@ -2443,6 +2451,13 @@ uint8_t PresentMainMenu(void)
   n++;
   #endif
 
+  #ifdef SW_ABOUT_PAGE
+  /* about page */
+  Item_Str[n] = (void *)About_str;
+  Item_ID[n] = MENUITEM_ABOUT_PAGE;
+  n++;
+  #endif
+
   #ifdef SW_POWER_OFF
   /* power off tester */
   Item_Str[n] = (void *)PowerOff_str;
@@ -2484,6 +2499,7 @@ uint8_t PresentMainMenu(void)
   #undef ITEMS_PACK_1
   #undef ITEMS_PACK_2
   #undef ITEMS_PACK_3
+  #undef ITEMS_PACK_4
 
   #undef ITEM_01
   #undef ITEM_02
@@ -2525,6 +2541,7 @@ uint8_t PresentMainMenu(void)
   #undef ITEM_38
   #undef ITEM_39
   #undef ITEM_40
+  #undef ITEM_41
 
   return(ID);                 /* return item ID */
 }
@@ -2893,6 +2910,13 @@ uint8_t MainMenu(void)
     /* output power supply voltage current power measure */
     case MENUITEM_POWER_MONITOR:
       PowerMonitor();
+      break;
+    #endif
+
+    #ifdef SW_ABOUT_PAGE
+    /* output power supply voltage current power measure */
+    case MENUITEM_ABOUT_PAGE:
+      AboutPage();
       break;
     #endif
 

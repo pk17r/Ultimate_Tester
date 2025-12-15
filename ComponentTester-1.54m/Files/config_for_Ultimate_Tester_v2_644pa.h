@@ -406,7 +406,7 @@
   #define INA226_R_SHUNT_MILLI_OHM                 20.00     /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
   #define INA226_CURRENT_LEAST_COUNT_MICRO_AMP     100       /* Least count is minimum resolution in measurement. Also decides Max_Measurable_Current = (32768 * INA226_CURRENT_LEAST_COUNT_MICRO_AMP / 1000000) Amps. Recommended value is 100.  */
   #define INA226_AVERAGING_SAMPLES                 0         /* Number of samples per measurement. Range of values 0-7 provides for 1-1024 samples per measurement */
-  #define INA226_I_OFFSET_MICRO_AMP                0      /* Offset current in microamps on shunt at no load that is added to measurement to make it zero. Can be negative */
+  #define INA226_I_OFFSET_MICRO_AMP                -500      /* Offset current in microamps on shunt at no load that is added to measurement to make it zero. Can be negative */
   #define INA226_BUS_V_MULTIPLIER_e4               10000     /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements. Only whole numbers accepted */
   #define INA226_P_THRESHOLD_mW_BUZZER             2500      /* Over-Power Alert Beeps: Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beeps. */
   #define I2C_RW                                             /* Requires I2C Read Support  */
@@ -440,8 +440,8 @@
 #define MP28167_A_BUCK_BOOST_CONVERTER
 
 #ifdef MP28167_A_BUCK_BOOST_CONVERTER
-  #define MP28167_A_R1                              430           /* in kOhms */
-  #define MP28167_A_R2                              107           /* in kOhms */
+  #define MP28167_A_R1                              470           /* in kOhms */
+  #define MP28167_A_R2                              47            /* in kOhms */
 #endif
 
 
@@ -449,6 +449,14 @@
 /* ************************************************************************
  *   software options
  * ************************************************************************ */
+
+
+/*
+ *  About Page
+ *  - comment out to disable
+ */
+
+#define SW_ABOUT_PAGE
 
 
 /*
@@ -809,7 +817,7 @@
  *  - uncomment to enable
  */
 
-//#define SW_R_TRIMMER
+#define SW_R_TRIMMER
 
 
 /*
@@ -973,7 +981,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_HEX_UPPERCASE
+#define UI_HEX_UPPERCASE
 
 
 /*
@@ -1077,7 +1085,7 @@
  *  - uncomment to enable, also adjust timeout (in s)
  */
 
-#define POWER_OFF_TIMEOUT     120
+#define POWER_OFF_TIMEOUT     60
 
 
 /*
@@ -1269,6 +1277,14 @@
 
 
 /*
+ *  set continous mode or default values based upon initial Test Button Press Duration
+ *  - uncomment to enable
+ */
+
+// #define SW_INITIAL_TEST_BTN_PRESS_DURATION_OPTIONS
+
+
+/*
  *  main menu: power off tester
  *  - uncomment to enable
  */
@@ -1332,7 +1348,7 @@
  *  - uncomment to enable
  */
 
-//#define UI_TEST_PAGEMODE
+#define UI_TEST_PAGEMODE
 
 
 /*
@@ -1371,7 +1387,7 @@
  *  - uncomment to enable
  */
 
-//  #define LONG_KEY_PRESS_POWER_OFF
+ #define LONG_KEY_PRESS_POWER_OFF
 
  
 /*
@@ -1453,9 +1469,9 @@
  *    reaches measurement ADC pin
  */
 
-// #define SHOW_EXTERNAL_POWER_SYMBOL
-#define EXT_POW_IDENTIFIER          4300           // 6400
-#define EXT_POW_VOLTAGE_OFFSET       188
+#define SHOW_EXTERNAL_POWER_SYMBOL
+#define EXT_POW_IDENTIFIER          4250           // 6400
+#define EXT_POW_VOLTAGE_OFFSET       300
 
 
 /*
@@ -1530,7 +1546,7 @@
  *  - uncomment to enable
  */
 
-// #define R_MULTIOFFSET
+#define R_MULTIOFFSET
 
 
 /* 

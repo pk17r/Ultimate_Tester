@@ -2230,6 +2230,7 @@ void LogicProbe(void)
 
 
 
+
 /* ************************************************************************
  *   continuity check
  * ************************************************************************ */
@@ -2433,6 +2434,61 @@ void Flashlight(void)
 }
 
 #endif
+
+
+
+
+/* ************************************************************************
+ *   about page
+ * ************************************************************************ */
+
+#ifdef SW_ABOUT_PAGE
+
+
+void AboutPage(void)
+{
+  uint8_t           Flag = 1;               /* loop control */
+  uint8_t           Test;               /* user feedback */
+
+  LCD_Clear();
+
+  LCD_CharPos(1, 1);
+  Display_EEString(About_str);
+  LCD_CharPos(1, 3);
+  Display_EEString(Product_Name_str);
+  LCD_CharPos(1, 4);
+  Display_EEString(PCB_Version_str);
+  LCD_CharPos(1, 6);
+  Display_EEString(Web_str);
+  LCD_CharPos(1, 7);
+  Display_EEString(Webpage1_str);
+  LCD_CharPos(1, 8);
+  Display_EEString(Webpage2_str);
+
+  /*
+   *  processing loop
+   */
+
+  while (Flag > 0)
+  {
+    /*
+     *  user feedback
+     */
+
+    /* check for user feedback and slow down update rate */
+    Test = TestKey(100, CHECK_KEY_TWICE | CHECK_BAT);
+
+    if (Test == KEY_TWICE)         /* two short key presses */
+    {
+      Flag = 0;                    /* end loop */
+    }
+  }
+}
+
+
+#endif
+
+
 
 
 

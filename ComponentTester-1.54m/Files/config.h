@@ -452,6 +452,14 @@
 
 
 /*
+ *  About Page
+ *  - comment out to disable
+ */
+
+#define SW_ABOUT_PAGE
+
+
+/*
  *  Self Test
  *  - comment out to disable
  */

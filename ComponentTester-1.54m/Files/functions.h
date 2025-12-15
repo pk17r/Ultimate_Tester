@@ -622,6 +622,10 @@ extern int32_t INA3221_getCurrent_uA(uint8_t channel);
   extern void Meter_5VDC(void);
   #endif
 
+  #ifdef SW_ABOUT_PAGE
+  extern void AboutPage(void);
+  #endif
+
   #ifdef HW_POWER_MONITOR
   extern void PowerMonitor(void);
   #endif

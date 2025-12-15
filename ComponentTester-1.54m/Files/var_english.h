@@ -71,6 +71,15 @@
     #endif
   #endif
 
+  #ifdef SW_ABOUT_PAGE
+    const unsigned char About_str[] MEM_TYPE = "About";
+    const unsigned char Product_Name_str[] MEM_TYPE = "UltimateTester";
+    const unsigned char PCB_Version_str[] MEM_TYPE = "_v2.1";
+    const unsigned char Web_str[] MEM_TYPE = "Web:";
+    const unsigned char Webpage1_str[] MEM_TYPE = "github.com/pk17r";
+    const unsigned char Webpage2_str[] MEM_TYPE = "/Ultimate_Tester";
+  #endif
+
   #ifdef SW_MENUITEM_TEST_COMPONENT
     const unsigned char Test_Component_str[] MEM_TYPE = "Test Component";
   #endif

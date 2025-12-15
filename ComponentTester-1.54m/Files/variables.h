@@ -953,6 +953,15 @@
     #endif
   #endif
 
+  #ifdef SW_ABOUT_PAGE
+    extern const unsigned char About_str[];
+    extern const unsigned char Product_Name_str[];
+    extern const unsigned char PCB_Version_str[];
+    extern const unsigned char Web_str[];
+    extern const unsigned char Webpage1_str[];
+    extern const unsigned char Webpage2_str[];
+  #endif
+
   #ifdef SW_MENUITEM_TEST_COMPONENT
     extern const unsigned char Test_Component_str[];
   #endif
