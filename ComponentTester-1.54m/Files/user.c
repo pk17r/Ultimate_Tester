@@ -1861,6 +1861,7 @@ void AdjustmentMenu(uint8_t Mode)
 #define MENUITEM_POWER_MONITOR    43
 #define MENUITEM_TEST_COMPONENT   44
 #define MENUITEM_ABOUT_PAGE       45
+#define MENUITEM_USAGE_PAGE       46
 
 
 /*
@@ -2124,11 +2125,17 @@ uint8_t PresentMainMenu(void)
     #define ITEM_41      0
   #endif
 
+  #ifdef SW_USAGE_PAGE
+    #define ITEM_42      1
+  #else
+    #define ITEM_42      0
+  #endif
+
   #define ITEMS_PACK_0   (ITEM_01 + ITEM_02 + ITEM_03 + ITEM_04 + ITEM_05 + ITEM_06 + ITEM_07 + ITEM_08 + ITEM_09 + ITEM_10)
   #define ITEMS_PACK_1   (ITEM_11 + ITEM_12 + ITEM_13 + ITEM_14 + ITEM_15 + ITEM_16 + ITEM_17 + ITEM_18 + ITEM_19 + ITEM_20)
   #define ITEMS_PACK_2   (ITEM_21 + ITEM_22 + ITEM_23 + ITEM_24 + ITEM_25 + ITEM_26 + ITEM_27 + ITEM_28 + ITEM_29 + ITEM_30)
   #define ITEMS_PACK_3   (ITEM_31 + ITEM_32 + ITEM_33 + ITEM_34 + ITEM_35 + ITEM_36 + ITEM_37 + ITEM_38 + ITEM_39 + ITEM_40)
-  #define ITEMS_PACK_4   (ITEM_41)
+  #define ITEMS_PACK_4   (ITEM_41 + ITEM_42)
 
   /* number of menu items */
   #define MENU_ITEMS     (ITEMS_BASIC + ITEMS_PACK_0 + ITEMS_PACK_1 + ITEMS_PACK_2 + ITEMS_PACK_3 + ITEMS_PACK_4)
@@ -2451,6 +2458,13 @@ uint8_t PresentMainMenu(void)
   n++;
   #endif
 
+  #ifdef SW_USAGE_PAGE
+  /* about page */
+  Item_Str[n] = (void *)Test_Btn_Usage_str;
+  Item_ID[n] = MENUITEM_USAGE_PAGE;
+  n++;
+  #endif
+
   #ifdef SW_ABOUT_PAGE
   /* about page */
   Item_Str[n] = (void *)About_str;
@@ -2542,6 +2556,7 @@ uint8_t PresentMainMenu(void)
   #undef ITEM_39
   #undef ITEM_40
   #undef ITEM_41
+  #undef ITEM_42
 
   return(ID);                 /* return item ID */
 }
@@ -2914,9 +2929,14 @@ uint8_t MainMenu(void)
     #endif
 
     #ifdef SW_ABOUT_PAGE
-    /* output power supply voltage current power measure */
     case MENUITEM_ABOUT_PAGE:
       AboutPage();
+      break;
+    #endif
+
+    #ifdef SW_USAGE_PAGE
+    case MENUITEM_USAGE_PAGE:
+      UsagePage();
       break;
     #endif
 

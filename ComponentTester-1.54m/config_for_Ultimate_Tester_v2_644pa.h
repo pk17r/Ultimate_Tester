@@ -460,6 +460,15 @@
 
 
 /*
+ *  Usage Page
+ *  - comment out to disable
+ */
+
+#define SW_USAGE_PAGE
+
+
+
+/*
  *  Self Test
  *  - comment out to disable
  */

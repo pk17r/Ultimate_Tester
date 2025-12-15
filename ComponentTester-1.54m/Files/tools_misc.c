@@ -2437,6 +2437,62 @@ void Flashlight(void)
 
 
 
+/* ************************************************************************
+ *   usage page
+ * ************************************************************************ */
+
+#ifdef SW_USAGE_PAGE
+
+
+void UsagePage(void)
+{
+  uint8_t           Flag = 1;               /* loop control */
+  uint8_t           Test;               /* user feedback */
+
+  LCD_Clear();
+
+  LCD_CharPos(1, 1);
+  Display_EEString(Test_Btn_Usage_str); Display_Char(':');
+  LCD_CharPos(1, 2);
+  Display_Char('1'); Display_Space(); Display_EEString(Left_str); Display_Space(); Display_EEString(Press_str);
+  LCD_CharPos(1, 3);
+  Display_Char('2'); Display_Space(); Display_EEString(Right_str); Display_Space(); Display_EEString(Press_str);
+  LCD_CharPos(1, 4);
+  Display_Char('3'); Display_Space(); Display_EEString(Short_str); Display_Space(); Display_EEString(Press_str);
+  LCD_CharPos(1, 5);
+  Display_Char('4'); Display_Space(); Display_EEString(Long_str); Display_Space(); Display_EEString(Press_str);
+  LCD_CharPos(1, 6);
+  Display_Char('5'); Display_Space(); Display_EEString(Double_str); Display_Space(); Display_EEString(Press_str);
+  LCD_CharPos(1, 8);
+  Display_EEString(Back_str);
+
+  /*
+   *  processing loop
+   */
+
+  while (Flag > 0)
+  {
+    /*
+     *  user feedback
+     */
+
+    /* check for user feedback and slow down update rate */
+    Test = TestKey(100, CHECK_KEY_TWICE | CHECK_BAT);
+
+    if (Test == KEY_TWICE)         /* two short key presses */
+    {
+      Flag = 0;                    /* end loop */
+    }
+  }
+}
+
+
+#endif
+
+
+
+
+
 
 /* ************************************************************************
  *   about page
@@ -2453,7 +2509,7 @@ void AboutPage(void)
   LCD_Clear();
 
   LCD_CharPos(1, 1);
-  Display_EEString(About_str);
+  Display_EEString(About_str); Display_Char(':');
   LCD_CharPos(1, 3);
   Display_EEString(Product_Name_str);
   LCD_CharPos(1, 4);

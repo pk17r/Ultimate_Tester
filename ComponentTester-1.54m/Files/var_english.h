@@ -71,6 +71,17 @@
     #endif
   #endif
 
+  #ifdef SW_USAGE_PAGE
+    const unsigned char Test_Btn_Usage_str[] MEM_TYPE = "Test Btn Usage";
+    const unsigned char Left_str[] MEM_TYPE = "Left";
+    const unsigned char Right_str[] MEM_TYPE = "Right";
+    const unsigned char Short_str[] MEM_TYPE = "Short";
+    const unsigned char Long_str[] MEM_TYPE = "Long";
+    const unsigned char Double_str[] MEM_TYPE = "Double";
+    const unsigned char Back_str[] MEM_TYPE = "Back = Double Pr";
+    const unsigned char Press_str[] MEM_TYPE = "Press";
+  #endif
+
   #ifdef SW_ABOUT_PAGE
     const unsigned char About_str[] MEM_TYPE = "About";
     const unsigned char Product_Name_str[] MEM_TYPE = "UltimateTester";

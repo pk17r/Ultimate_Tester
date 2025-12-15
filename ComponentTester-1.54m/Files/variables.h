@@ -953,6 +953,17 @@
     #endif
   #endif
 
+  #ifdef SW_USAGE_PAGE
+    extern const unsigned char Test_Btn_Usage_str[];
+    extern const unsigned char Left_str[];
+    extern const unsigned char Right_str[];
+    extern const unsigned char Short_str[];
+    extern const unsigned char Long_str[];
+    extern const unsigned char Double_str[];
+    extern const unsigned char Back_str[];
+    extern const unsigned char Press_str[];
+  #endif
+
   #ifdef SW_ABOUT_PAGE
     extern const unsigned char About_str[];
     extern const unsigned char Product_Name_str[];
