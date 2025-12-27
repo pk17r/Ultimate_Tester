@@ -562,6 +562,9 @@ uint8_t SelfAdjustment(void)
 
 
   #ifdef INA226_POWER_MONITOR
+    #ifdef MP28167_A_BUCK_BOOST_CONVERTER  
+      MP28167_A_enable();
+    #endif
     INA226_Set_Max_Averaging_Samples();
     Step = 0;            /* start with step #0 */
   #elif defined(HW_ADJUST_CAP)
@@ -991,6 +994,9 @@ uint8_t SelfAdjustment(void)
   NV.INA226_ZeroCurrent_uA = INA226_I_Zero_uA_Sum / 5;
   // reset INA226
   INA226_setup();
+  #ifdef MP28167_A_BUCK_BOOST_CONVERTER  
+    MP28167_A_disable();
+  #endif
   #endif
 
   if (Flag == 4)         /* all adjustments done */
