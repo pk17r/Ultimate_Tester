@@ -1294,6 +1294,14 @@
 
 
 /*
+ *  show Save Menuitem for Self Adjustment values
+ *  - uncomment to enable
+ */
+
+// #define SW_MENUITEM_SAVE
+
+
+/*
  *  set continous mode or default values based upon initial Test Button Press Duration
  *  - uncomment to enable
  */

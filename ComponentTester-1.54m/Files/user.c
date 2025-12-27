@@ -2429,10 +2429,12 @@ uint8_t PresentMainMenu(void)
   n++;
   #endif
 
+  #ifdef SW_MENUITEM_SAVE
   /* save self-adjustment values */
   Item_Str[n] = (void *)Save_str;
   Item_ID[n] = MENUITEM_SAVE;
   n++;
+  #endif
 
   /* load self-adjustment values */
   Item_Str[n] = (void *)Load_str;
@@ -2626,10 +2628,12 @@ uint8_t MainMenu(void)
       Flag = SelfAdjustment();
       break;
 
+    #ifdef SW_MENUITEM_SAVE
     /* save adjustment values */
     case MENUITEM_SAVE:
       AdjustmentMenu(STORAGE_SAVE);
       break;
+    #endif
 
     /* load adjustment values */
     case MENUITEM_LOAD:

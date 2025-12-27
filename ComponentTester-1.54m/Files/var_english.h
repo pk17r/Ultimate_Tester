@@ -32,9 +32,9 @@
   const unsigned char Failed2_str[] MEM_TYPE = "found!";
   const unsigned char Done_str[] MEM_TYPE = "done!";
   const unsigned char Select_str[] MEM_TYPE = "Select";
-  const unsigned char Adjustment_str[] MEM_TYPE = "Adjustment";
-  const unsigned char Save_str[] MEM_TYPE = "Save";
-  const unsigned char Load_str[] MEM_TYPE = "Load";
+  const unsigned char Adjustment_str[] MEM_TYPE = "Self Adjustment";
+  const unsigned char Save_str[] MEM_TYPE = "Save Profile";
+  const unsigned char Load_str[] MEM_TYPE = "Load Profile";
   const unsigned char Show_str[] MEM_TYPE = "Show Values";
   const unsigned char Remove_str[] MEM_TYPE = "Remove";
   const unsigned char Create_str[] MEM_TYPE = "Create";

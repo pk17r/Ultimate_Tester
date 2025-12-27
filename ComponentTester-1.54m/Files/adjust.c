@@ -948,6 +948,9 @@ uint8_t SelfAdjustment(void)
     /* show basic values and offsets */
     ShowAdjustmentValues();
 
+    /* give user option to save self adjustment values */
+    AdjustmentMenu(STORAGE_SAVE);
+
     Flag = 1;            /* signal success */
   }
   else                   /* missing adjustments */
