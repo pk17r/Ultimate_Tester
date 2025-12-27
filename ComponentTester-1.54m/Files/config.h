@@ -1546,7 +1546,7 @@
  *  - will be updated by self-adjustment
  */
 
-#define R_ZERO           15
+#define R_ZERO           28
 
 
 /*
@@ -1571,7 +1571,7 @@
  *  - will be updated by self-adjustment
  */
 
-#define C_ZERO           31
+#define C_ZERO           35
 
 
 /*

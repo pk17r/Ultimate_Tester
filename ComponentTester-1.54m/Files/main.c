@@ -2116,6 +2116,7 @@ void CheckVoltageRefs(void)
    */
 
   #ifdef HW_REF25
+  U_Ref = ReadU(TP_REF);           /* dummy read for bandgap stabilization */
   Cfg.Samples = 200;               /* perform 200 ADC samples for high accuracy */
   U_Ref = ReadU(TP_REF);           /* read voltage of reference (mV) */
 
