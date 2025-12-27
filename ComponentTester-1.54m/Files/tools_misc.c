@@ -2817,12 +2817,17 @@ void PowerMonitor(void)
       Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV() * INA226_BUS_V_MULTIPLIER_e4 / 10000);
       // Current
       #ifdef INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
-      Value = INA226_getCurrent_uA() - NV.INA226_ZeroCurrent_uA - Ioffset_local;
+      int32_t INA226_ZeroCurrent_uA_atV = (NV.INA226_ZeroCurrent_uA / 100) * (Vout_mV / 50);
       #else
-      Value = INA226_getCurrent_uA() - INA226_I_OFFSET_MICRO_AMP - Ioffset_local;
+      int32_t INA226_ZeroCurrent_uA_atV = (INA226_I_OFFSET_MICRO_AMP / 100) * (Vout_mV / 50);
       #endif
-      if(Value <= 300 && Value >= -300)
-        Value = 0;                // currents under 0.3mA are ignored to keep zero stable
+      Value = INA226_getCurrent_uA() - INA226_ZeroCurrent_uA_atV - Ioffset_local;
+      #ifdef INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
+      if(abs(Value) <= abs(NV.INA226_ZeroCurrent_uA))
+      #else
+      if(abs(Value) <= abs(INA226_I_OFFSET_MICRO_AMP))
+      #endif
+        Value = 0;
       if(Value < 1000000 && Value > -1000000) {
         Current_Unit = 'm';
         Isense = Value; // Isense in uA

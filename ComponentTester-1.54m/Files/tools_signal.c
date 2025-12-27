@@ -348,6 +348,7 @@ void PWM_Tool(void)
     Display_ColoredEEString_Space(PWM_str, COLOR_TITLE);
   #else
     Display_EEString_Space(PWM_str);    /* display: PWM */
+    Display_EEString_Space(TP2_str);    /* display: TP2 */
   #endif
   #ifndef HW_FIXED_SIGNAL_OUTPUT
   ProbePinout(PROBES_PWM);              /* show probes used */
@@ -779,8 +780,8 @@ void Servo_Check(void)
    *    left   1.0ms
    *    mid    1.5ms
    *    right  2.0ms
-   *  - typical rotation is 90-120° & 180°
-   *  - typical speed is 30-500ms/60°
+   *  - typical rotation is 90-120ï¿½ & 180ï¿½
+   *  - typical speed is 30-500ms/60ï¿½
    */
 
   ShortCircuit(0);                 /* make sure probes are not shorted */
@@ -841,7 +842,7 @@ void Servo_Check(void)
    *  - top = (f_MCU / (f_step * prescaler)) - 1
    *        = (t_step / (t_MCU_cycle * prescaler)) - 1
    *  - t_step = t_MCU_cycle * prescaler * (top + 1)
-   *  - SERVO_STEP_TIME in µs
+   *  - SERVO_STEP_TIME in ï¿½s
    */
 
   #define SERVO_SWEEP_TOP     (((CPU_FREQ / 333) / 1024) - 1)
@@ -937,9 +938,9 @@ void Servo_Check(void)
          *  - t_sweep = t_step * (toggle_1ms / step)
          */
 
-        Value = SERVO_STEP_TIME;        /* step time in µs (around 3000) */
+        Value = SERVO_STEP_TIME;        /* step time in ï¿½s (around 3000) */
         Value *= SERVO_LEFT_NORM;       /* * toggle value for 1ms */
-        Value /= SweepStep;             /* / step size (in µs) */
+        Value /= SweepStep;             /* / step size (in ï¿½s) */
       }
       else                              /* normal mode */
       {
@@ -950,7 +951,7 @@ void Servo_Check(void)
 
         Value = (uint32_t)Toggle;
         Value *= 16000;                 /* * (2 * prescaler) (in 0.001) */
-        Value /= (CPU_FREQ / 1000);     /* / f_MCU (in 1µs) */
+        Value /= (CPU_FREQ / 1000);     /* / f_MCU (in 1ï¿½s) */
       }
 
       /* display value */
@@ -1339,6 +1340,7 @@ void SquareWave_SignalGenerator(void)
     Display_ColoredEEString_Space(SquareWave_str, COLOR_TITLE);
   #else
     Display_EEString_Space(SquareWave_str);  /* display: Square Wave */
+    Display_EEString_Space(TP2_str);    /* display: TP2 */
   #endif
   #ifndef HW_FIXED_SIGNAL_OUTPUT
   ProbePinout(PROBES_PWM);              /* show probes used */

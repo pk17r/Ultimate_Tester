@@ -122,6 +122,7 @@
 
   #if defined (SW_PWM_SIMPLE) || defined (SW_PWM_PLUS)
     const unsigned char PWM_str[] MEM_TYPE = "PWM";
+    const unsigned char TP2_str[] MEM_TYPE = "@TP2";
   #endif
 
   #ifdef SW_SQUAREWAVE

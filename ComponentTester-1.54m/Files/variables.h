@@ -730,7 +730,8 @@
   #endif
 
   #if defined (SW_PWM_SIMPLE) || defined (SW_PWM_PLUS)
-    extern const unsigned char PWM_str[];    
+    extern const unsigned char PWM_str[];
+    extern const unsigned char TP2_str[];
   #endif
 
   #ifdef SW_SQUAREWAVE
