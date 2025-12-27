@@ -1,10 +1,12 @@
-                                                        Software installation
+                                                        Software Toolchain installations
 
-1. To unpack WinAVR-20100110-install.zip archive
-2. To install the WinAVR-20100110-install.exe program (in case of installation to use default arguments)
-3. To unpack avr8-gnu-toolchain-installer-3.4.4.24-win32.any.x86.7z archive - the maximum compression of the .hex file.
-Simply copy contents of archive in the folder from the set WinAVR (in the last releases of a firmware without these
-source codes, in case of a firmware of MK m328 there is a type error ". the program quits for the range of memory of MK").
+1. Unpack WinAVR-20100110-install.zip archive
+2. Run WinAVR-20100110-install.exe (in case of installation to use default arguments)
+3. Unpack "avr8-gnu-toolchain" from "avr8-gnu-toolchain-installer-3.4.4.24-win32.any.x86.7z"
+4. Add "avr8-gnu-toolchain" to Path variable
+5. Add "C:\WinAVR-20100110\bin" and "C:\WinAVR-20100110\utils\bin" to Path variable as well
+6. Copy "avrdude.conf" and "avrdude.exe" to "C:\WinAVR-20100110\bin"
+
 
                                                      Compilation of a firmware
 
