@@ -514,7 +514,7 @@ typedef struct
   int8_t            RefOffset;     /* voltage offset of bandgap reference (mV) */
   int8_t            CompOffset;    /* voltage offset of analog comparator (mV) */
   uint8_t           Contrast;      /* contrast value of display */
-  #ifdef INA226_POWER_MONITOR
+  #ifdef INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
   int32_t           INA226_ZeroCurrent_uA;    /* zero current uA adjustment value for INA226 */
   #endif
   uint8_t           CheckSum;      /* checksum for stored values */

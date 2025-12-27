@@ -244,6 +244,7 @@ uint8_t INA226_setup() {
   return I2C_OK;
 }
 
+#ifdef INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
 uint8_t INA226_Set_Max_Averaging_Samples()
 {
   // set INA226_1024_SAMPLES averaging samples
@@ -256,6 +257,7 @@ uint8_t INA226_Set_Max_Averaging_Samples()
 
   return I2C_OK;
 }
+#endif
 
 #endif
 

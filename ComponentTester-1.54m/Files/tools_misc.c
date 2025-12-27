@@ -2816,7 +2816,11 @@ void PowerMonitor(void)
       // Voltage
       Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV() * INA226_BUS_V_MULTIPLIER_e4 / 10000);
       // Current
+      #ifdef INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
       Value = INA226_getCurrent_uA() - NV.INA226_ZeroCurrent_uA - Ioffset_local;
+      #else
+      Value = INA226_getCurrent_uA() - INA226_I_OFFSET_MICRO_AMP - Ioffset_local;
+      #endif
       if(Value <= 300 && Value >= -300)
         Value = 0;                // currents under 0.3mA are ignored to keep zero stable
       if(Value < 1000000 && Value > -1000000) {

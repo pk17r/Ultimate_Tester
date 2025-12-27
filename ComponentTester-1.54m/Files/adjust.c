@@ -107,7 +107,7 @@ void SetAdjustmentDefaults(void)
   NV.CompOffset = COMPARATOR_OFFSET;    /* offset of analog comparator */
   NV.Contrast = LCD_CONTRAST;           /* display contrast */
 
-  #ifdef INA226_POWER_MONITOR
+  #ifdef INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
   NV.INA226_ZeroCurrent_uA = INA226_I_OFFSET_MICRO_AMP;    /* zero current uA adjustment value for INA226 */
   #endif
 
@@ -499,7 +499,7 @@ void ShowAdjustmentValues(void)
   Display_NL_EEString_Space(CompOffset_str);      /* display: AComp */
   Display_SignedValue(NV.CompOffset, -3, 'V');    /* display offset */
 
-  #ifdef INA226_POWER_MONITOR
+  #ifdef INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
   Display_NL_EEString_Space(INA226_Zero_Current_str);      /* display: Izero */
   Display_SignedValue(NV.INA226_ZeroCurrent_uA, -6, 'A');
   #endif
@@ -555,13 +555,13 @@ uint8_t SelfAdjustment(void)
   uint8_t           RefCounter = 0;     /* number of ref/offset runs */
   #endif
 
-  #ifdef INA226_POWER_MONITOR
+  #ifdef INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
   int32_t           INA226_I_Zero_uA_now = 0;
   int32_t           INA226_I_Zero_uA_Sum = 0;
   #endif
 
 
-  #ifdef INA226_POWER_MONITOR
+  #ifdef INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
     #ifdef MP28167_A_BUCK_BOOST_CONVERTER  
       MP28167_A_enable();
     #endif
@@ -629,7 +629,7 @@ uint8_t SelfAdjustment(void)
 
       switch (Step)
       {
-        #ifdef INA226_POWER_MONITOR
+        #ifdef INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
         case 0:     /* INA226 zero current offset */
           #ifdef UI_TEST_PAGEMODE
           if (Flag == 1)                     /* first run */
@@ -990,8 +990,17 @@ uint8_t SelfAdjustment(void)
   }
   #endif
 
-  #ifdef INA226_POWER_MONITOR
-  NV.INA226_ZeroCurrent_uA = INA226_I_Zero_uA_Sum / 5;
+  #ifdef INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
+  INA226_I_Zero_uA_now = INA226_I_Zero_uA_Sum / 5;
+  // round to nearest 100 uA value
+  int8_t current_sign = (INA226_I_Zero_uA_now >= 0 ? 1 : -1);
+  INA226_I_Zero_uA_now = abs(INA226_I_Zero_uA_now);
+  if(INA226_I_Zero_uA_now > ((INA226_I_Zero_uA_now / 100) * 100 + 50))
+    INA226_I_Zero_uA_now = ((INA226_I_Zero_uA_now / 100) * 100 + 100);
+  else
+    INA226_I_Zero_uA_now = ((INA226_I_Zero_uA_now / 100) * 100);
+  INA226_I_Zero_uA_now *= current_sign;
+  NV.INA226_ZeroCurrent_uA = INA226_I_Zero_uA_now;
   // reset INA226
   INA226_setup();
   #ifdef MP28167_A_BUCK_BOOST_CONVERTER  
