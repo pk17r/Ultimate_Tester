@@ -249,6 +249,7 @@
 extern uint8_t INA226_setup();
 extern uint16_t INA226_getLoadVoltage_mV(void);
 extern int32_t INA226_getCurrent_uA(void);
+extern uint8_t INA226_Set_Max_Averaging_Samples();
 
 #endif
 

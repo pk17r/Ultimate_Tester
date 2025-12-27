@@ -2816,9 +2816,9 @@ void PowerMonitor(void)
       // Voltage
       Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV() * INA226_BUS_V_MULTIPLIER_e4 / 10000);
       // Current
-      Value = INA226_getCurrent_uA() - INA226_I_OFFSET_MICRO_AMP - Ioffset_local;
-      if(Value <= 400 && Value >= -400)
-        Value = 0;                // currents under 0.4mA are ignored to keep zero stable
+      Value = INA226_getCurrent_uA() - NV.INA226_ZeroCurrent_uA - Ioffset_local;
+      if(Value <= 300 && Value >= -300)
+        Value = 0;                // currents under 0.3mA are ignored to keep zero stable
       if(Value < 1000000 && Value > -1000000) {
         Current_Unit = 'm';
         Isense = Value; // Isense in uA

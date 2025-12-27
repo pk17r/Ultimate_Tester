@@ -70,6 +70,16 @@
 #define INA226_CONF_MODE_MASK             0x0007
 
 
+#define INA226_1_SAMPLE                   0
+#define INA226_4_SAMPLES                  1
+#define INA226_16_SAMPLES                 2
+#define INA226_64_SAMPLES                 3
+#define INA226_128_SAMPLES                4
+#define INA226_256_SAMPLES                5
+#define INA226_512_SAMPLES                6
+#define INA226_1024_SAMPLES               7
+
+
 //  CALIBRATION VAL
 #define INA226_CALIBRATION_VAL                   (5120000 / (INA226_R_SHUNT_MILLI_OHM * INA226_CURRENT_LEAST_COUNT_MICRO_AMP))
 
@@ -218,23 +228,12 @@ uint8_t INA226_setup() {
   }
 
   // set averaging
-  //  for setAverage() and getAverage()
-  //enum ina226_average_enum {
-  //    INA226_1_SAMPLE     = 0,
-  //    INA226_4_SAMPLES    = 1,
-  //    INA226_16_SAMPLES   = 2,
-  //    INA226_64_SAMPLES   = 3,
-  //    INA226_128_SAMPLES  = 4,
-  //    INA226_256_SAMPLES  = 5,
-  //    INA226_512_SAMPLES  = 6,
-  //    INA226_1024_SAMPLES = 7
-  //};
   uint16_t mask = INA226__readRegister(INA226_CONFIGURATION);
   mask &= ~INA226_CONF_AVERAGE_MASK;
-  #if INA226_AVERAGING_SAMPLES < 0
-  mask |= (0 << 9);     //    INA226_1_SAMPLE   = 0,
-  #elif INA226_AVERAGING_SAMPLES > 7
-  mask |= (7 << 9);     //    INA226_1024_SAMPLES   = 7,
+  #if INA226_AVERAGING_SAMPLES < INA226_1_SAMPLE
+  mask |= (INA226_1_SAMPLE << 9);     //    INA226_1_SAMPLE   = 0,
+  #elif INA226_AVERAGING_SAMPLES > INA226_1024_SAMPLES
+  mask |= (INA226_1024_SAMPLES << 9);     //    INA226_1024_SAMPLES   = 7,
   #else
   mask |= (INA226_AVERAGING_SAMPLES << 9);
   #endif
@@ -245,6 +244,18 @@ uint8_t INA226_setup() {
   return I2C_OK;
 }
 
+uint8_t INA226_Set_Max_Averaging_Samples()
+{
+  // set INA226_1024_SAMPLES averaging samples
+  uint16_t mask = INA226__readRegister(INA226_CONFIGURATION);
+  mask &= ~INA226_CONF_AVERAGE_MASK;
+  mask |= (INA226_1024_SAMPLES << 9);
+
+  if(INA226__writeRegister(INA226_CONFIGURATION, mask) == I2C_ERROR)
+    return I2C_ERROR;
+
+  return I2C_OK;
+}
 
 #endif
 

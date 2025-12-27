@@ -116,15 +116,28 @@
     #define NV_C_ZERO         C_ZERO
   #endif
 
-  /* basic adjustment values: profile #1 */
-  const Adjust_Type     NV_Adjust_1 EEMEM = {R_MCU_LOW, R_MCU_HIGH, NV_R_ZERO, NV_C_ZERO, UREF_OFFSET, COMPARATOR_OFFSET, LCD_CONTRAST, 0};
+  #ifdef INA226_POWER_MONITOR
+    /* basic adjustment values: profile #1 */
+    const Adjust_Type     NV_Adjust_1 EEMEM = {R_MCU_LOW, R_MCU_HIGH, NV_R_ZERO, NV_C_ZERO, UREF_OFFSET, COMPARATOR_OFFSET, LCD_CONTRAST, INA226_I_OFFSET_MICRO_AMP};
 
-  /* basic adjustment values: profile #2 */
-  const Adjust_Type     NV_Adjust_2 EEMEM = {R_MCU_LOW, R_MCU_HIGH, NV_R_ZERO, NV_C_ZERO, UREF_OFFSET, COMPARATOR_OFFSET, LCD_CONTRAST, 0};
+    /* basic adjustment values: profile #2 */
+    const Adjust_Type     NV_Adjust_2 EEMEM = {R_MCU_LOW, R_MCU_HIGH, NV_R_ZERO, NV_C_ZERO, UREF_OFFSET, COMPARATOR_OFFSET, LCD_CONTRAST, INA226_I_OFFSET_MICRO_AMP};
 
-  #ifdef UI_THREE_PROFILES
-    /* basic adjustment values: profile #3 */
-    const Adjust_Type   NV_Adjust_3 EEMEM = {R_MCU_LOW, R_MCU_HIGH, NV_R_ZERO, NV_C_ZERO, UREF_OFFSET, COMPARATOR_OFFSET, LCD_CONTRAST, 0};
+    #ifdef UI_THREE_PROFILES
+      /* basic adjustment values: profile #3 */
+      const Adjust_Type   NV_Adjust_3 EEMEM = {R_MCU_LOW, R_MCU_HIGH, NV_R_ZERO, NV_C_ZERO, UREF_OFFSET, COMPARATOR_OFFSET, LCD_CONTRAST, INA226_I_OFFSET_MICRO_AMP};
+    #endif
+  #else
+    /* basic adjustment values: profile #1 */
+    const Adjust_Type     NV_Adjust_1 EEMEM = {R_MCU_LOW, R_MCU_HIGH, NV_R_ZERO, NV_C_ZERO, UREF_OFFSET, COMPARATOR_OFFSET, LCD_CONTRAST};
+
+    /* basic adjustment values: profile #2 */
+    const Adjust_Type     NV_Adjust_2 EEMEM = {R_MCU_LOW, R_MCU_HIGH, NV_R_ZERO, NV_C_ZERO, UREF_OFFSET, COMPARATOR_OFFSET, LCD_CONTRAST};
+
+    #ifdef UI_THREE_PROFILES
+      /* basic adjustment values: profile #3 */
+      const Adjust_Type   NV_Adjust_3 EEMEM = {R_MCU_LOW, R_MCU_HIGH, NV_R_ZERO, NV_C_ZERO, UREF_OFFSET, COMPARATOR_OFFSET, LCD_CONTRAST};
+    #endif
   #endif
 
   #ifdef HW_TOUCH
@@ -939,6 +952,7 @@
     #ifdef INA226_POWER_MONITOR
       extern const unsigned char Out_str[];
       extern const unsigned char Power_str[];
+      extern const unsigned char INA226_Zero_Current_str[];
     #endif
     #ifdef MP28167_A_BUCK_BOOST_CONVERTER
       extern const unsigned char CC_str[];

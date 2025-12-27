@@ -57,6 +57,7 @@
     #ifdef INA226_POWER_MONITOR
       const unsigned char Out_str[] MEM_TYPE = "OUT";
       const unsigned char Power_str[] MEM_TYPE = "Power";
+      const unsigned char INA226_Zero_Current_str[] MEM_TYPE = "Iout0";
     #endif
     #ifdef MP28167_A_BUCK_BOOST_CONVERTER
       const unsigned char CC_str[] MEM_TYPE = "CC";

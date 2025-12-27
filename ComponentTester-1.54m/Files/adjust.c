@@ -107,6 +107,10 @@ void SetAdjustmentDefaults(void)
   NV.CompOffset = COMPARATOR_OFFSET;    /* offset of analog comparator */
   NV.Contrast = LCD_CONTRAST;           /* display contrast */
 
+  #ifdef INA226_POWER_MONITOR
+  NV.INA226_ZeroCurrent_uA = INA226_I_OFFSET_MICRO_AMP;    /* zero current uA adjustment value for INA226 */
+  #endif
+
   #ifdef HW_TOUCH
   /* set defaults for touch screen */
   Touch.X_Start = 0;
@@ -472,9 +476,11 @@ void ShowAdjustmentValues(void)
   Display_Value(NV.RZero, -2, LCD_CHAR_OMEGA);    /* display R0 */
   #endif
 
+  #ifndef HW_REF25
   /* display internal bandgap reference (value is in mV) */
   Display_NL_EEString_Space(URef_str);       /* display: Vref */
   Display_Value(Cfg.Bandgap, -3, 'V');       /* display bandgap ref */
+  #endif
 
   /* display Vcc (value is in mV) */
   Display_NL_EEString_Space(Vcc_str);        /* display: Vcc */
@@ -492,6 +498,11 @@ void ShowAdjustmentValues(void)
   /* display offset of analog comparator (value is in mV) */
   Display_NL_EEString_Space(CompOffset_str);      /* display: AComp */
   Display_SignedValue(NV.CompOffset, -3, 'V');    /* display offset */
+
+  #ifdef INA226_POWER_MONITOR
+  Display_NL_EEString_Space(INA226_Zero_Current_str);      /* display: Izero */
+  Display_SignedValue(NV.INA226_ZeroCurrent_uA, -6, 'A');
+  #endif
 
   WaitKey();                  /* let the user read */
 }
@@ -544,7 +555,16 @@ uint8_t SelfAdjustment(void)
   uint8_t           RefCounter = 0;     /* number of ref/offset runs */
   #endif
 
-  #ifdef HW_ADJUST_CAP
+  #ifdef INA226_POWER_MONITOR
+  int32_t           INA226_I_Zero_uA_now = 0;
+  int32_t           INA226_I_Zero_uA_Sum = 0;
+  #endif
+
+
+  #ifdef INA226_POWER_MONITOR
+    INA226_Set_Max_Averaging_Samples();
+    Step = 0;            /* start with step #0 */
+  #elif defined(HW_ADJUST_CAP)
     Step = 1;            /* start with step #1 */
   #else
     Step = 2;            /* start with step #2 */
@@ -606,6 +626,28 @@ uint8_t SelfAdjustment(void)
 
       switch (Step)
       {
+        #ifdef INA226_POWER_MONITOR
+        case 0:     /* INA226 zero current offset */
+          #ifdef UI_TEST_PAGEMODE
+          if (Flag == 1)                     /* first run */
+          {
+          #endif
+          Display_EEString(INA226_Zero_Current_str);  /* display: INA226_Zero_Current_str */
+          #ifdef UI_TEST_PAGEMODE
+          }
+          #endif
+
+          // get current zero value
+          INA226_I_Zero_uA_now = INA226_getCurrent_uA();
+          INA226_I_Zero_uA_Sum += INA226_I_Zero_uA_now;
+
+          Display_NextLine();
+          Display_SignedValue(INA226_I_Zero_uA_now, -6, 'A');
+
+          DisplayFlag = 0;                   /* reset flag */
+          break;
+        #endif
+
         #ifdef HW_ADJUST_CAP
         case 1:     /* voltage offsets */
           #ifdef UI_TEST_PAGEMODE
@@ -627,7 +669,7 @@ uint8_t SelfAdjustment(void)
 
           DisplayFlag = 0;                   /* reset flag */
           break;
-        #endif        
+        #endif
 
         case 2:     /* resistance of probe leads (probes shorted) */
           #ifdef UI_TEST_PAGEMODE
@@ -823,6 +865,8 @@ uint8_t SelfAdjustment(void)
           }
 
           break;
+
+          
       }
 
       /* reset ports to defaults */
@@ -941,6 +985,12 @@ uint8_t SelfAdjustment(void)
   {
     Flag = 0;                 /* signal error */
   }
+  #endif
+
+  #ifdef INA226_POWER_MONITOR
+  NV.INA226_ZeroCurrent_uA = INA226_I_Zero_uA_Sum / 5;
+  // reset INA226
+  INA226_setup();
   #endif
 
   if (Flag == 4)         /* all adjustments done */
