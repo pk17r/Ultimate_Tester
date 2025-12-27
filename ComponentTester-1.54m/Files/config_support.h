@@ -733,7 +733,9 @@
 
 /* LCD module: contrast */
 #ifdef LCD_CONTRAST
-  #define SW_CONTRAST
+  #ifdef SW_MENUITEM_CONTRAST
+    #define SW_CONTRAST
+  #endif
 #else
   #define LCD_CONTRAST        0
 #endif

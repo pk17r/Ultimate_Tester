@@ -1286,6 +1286,14 @@
 
 
 /*
+ *  show adjust contrast menu item if functionality is available
+ *  - uncomment to enable
+ */
+
+// #define SW_MENUITEM_CONTRAST
+
+
+/*
  *  set continous mode or default values based upon initial Test Button Press Duration
  *  - uncomment to enable
  */
