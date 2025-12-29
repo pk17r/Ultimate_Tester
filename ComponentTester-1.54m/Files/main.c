@@ -2528,10 +2528,6 @@ int main(void)
   // I2C_Setup();                          /* set up I2C bus */
   // #endif
 
-  // #ifdef MP28167_A_BUCK_BOOST_CONVERTER
-  // MP28167_A_begin();
-  // #endif
-
   #ifdef HW_SPI
   /* hardware or bitbang SPI */
   SPI_Setup();                          /* set up SPI bus */

@@ -2781,12 +2781,6 @@ void PowerMonitor(void)
   #endif
 
   #ifdef MP28167_A_BUCK_BOOST_CONVERTER
-  // if (MP28167_A_isConnected() != I2C_OK)
-  //   return;
-  // MP28167_A_begin();
-  // MP28167_A_setILim_mA(300 /*mA*/);
-  // MP28167_A_setVout_mV(5050);
-  // MP28167_A_enable();
   Flag |= (MP28167_A_GetEnableStatus() << MP28167_A_ENABLE_FLAG_POS);   // recording enable state in flag
   #endif
 
@@ -3137,7 +3131,7 @@ void PowerMonitor(void)
           MP28167_A_change_VrefRegisterVal(Step, -1);
       }
       else
-        MP28167_A_change_ILim(Step, 0);
+        MP28167_A_change_ILim(Step, -1);
     }
     #endif
   }

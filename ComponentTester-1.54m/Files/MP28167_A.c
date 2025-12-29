@@ -277,18 +277,6 @@ uint8_t MP28167_A_isConnected()
 }
 
 
-uint16_t MP28167_A_VoutToVref_mV(uint16_t Vout_mV)
-{
-  return (uint16_t)(((uint32_t)Vout_mV * (uint32_t)MP28167_A_R2) / (uint32_t)(MP28167_A_R1 + MP28167_A_R2));
-}
-
-
-uint16_t MP28167_A_VrefToVout_mV(uint16_t Vref_mV)
-{
-  return (uint16_t)(((uint32_t)Vref_mV * (uint32_t)(MP28167_A_R1 + MP28167_A_R2)) / (uint32_t)MP28167_A_R2);
-}
-
-
 ////////////////////////////////////////////////////////
 //
 //  CORE FUNCTIONS
@@ -303,7 +291,7 @@ void MP28167_A_enable() {
   MP28167_A_writeRegister(MP28167_A_CTL1, 0xF4);
   wait10ms();
 
-  MP28167_A_writeRegister(MP28167_A_INTERRUPT, 0xFF);  // clear previous interrupts
+  MP28167_A_Clear_Interrupts();
 
   MP28167_A_writeRegister(MP28167_A_MASK, 0x01);  // Masks off the PG indication function on ALT. This is required to disable ALT pin when VOUT [1V, 2.8V] with R1/R2 = 11.5
 }
@@ -423,12 +411,13 @@ uint16_t MP28167_A_getVrefRegisterVal()
 
 uint8_t MP28167_A_setVrefRegisterVal(uint16_t vref_register_val)
 {
+  // check or get in range
   if(vref_register_val < MP28167_A_VREF_REG_MIN)
     vref_register_val = MP28167_A_VREF_REG_MIN;
   else if(vref_register_val > MP28167_A_VREF_REG_MAX)
     vref_register_val = MP28167_A_VREF_REG_MAX;
 
-  MP28167_A_writeRegister(MP28167_A_INTERRUPT, 0xFF);  // clear previous interrupts
+  MP28167_A_Clear_Interrupts();
 
   uint8_t vref_l = (vref_register_val & 0x0007);
   uint8_t vref_h = ((vref_register_val >> 3) & 0x00ff);
@@ -477,45 +466,28 @@ void MP28167_A_change_VrefRegisterVal(uint16_t steps, int8_t direction)
 
 uint8_t MP28167_A_setVref_mV(uint16_t vref_mV)
 {
-  MP28167_A_writeRegister(MP28167_A_INTERRUPT, 0xFF);  // clear previous interrupts
-
-  if(vref_mV < MP28167_A_VREF_MIN_mV)
-    vref_mV = MP28167_A_VREF_MIN_mV;
-  else if(vref_mV > MP28167_A_VREF_MAX_mV)
-    vref_mV = MP28167_A_VREF_MAX_mV;
-
   uint16_t vref_register_val = (uint16_t)(((uint32_t)vref_mV * 5) / 4);   // 1 / 0.8
 
   return MP28167_A_setVrefRegisterVal(vref_register_val);
 }
 
 
-void MP28167_A_increase_Vref(uint16_t steps)
+uint16_t MP28167_A_VoutToVref_mV(uint16_t Vout_mV)
 {
-  uint16_t vref_mV = MP28167_A_getVref_mV();
-  if(((int32_t)vref_mV + (int32_t)steps) >= (int32_t)MP28167_A_VREF_MAX_mV)
-    vref_mV = MP28167_A_VREF_MAX_mV;
-  else
-    vref_mV += steps;
-  MP28167_A_setVref_mV(vref_mV);
+  return (uint16_t)(((uint32_t)Vout_mV * (uint32_t)MP28167_A_R2) / (uint32_t)(MP28167_A_R1 + MP28167_A_R2));
 }
 
 
-void MP28167_A_decrease_Vref(uint16_t steps)
+uint16_t MP28167_A_VrefToVout_mV(uint16_t Vref_mV)
 {
-  uint16_t vref_mV = MP28167_A_getVref_mV();
-  if(((int32_t)vref_mV - (int32_t)steps) <= (int32_t)MP28167_A_VREF_MIN_mV)
-    vref_mV = MP28167_A_VREF_MIN_mV;
-  else
-    vref_mV -= steps;
-  MP28167_A_setVref_mV(vref_mV);
+  return (uint16_t)(((uint32_t)Vref_mV * (uint32_t)(MP28167_A_R1 + MP28167_A_R2)) / (uint32_t)MP28167_A_R2);
 }
 
 
-void MP28167_A_inc_dec_Vout(uint16_t steps, uint8_t increase)
+void MP28167_A_inc_dec_Vout(uint16_t steps, int8_t direction)
 {
   uint16_t vout_mV = MP28167_A_getVout_mV();
-  if(increase == 1) {
+  if(direction > 0) {
     if(((int32_t)vout_mV + (int32_t)steps) > (int32_t)MP28167_A_VOUT_MAX_mV)
       vout_mV = MP28167_A_VOUT_MAX_mV;
     else
@@ -619,11 +591,11 @@ uint16_t MP28167_A_getILimMin_mA()
 }
 
 
-void MP28167_A_change_ILim(uint16_t steps, uint8_t increase)
+void MP28167_A_change_ILim(uint16_t steps, int8_t direction)
 {
   uint16_t IoutLim_new_mA = 0;
   uint16_t IoutLim_change_mA = 50*steps;
-  if(increase)
+  if(direction > 0)
     IoutLim_new_mA = Current_Ilim_mA + IoutLim_change_mA;
   else {
     if(IoutLim_change_mA > Current_Ilim_mA)
