@@ -50,7 +50,8 @@
   const unsigned char Bye_str[] MEM_TYPE = "Bye!";
 
   #ifdef HW_POWER_MONITOR
-    const unsigned char Power_Monitor_str[] MEM_TYPE = "Power Monitor";
+    // const unsigned char Power_Monitor_str[] MEM_TYPE = "Power Monitor";
+       const unsigned char Power_Monitor_str[] MEM_TYPE = "Power Supply";
     #ifdef TP_LOGIC
       const unsigned char VMeter_str[] MEM_TYPE = "VMeter";
     #endif

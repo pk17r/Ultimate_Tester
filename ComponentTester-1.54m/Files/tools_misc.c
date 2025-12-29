@@ -3068,7 +3068,7 @@ void PowerMonitor(void)
           Display_EEString(OFF_str);
           Flag &= ~(1 << MP28167_A_ENABLE_FLAG_POS);  // eable bit false
         }
-        wait1000ms();
+        wait500ms();
         Flag &= ~(1 << MP28167_A_SET_ILIM_FLAG_POS);  // disable ILim Set Menu
         DisplayLabels();
       #else
