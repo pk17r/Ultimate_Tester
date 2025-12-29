@@ -3015,10 +3015,10 @@ void PowerMonitor(void)
 
         /* step^2 : 4 9 16 */
         Step *= Step;                /* ^2 */
-        // Step *= 4;                /* *2 */
+        // Step *= 4;                /* *4 */
         // Step *= Step;                /* ^2 */
       }
-      Step *= 5;
+      // Step *= 5;
     #ifdef MP28167_A_BUCK_BOOST_CONVERTER
     }
     #endif
@@ -3125,7 +3125,7 @@ void PowerMonitor(void)
     {
       if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0)) {
         if(((Flag & (1 << MP28167_A_ENABLE_FLAG_POS)) >> MP28167_A_ENABLE_FLAG_POS) == 1)   // change Vout only if converter is enabled
-          MP28167_A_inc_dec_Vout(Step, 1);
+          MP28167_A_change_VrefRegisterVal(Step, 1);
       }
       else
         MP28167_A_change_ILim(Step, 1);
@@ -3134,7 +3134,7 @@ void PowerMonitor(void)
     {
       if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0)) {
         if(((Flag & (1 << MP28167_A_ENABLE_FLAG_POS)) >> MP28167_A_ENABLE_FLAG_POS) == 1)   // change Vout only if converter is enabled
-          MP28167_A_inc_dec_Vout(Step, 0);
+          MP28167_A_change_VrefRegisterVal(Step, -1);
       }
       else
         MP28167_A_change_ILim(Step, 0);
