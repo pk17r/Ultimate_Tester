@@ -405,7 +405,8 @@
   #define INA226_I2C_ADDR                          0x40      /* 0x40 is address when A0=GND, A1=GND. For other address options, lookup "Table 6-2. Address Pins and Slave Addresses" in INA226 Datasheet  */
   #define INA226_R_SHUNT_MILLI_OHM                 20.00     /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
   #define INA226_CURRENT_LEAST_COUNT_MICRO_AMP     100       /* Least count is minimum resolution in measurement. Also decides Max_Measurable_Current = (32768 * INA226_CURRENT_LEAST_COUNT_MICRO_AMP / 1000000) Amps. Recommended value is 100.  */
-  #define INA226_AVERAGING_SAMPLES                 0         /* Number of samples per measurement. Range of values 0-7 provides for 1-1024 samples per measurement */
+  #define INA226_AVERAGING_SAMPLES                 1         /* Number of samples per measurement. Range of values 0-7 provides for 1-1024 samples per measurement */
+  #define INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
   #define INA226_I_OFFSET_MICRO_AMP                -500      /* Offset current in microamps on shunt at no load that is added to measurement to make it zero. Can be negative */
   #define INA226_BUS_V_MULTIPLIER_e4               10000     /* Bus Voltage Manual Calibration Multiplier to increase accuracy in measurements. Only whole numbers accepted */
   #define INA226_P_THRESHOLD_mW_BUZZER             2500      /* Over-Power Alert Beeps: Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beeps. */
@@ -1286,6 +1287,22 @@
 
 
 /*
+ *  show adjust contrast menu item if functionality is available
+ *  - uncomment to enable
+ */
+
+// #define SW_MENUITEM_CONTRAST
+
+
+/*
+ *  show Save Menuitem for Self Adjustment values
+ *  - uncomment to enable
+ */
+
+// #define SW_MENUITEM_SAVE
+
+
+/*
  *  set continous mode or default values based upon initial Test Button Press Duration
  *  - uncomment to enable
  */
@@ -1546,7 +1563,7 @@
  *  - will be updated by self-adjustment
  */
 
-#define R_ZERO           15
+#define R_ZERO           28
 
 
 /*
@@ -1571,7 +1588,7 @@
  *  - will be updated by self-adjustment
  */
 
-#define C_ZERO           31
+#define C_ZERO           35
 
 
 /*

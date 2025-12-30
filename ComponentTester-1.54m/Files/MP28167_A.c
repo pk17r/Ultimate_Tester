@@ -77,11 +77,12 @@
 #define MP28167_A_INTERRUPT_OVER_CURRENT_ENTER    0x20
 #define MP28167_A_INTERRUPT_UVP_FALLING           0x08
 
-#define MP28167_A_VOUT_MIN_mV         1030
-#define MP28167_A_VOUT_MAX_mV         18000
-#define MP28167_A_VREF_MIN_mV         80
+// all following vout, vref and vref register values are inter-dependent. Vref = 0.8 * Vref Register value
+#define MP28167_A_VOUT_MIN_mV         1000
+#define MP28167_A_VOUT_MAX_mV         1802
+#define MP28167_A_VREF_MIN_mV         89
 #define MP28167_A_VREF_MAX_mV         1637
-#define MP28167_A_VREF_REG_MIN        100
+#define MP28167_A_VREF_REG_MIN        111
 #define MP28167_A_VREF_REG_MAX        2046
 
 #define MP28167_A_ILIM_MIN_mA         200
@@ -372,25 +373,6 @@ uint8_t MP28167_A_UVP() {
 }
 
 
-void MP28167_A_GetVout_And_ILim_InRange(uint16_t Vin_mV) {
-  // get Vout in range
-  uint16_t Vout_mV = MP28167_A_getVout_mV();
-  if(Vout_mV < MP28167_A_VOUT_MIN_mV)
-    MP28167_A_setVout_mV(MP28167_A_VOUT_MIN_mV + 10);
-  else if(Vout_mV > MP28167_A_VOUT_MAX_mV)
-    MP28167_A_setVout_mV(MP28167_A_VOUT_MAX_mV - 100);
-
-  // get ILim in range
-  uint16_t Iout_Max_mA = MP28167_A_getILimMax_mA(Vin_mV);
-  if(Iout_Max_mA < Current_Ilim_mA) {
-    if(Iout_Max_mA < MP28167_A_ILIM_MIN_mA)
-      Iout_Max_mA = MP28167_A_ILIM_MIN_mA;
-    MP28167_A_setILim_mA(Iout_Max_mA);
-    MP28167_A_getILim_mA(/*fetch = */ 1);
-  }
-}
-
-
 void MP28167_A_Clear_Interrupts() {
   MP28167_A_writeRegister(MP28167_A_INTERRUPT, 0xFF);    // clear current interrupts
 }
@@ -430,6 +412,21 @@ uint8_t MP28167_A_setVrefRegisterVal(uint16_t vref_register_val)
     }
   }
   return I2C_ERROR;
+}
+
+
+void MP28167_A_GetVout_And_ILim_InRange(uint16_t Vin_mV) {
+  // get Vout in range
+  MP28167_A_setVrefRegisterVal(MP28167_A_getVrefRegisterVal());
+
+  // get ILim in range
+  uint16_t Iout_Max_mA = MP28167_A_getILimMax_mA(Vin_mV);
+  if(Iout_Max_mA < Current_Ilim_mA) {
+    if(Iout_Max_mA < MP28167_A_ILIM_MIN_mA)
+      Iout_Max_mA = MP28167_A_ILIM_MIN_mA;
+    MP28167_A_setILim_mA(Iout_Max_mA);
+    MP28167_A_getILim_mA(/*fetch = */ 1);
+  }
 }
 
 

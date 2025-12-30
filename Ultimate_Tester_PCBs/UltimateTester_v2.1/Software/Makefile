@@ -116,7 +116,7 @@ PARTNO = m644p
 
 # FTDI2232H/D based generic programmer
 PROGRAMMER = avrftdi
-PORT = COM14
+PORT = COM20
 OPTIONS = -e -b 2000000
 
 

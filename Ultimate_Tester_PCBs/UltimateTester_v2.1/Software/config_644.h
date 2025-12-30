@@ -1354,13 +1354,13 @@
 #elif defined (__AVR_ATmega644__)
 
   /* estimated internal resistance of port to GND (in 0.1 Ohms) */
-  #define R_MCU_LOW           200  /* 209 */
+  #define R_MCU_LOW           193  /* 209 */
 
   /* estimated internal resistance of port to VCC (in 0.1 Ohms) */
-  #define R_MCU_HIGH          220  /* 235 */
+  #define R_MCU_HIGH          231  /* 235 */
 
   /* voltage offset of MCU's analog comparator (in mV): -50 up to 50 */
-  #define COMPARATOR_OFFSET   0
+  #define COMPARATOR_OFFSET   10
 
   /* this MCU has 64kB Flash, 2kB EEPROM and 4kB RAM (enable extra features) */
   #define RES_FLASH           64
