@@ -2509,11 +2509,13 @@ void AboutPage(void)
   LCD_Clear();
 
   LCD_CharPos(1, 1);
-  Display_EEString(About_str); Display_Char(':');
-  LCD_CharPos(1, 3);
   Display_EEString(Product_Name_str);
-  LCD_CharPos(1, 4);
+  LCD_CharPos(1, 2);
   Display_EEString(PCB_Version_str);
+  LCD_CharPos(1, 3);
+  Display_EEString(Fw_Build_Date_str);
+  LCD_CharPos(1, 4);
+  Display_EEString(Fw_Build_Time_str);
   LCD_CharPos(1, 6);
   Display_EEString(Web_str);
   LCD_CharPos(1, 7);

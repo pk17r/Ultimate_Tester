@@ -88,6 +88,8 @@
     const unsigned char About_str[] MEM_TYPE = "About";
     const unsigned char Product_Name_str[] MEM_TYPE = "UltimateTester";
     const unsigned char PCB_Version_str[] MEM_TYPE = "_v2.1";
+    const unsigned char Fw_Build_Date_str[] MEM_TYPE = __DATE__;
+    const unsigned char Fw_Build_Time_str[] MEM_TYPE = __TIME__;
     const unsigned char Web_str[] MEM_TYPE = "Web:";
     const unsigned char Webpage1_str[] MEM_TYPE = "github.com/pk17r";
     const unsigned char Webpage2_str[] MEM_TYPE = "/Ultimate_Tester";
