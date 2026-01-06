@@ -2238,7 +2238,7 @@ Shunt Resistance recommendation -
 - 2mOhms for 0-10A range
 
 Steps to Calibrate INA226 and set values in config.h file -
-1. Set INA226_R_SHUNT_MILLI_OHM equal to shunt resistance in milli ohms. This
+1. Set INA226_R_SHUNT_MICRO_OHM equal to shunt resistance in micro ohms. This
    is the shunt resistance between IN+ and IN- pins of INA226 in your setup.
 2. Set INA226_CURRENT_LEAST_COUNT_MICRO_AMP equal to your desired least count
    resolution for IOUT in micro amps. Expected values- 50, 100, 250, 500, 1000.
@@ -2255,7 +2255,7 @@ NOTE- Following adjustments shouldn't change values by more than 15-20%.
 8. Now set DMM in current measurement mode. Use a resistor that will generate
    around 50-100mA IOUT measurement between IN- and GND pins with DMM in series
    with load. Note current measured on DMM.
-9. Update INA226_R_SHUNT_MILLI_OHM = INA226_R_SHUNT_MILLI_OHM * (Displayed IOUT
+9. Update INA226_R_SHUNT_MICRO_OHM = INA226_R_SHUNT_MICRO_OHM * (Displayed IOUT
    on Power Monitor) / (DMM Measured IOUT), upto 2 decimal places.
 9. Set INA226_P_THRESHOLD_mW_BUZZER = Power threshold in milli Watt at which
    you want your Tester to sound Over-Power Alert Beeps.

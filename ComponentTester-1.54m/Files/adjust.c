@@ -565,6 +565,7 @@ uint8_t SelfAdjustment(void)
     #ifdef MP28167_A_BUCK_BOOST_CONVERTER  
       MP28167_A_enable();
     #endif
+    INA226_setup();
     INA226_Set_Max_Averaging_Samples();
     Step = 0;            /* start with step #0 */
   #elif defined(HW_ADJUST_CAP)
@@ -584,6 +585,8 @@ uint8_t SelfAdjustment(void)
   {
     Step = 10;                /* skip adjustment */
   }
+
+  wait100ms();
 
   while (Step <= 6)      /* loop through steps */
   {

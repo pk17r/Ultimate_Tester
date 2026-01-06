@@ -395,7 +395,7 @@
 #ifdef INA226_POWER_MONITOR
 //  default values:
 //  #define INA226_I2C_ADDR                          0x40      /* 0x40 is address when A0=GND, A1=GND. For other address options, lookup "Table 6-2. Address Pins and Slave Addresses" in INA226 Datasheet  */
-//  #define INA226_R_SHUNT_MILLI_OHM                 100       /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
+//  #define INA226_R_SHUNT_MICRO_OHM                 100000    /* Shunt Resistance in Micro Ohms. Recommended shunt resistor resistance is of 20000 (20mOhms) for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
 //  #define INA226_CURRENT_LEAST_COUNT_MICRO_AMP     100       /* Least count is minimum resolution in measurement. Also decides Max_Measurable_Current = (32768 * INA226_CURRENT_LEAST_COUNT_MICRO_AMP / 1000000) Amps. Recommended value is 100, but increase this to get bigger range.  */
 //  #define INA226_AVERAGING_SAMPLES                 0         /* Number of samples per measurement. Range of values 0-7 provides for 1-1024 samples per measurement */
 //  #define INA226_I_OFFSET_MICRO_AMP                0         /* Offset current in microamps on shunt at no load that is added to measurement to make it zero. Can be negative */
@@ -403,7 +403,7 @@
 //  #define INA226_P_THRESHOLD_mW_BUZZER             2500      /* Over-Power Alert Beeps: Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beeps. */
 //  #define I2C_RW                                             /* Requires I2C Read Support  */
   #define INA226_I2C_ADDR                          0x40      /* 0x40 is address when A0=GND, A1=GND. For other address options, lookup "Table 6-2. Address Pins and Slave Addresses" in INA226 Datasheet  */
-  #define INA226_R_SHUNT_MILLI_OHM                 20.00     /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
+  #define INA226_R_SHUNT_MICRO_OHM                 20000     /* Shunt Resistance in Micro Ohms. Recommended shunt resistor resistance is of 20000 (20mOhms) for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
   #define INA226_CURRENT_LEAST_COUNT_MICRO_AMP     100       /* Least count is minimum resolution in measurement. Also decides Max_Measurable_Current = (32768 * INA226_CURRENT_LEAST_COUNT_MICRO_AMP / 1000000) Amps. Recommended value is 100.  */
   #define INA226_AVERAGING_SAMPLES                 1         /* Number of samples per measurement. Range of values 0-7 provides for 1-1024 samples per measurement */
   #define INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
@@ -412,7 +412,7 @@
   #define INA226_P_THRESHOLD_mW_BUZZER             2500      /* Over-Power Alert Beeps: Sound buzzer if power goes over this threshold. HW_BUZZER needs to be enabled for this feature. Single Tap to disable/enable beeps. */
   #define I2C_RW                                             /* Requires I2C Read Support  */
   /* STEPS TO CALIBRATE INA226
-   * 1. Set INA226_R_SHUNT_MILLI_OHM equal to shunt resistance in milli ohms. This is the shunt resistance between IN+ and IN- pins of INA226 in your setup.
+   * 1. Set INA226_R_SHUNT_MICRO_OHM equal to shunt resistance in micro ohms. This is the shunt resistance between IN+ and IN- pins of INA226 in your setup.
    * 2. Set INA226_CURRENT_LEAST_COUNT_MICRO_AMP equal to your desired least count resolution for IOUT in micro amps. Expected values: 50, 100, 250, 500, 1000.
    * 3. Set INA226_I_OFFSET_MICRO_AMP = 0, INA226_BUS_V_MULTIPLIER_e4 = 10000.
    * 4. Build firmware and flash microcontroller (Your Component Tester).
@@ -421,7 +421,7 @@
    * NOTE: Following adjustments shouldn't change values by more than 15-20%.
    * 7. Now measure VOUT using a reliable DMM. Set INA226_BUS_V_MULTIPLIER_e4 = 10000 / (Displayed VOUT on Power Monitor) * (DMM Measured VOUT). Can only be whole numbers.
    * 8. Now set DMM in current measurement mode. Use a resistor that will generate around 50-100mA IOUT measurement between IN- and GND pins with DMM in series with load. Note current measured on DMM.
-   * 9. Update INA226_R_SHUNT_MILLI_OHM = INA226_R_SHUNT_MILLI_OHM * (Displayed IOUT on Power Monitor) / (DMM Measured IOUT), upto 2 decimal places.
+   * 9. Update INA226_R_SHUNT_MICRO_OHM = INA226_R_SHUNT_MICRO_OHM * (Displayed IOUT on Power Monitor) / (DMM Measured IOUT), upto 2 decimal places.
    * 9. Set INA226_P_THRESHOLD_mW_BUZZER = Power threshold in milli Watt at which you want your Tester to sound Over-Power Alert Beeps.
    * 10. Build firmware and flash microcontroller. Your INA 226 is now calibrated. It should have less than 1% error in Current and Voltage measurements over a wide range like [5mA, 1A] and [5V, 20V].
    */
@@ -431,9 +431,9 @@
 
 #ifdef INA3221_POWER_MONITOR
   #define INA3221_I2C_ADDR                          0x41      /* A0 pin -> GND 0x40, VCC 0x41, SDA 0x42, SCL 0x43  */
-  #define INA3221_CH1_R_SHUNT_MICRO_OHM             40000        /* Shunt Resistance in Micro Ohms. Recommended shunt resistor resistance is of 20000 (20mOhms) for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
-  #define INA3221_CH2_R_SHUNT_MICRO_OHM             40000        /* Shunt Resistance in Micro Ohms. Recommended shunt resistor resistance is of 20000 (20mOhms) for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
-  #define INA3221_CH3_R_SHUNT_MICRO_OHM             40000        /* Shunt Resistance in Micro Ohms. Recommended shunt resistor resistance is of 20000 (20mOhms) for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
+  #define INA3221_CH1_R_SHUNT_MICRO_OHM             40000     /* Shunt Resistance in Micro Ohms. Recommended shunt resistor resistance is of 40000 (40mOhms) for +/-4A range, 20mOhms for +/-8A range, 100mOhms for +/-1.64A range  */
+  #define INA3221_CH2_R_SHUNT_MICRO_OHM             40000     /* Shunt Resistance in Micro Ohms. Recommended shunt resistor resistance is of 40000 (40mOhms) for +/-4A range, 20mOhms for +/-8A range, 100mOhms for +/-1.64A range  */
+  #define INA3221_CH3_R_SHUNT_MICRO_OHM             40000     /* Shunt Resistance in Micro Ohms. Recommended shunt resistor resistance is of 40000 (40mOhms) for +/-4A range, 20mOhms for +/-8A range, 100mOhms for +/-1.64A range  */
   #define INA3221_AVERAGING_SAMPLES                 0         /* Number of samples per measurement. Range of values 0-7 provides for 1-1024 samples per measurement */
   #define I2C_RW                                             /* Requires I2C Read Support  */
 #endif

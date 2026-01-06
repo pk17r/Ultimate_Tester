@@ -80,8 +80,6 @@
 #define INA226_1024_SAMPLES               7
 
 
-//  CALIBRATION VAL
-#define INA226_CALIBRATION_VAL                   (5120000 / (INA226_R_SHUNT_MILLI_OHM * INA226_CURRENT_LEAST_COUNT_MICRO_AMP))
 
 
 ////////////////////////////////////////////////////////
@@ -223,7 +221,8 @@ uint8_t INA226_setup() {
   }
 
   // set calibration value
-  if(INA226__writeRegister(INA226_CALIBRATION, INA226_CALIBRATION_VAL) != I2C_OK){
+  uint16_t INA226_calibration_value = ((512 * ((uint32_t)10000000 / INA226_CURRENT_LEAST_COUNT_MICRO_AMP))/ INA226_R_SHUNT_MICRO_OHM);
+  if(INA226__writeRegister(INA226_CALIBRATION, INA226_calibration_value) != I2C_OK){
     return I2C_ERROR;
   }
 
