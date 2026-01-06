@@ -171,7 +171,7 @@ uint16_t INA3221_getBusVoltage_mV(uint8_t channel)
   return val;
 }
 
-int16_t INA3221_getShuntVoltage_uV(uint8_t channel)
+int32_t INA3221_getShuntVoltage_uV(uint8_t channel)
 {
   uint16_t val = 0;
   switch (channel) {
@@ -186,27 +186,27 @@ int16_t INA3221_getShuntVoltage_uV(uint8_t channel)
       break;
   }
   // 1 LSB = 5uV
-  return (int16_t)val * 5;
+  return ((int32_t)val * 5);
 }
 
 uint16_t INA3221_getLoadVoltage_mV(uint8_t channel)
 {
-  return (uint16_t)(INA3221_getBusVoltage_mV(channel) - INA3221_getShuntVoltage_uV(channel) / 1000);
+  return (uint16_t)((int32_t)INA3221_getBusVoltage_mV(channel) - INA3221_getShuntVoltage_uV(channel) / 1000);
 }
 
 int32_t INA3221_getCurrent_uA(uint8_t channel)
 {
   int32_t current_uA  = 0;
-  int16_t shunt_uV  = INA3221_getShuntVoltage_uV(channel);
+  int32_t shunt_uV  = INA3221_getShuntVoltage_uV(channel);
   switch (channel) {
     case 1:
-      current_uA = shunt_uV / INA3221_CH1_R_SHUNT_MILLI_OHM * 1000.0;
+      current_uA = (shunt_uV * 1000000) / INA3221_CH1_R_SHUNT_MICRO_OHM;
       break;
     case 2:
-      current_uA = shunt_uV / INA3221_CH2_R_SHUNT_MILLI_OHM * 1000.0;
+      current_uA = (shunt_uV * 1000000) / INA3221_CH2_R_SHUNT_MICRO_OHM;
       break;
     case 3:
-      current_uA = shunt_uV / INA3221_CH3_R_SHUNT_MILLI_OHM * 1000.0;
+      current_uA = (shunt_uV * 1000000) / INA3221_CH3_R_SHUNT_MICRO_OHM;
       break;
   }
   return current_uA;

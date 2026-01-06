@@ -2624,13 +2624,15 @@ void DisplayINA3221Row(uint8_t channel) {
       x_start--;      // 2 digits before decimal
     if(Current < 0)
       x_start--;      // minus sign
-    LCD_CharPos(x_start, row);
     if(Unit_first_letter == 'm') {
+      LCD_CharPos(x_start, row);
       Display_SignedValue(Current / 1000, 0, 0);    // show 0 decimal digit
       Display_Char(Unit_first_letter);
       Display_Char(Unit_second_letter);
     }
     else {
+      x_start -= 2;
+      LCD_CharPos(x_start, row);
       Display_SignedValue(Current / 10, -2, 0);     // show 2 decimal digits
       Display_Char(Unit_first_letter);
     }

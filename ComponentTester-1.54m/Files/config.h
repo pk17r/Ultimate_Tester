@@ -431,9 +431,9 @@
 
 #ifdef INA3221_POWER_MONITOR
   #define INA3221_I2C_ADDR                          0x41      /* A0 pin -> GND 0x40, VCC 0x41, SDA 0x42, SCL 0x43  */
-  #define INA3221_CH1_R_SHUNT_MILLI_OHM             40.00        /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
-  #define INA3221_CH2_R_SHUNT_MILLI_OHM             40.00        /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
-  #define INA3221_CH3_R_SHUNT_MILLI_OHM             40.00        /* Shunt Resistance in Milli Ohms, can be a float. Recommended shunt resistor resistance is of 20mOhms for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
+  #define INA3221_CH1_R_SHUNT_MICRO_OHM             40000        /* Shunt Resistance in Micro Ohms. Recommended shunt resistor resistance is of 20000 (20mOhms) for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
+  #define INA3221_CH2_R_SHUNT_MICRO_OHM             40000        /* Shunt Resistance in Micro Ohms. Recommended shunt resistor resistance is of 20000 (20mOhms) for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
+  #define INA3221_CH3_R_SHUNT_MICRO_OHM             40000        /* Shunt Resistance in Micro Ohms. Recommended shunt resistor resistance is of 20000 (20mOhms) for 0-3A range, 10mOhms for 0-6A range, 2mOhms for 0-10A range  */
   #define INA3221_AVERAGING_SAMPLES                 0         /* Number of samples per measurement. Range of values 0-7 provides for 1-1024 samples per measurement */
   #define I2C_RW                                             /* Requires I2C Read Support  */
 #endif

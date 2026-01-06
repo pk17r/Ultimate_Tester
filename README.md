@@ -9,17 +9,17 @@ Updated Ultimate Tester Schematics: https://github.com/pk17r/Ultimate_Tester/blo
 
 <br>
 
-![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/20250103_055959.jpg?raw=true "Component Tester + Power Supply and Power Monitor")
+![Alt text](Ultimate_Tester_PCBs/UltimateTester_v1_Pics/20250103_055959.jpg?raw=true "Component Tester + Power Supply and Power Monitor")
 
-![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/2.JPG?raw=true "Component Tester")
+![Alt text](Ultimate_Tester_PCBs/UltimateTester_v1_Pics/2.JPG?raw=true "Component Tester")
 
-![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/1.png?raw=true "LiPo Charge Boost Protect / USB-C Power Supply")
+![Alt text](Ultimate_Tester_PCBs/UltimateTester_v1_Pics/1.png?raw=true "LiPo Charge Boost Protect / USB-C Power Supply")
 
-![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/20250103_011049.jpg?raw=true "Accurate INA226 Power Monitor with External Power Supply")
+![Alt text](Ultimate_Tester_PCBs/UltimateTester_v1_Pics/20250103_011049.jpg?raw=true "Accurate INA226 Power Monitor with External Power Supply")
 
-![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/20250103_005226.jpg?raw=true "Accurate INA226 Power Monitor with Internal Power Supply")
+![Alt text](Ultimate_Tester_PCBs/UltimateTester_v1_Pics/20250103_005226.jpg?raw=true "Accurate INA226 Power Monitor with Internal Power Supply")
 
-![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/20250103_011416.jpg?raw=true "Accurate INA226 Power Monitor along with Voltmeter")
+![Alt text](Ultimate_Tester_PCBs/UltimateTester_v1_Pics/20250103_011416.jpg?raw=true "Accurate INA226 Power Monitor along with Voltmeter")
 
 Current Accuracy:<br>
 Test 1: Low Current: 2.4mA<br>
@@ -44,7 +44,7 @@ Test 1: Low Current: 2.4mA<br>
   </tr>
 </table>
 
-![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/20250106_160324.jpg?raw=true)
+![Alt text](Ultimate_Tester_PCBs/UltimateTester_v1_Pics/20250106_160324.jpg?raw=true)
 
 Test 2: Medium Current: 209.3mA<br>
 <table>
@@ -68,7 +68,7 @@ Test 2: Medium Current: 209.3mA<br>
   </tr>
 </table>
 
-![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/20250106_160627.jpg?raw=true)
+![Alt text](Ultimate_Tester_PCBs/UltimateTester_v1_Pics/20250106_160627.jpg?raw=true)
 
 Test 3: High Current: 1.07A<br>
 <table>
@@ -82,7 +82,7 @@ Test 3: High Current: 1.07A<br>
   <tr><td>Voltage</td><td>4.95V </td><td>4.928+0.1%=4.93V</td><td>+0.4%</td></tr>
 </table>
 
-![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/20250106_161220.jpg?raw=true)
+![Alt text](Ultimate_Tester_PCBs/UltimateTester_v1_Pics/20250106_161220.jpg?raw=true)
 
 Test 4: Different Voltages<br>
 <table>
@@ -97,7 +97,7 @@ Test 4: Different Voltages<br>
   <tr><td>15.15V</td><td>15.136+0.1%=15.15V</td><td>0%</td></tr>
 </table>
 
-![Alt text](ComponentTester-1.54m/UltimateTester_PCB/Pics/20250106_180711.jpg?raw=true)
+![Alt text](Ultimate_Tester_PCBs/UltimateTester_v1_Pics/20250106_180711.jpg?raw=true)
 
 <br>
 
