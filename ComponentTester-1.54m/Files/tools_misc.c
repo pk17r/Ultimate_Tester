@@ -2564,7 +2564,6 @@ void AboutPage(void)
 #define VMETER_ON_FLAG_POS    7
 #define BUZZER_BEEP_ON_FLAG_POS    6
 #define MP28167_A_SET_ILIM_FLAG_POS    5
-#define MP28167_A_ENABLE_FLAG_POS    4
 #define ROW_NO_BATTERY      1
 #ifdef INA226_POWER_MONITOR
   #define ROW_NO_VOUT         2
@@ -2789,10 +2788,6 @@ void PowerMonitor(void)
   Flag |= (1 << BUZZER_BEEP_ON_FLAG_POS);     // turn on flag to beep buzzer when power threshold is crossed
   #endif
 
-  #ifdef MP28167_A_BUCK_BOOST_CONVERTER
-  Flag |= (MP28167_A_GetEnableStatus() << MP28167_A_ENABLE_FLAG_POS);   // recording enable state in flag
-  #endif
-
   DisplayLabels();
 
   /*
@@ -2895,12 +2890,12 @@ void PowerMonitor(void)
 
       #ifdef MP28167_A_BUCK_BOOST_CONVERTER
       LCD_CharPos(6, ROW_NO_VOUT);
-      if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0) && (((Flag & (1 << MP28167_A_ENABLE_FLAG_POS)) >> MP28167_A_ENABLE_FLAG_POS) == 1))
+      if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0) && Pow_Supply_State.Enable)
         Display_Char('*');
       else
         Display_Space();
       #endif
-      if((Vout_mV > 100) || (((Flag & (1 << MP28167_A_ENABLE_FLAG_POS)) >> MP28167_A_ENABLE_FLAG_POS) == 1)) {
+      if(Pow_Supply_State.Enable) {
         DisplayPMVoltageValue(Vout_mV, ROW_NO_VOUT);
       }
       else {
@@ -2979,29 +2974,6 @@ void PowerMonitor(void)
       #endif
     #endif
 
-    #ifdef MP28167_A_BUCK_BOOST_CONVERTER
-    // Status messages
-    LCD_CharPos(11, 1);
-    if(MP28167_A_OCP())
-      Display_EEString(OCP_str);
-    else {
-      Display_Space(); Display_Space(); Display_Space();
-    }
-    LCD_CharPos(15, 1);
-    if(MP28167_A_CCMode())
-      Display_EEString(CC_str);
-    else if(MP28167_A_PG())
-      Display_EEString(PG_str);
-    else if(((Flag & (1 << MP28167_A_ENABLE_FLAG_POS)) >> MP28167_A_ENABLE_FLAG_POS) == 1) {
-      Display_Char('X'); Display_Char('X');
-    }
-    else {
-      Display_Space(); Display_Space();
-    }
-    MP28167_A_Clear_Interrupts();
-    // get Vout in range if out of range
-    MP28167_A_Get_ILim_InRange(Cfg.Vbat);
-    #endif
 
     /*
      *  user feedback
@@ -3078,12 +3050,10 @@ void PowerMonitor(void)
         if(MP28167_A_toggle()) {
           // enable
           Display_EEString(ON_str);
-          Flag |= (1 << MP28167_A_ENABLE_FLAG_POS);   // enable bit true
         }
         else {
           // disable
           Display_EEString(OFF_str);
-          Flag &= ~(1 << MP28167_A_ENABLE_FLAG_POS);  // enable bit false
         }
         wait500ms();
         Flag &= ~(1 << MP28167_A_SET_ILIM_FLAG_POS);  // disable ILim Set Menu
@@ -3135,7 +3105,7 @@ void PowerMonitor(void)
     else if (Test == KEY_RIGHT)      /* Right Key -> increase VOUT or ILIM */
     {
       if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0)) {
-        if(((Flag & (1 << MP28167_A_ENABLE_FLAG_POS)) >> MP28167_A_ENABLE_FLAG_POS) == 1)   // change Vout only if converter is enabled
+        if(Pow_Supply_State.Enable)   // change Vout only if converter is enabled
           MP28167_A_change_VrefRegisterVal(Step, 1);
       }
       else
@@ -3144,7 +3114,7 @@ void PowerMonitor(void)
     else if (Test == KEY_LEFT)      /* Left Key -> decrease VOUT or ILIM */
     {
       if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0)) {
-        if(((Flag & (1 << MP28167_A_ENABLE_FLAG_POS)) >> MP28167_A_ENABLE_FLAG_POS) == 1)   // change Vout only if converter is enabled
+        if(Pow_Supply_State.Enable)   // change Vout only if converter is enabled
           MP28167_A_change_VrefRegisterVal(Step, -1);
       }
       else

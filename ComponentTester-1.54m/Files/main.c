@@ -2457,6 +2457,34 @@ void CheckPowerSupply(void)
       // Reset output voltage to user set value
       MP28167_A_setVout_mV(Pow_Supply_State.Set_Vout_mV);
     }
+
+    // Power Supply Status messages
+    LCD_CharPos(11, 1);
+    if(MP28167_A_OCP())
+      Display_EEString(OCP_str);
+    else {
+      Display_Space(); Display_Space(); Display_Space();
+    }
+    LCD_CharPos(15, 1);
+    if(MP28167_A_CCMode())
+      Display_EEString(CC_str);
+    else if(MP28167_A_PG())
+      Display_EEString(PG_str);
+    else if(Pow_Supply_State.Enable) {
+      Display_Char('X'); Display_Char('X');
+    }
+    else {
+      Display_Space(); Display_Space();
+    }
+    MP28167_A_Clear_Interrupts();
+    // get Vout in range if out of range
+    MP28167_A_Get_ILim_InRange(Cfg.Vbat);
+  }
+  else if(MP28167_A_GetEnableStatus())
+  {
+    MP28167_A_disable();
+    // Reset output voltage to user set value
+    MP28167_A_setVout_mV(Pow_Supply_State.Set_Vout_mV);
   }
 }
 #endif
