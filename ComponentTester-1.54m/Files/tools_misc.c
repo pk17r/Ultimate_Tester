@@ -2570,6 +2570,9 @@ void AboutPage(void)
   #define ROW_NO_VOUT         2
   #define ROW_NO_CURRENT      3
   #define ROW_NO_POWER        4
+  #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+    #define ROW_NO_ILIM         5
+  #endif
 #endif
 #ifdef INA3221_POWER_MONITOR
   #ifdef INA226_POWER_MONITOR
@@ -2726,13 +2729,15 @@ void DisplayLabels()
     Display_NL_EEString(Power_str);
   #endif
 
-  #ifdef INA3221_POWER_MONITOR
-    LCD_CharPos(1, INA3221_FIRST_ROW);
-    Display_Char('C'); Display_Char('h');
-    LCD_CharPos(DISP_CHARS_PER_ROW / 3 + 2, INA3221_FIRST_ROW);
-    Display_Char('V');
-    LCD_CharPos(DISP_CHARS_PER_ROW * 2 / 3 + 3, INA3221_FIRST_ROW);
-    Display_Char('I');
+  #ifndef MP28167_A_BUCK_BOOST_CONVERTER
+    #ifdef INA3221_POWER_MONITOR
+      LCD_CharPos(1, INA3221_FIRST_ROW);
+      Display_Char('C'); Display_Char('h');
+      LCD_CharPos(DISP_CHARS_PER_ROW / 3 + 2, INA3221_FIRST_ROW);
+      Display_Char('V');
+      LCD_CharPos(DISP_CHARS_PER_ROW * 2 / 3 + 3, INA3221_FIRST_ROW);
+      Display_Char('I');
+    #endif
   #endif
 }
 
@@ -2885,6 +2890,9 @@ void PowerMonitor(void)
     /* display values */
 
     #ifdef INA226_POWER_MONITOR
+
+      // VOUT
+
       #ifdef MP28167_A_BUCK_BOOST_CONVERTER
       LCD_CharPos(6, ROW_NO_VOUT);
       if((((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0) && (((Flag & (1 << MP28167_A_ENABLE_FLAG_POS)) >> MP28167_A_ENABLE_FLAG_POS) == 1))
@@ -2899,6 +2907,9 @@ void PowerMonitor(void)
         Display_Space(); Display_Space(); Display_Space();
         Display_EEString(OFF_str); Display_Space(); Display_Space(); Display_Space(); Display_Space();
       }
+
+      // IOUT
+
       DisplaySignedPMValue(Isense, Current_Unit, 'A', ROW_NO_CURRENT);
       // display active current output sign
       LCD_CharPos(X_START_VALUE - 5, ROW_NO_CURRENT);
@@ -2909,9 +2920,17 @@ void PowerMonitor(void)
         Display_Space();
       #endif
       counter++;
+
+      // POWER
+
+      LCD_CharPos(1, ROW_NO_POWER);
+      Display_EEString(Power_str);
+      DisplaySignedPMValue(Power, Power_Unit, 'W', ROW_NO_POWER);
+
+      // ILIM
+
       #ifdef MP28167_A_BUCK_BOOST_CONVERTER
-      if((Isense == 0) || (counter % 25 < 12) || (((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 1)) {
-        LCD_CharPos(1, ROW_NO_POWER);
+        LCD_CharPos(1, ROW_NO_ILIM);
         Display_EEString(ILIM_str); Display_Space();
         if(((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 1)
           Display_Char('*');
@@ -2919,17 +2938,9 @@ void PowerMonitor(void)
           Display_Space();
         int32_t Ilim_uA = (int32_t)MP28167_A_getILim_mA(/*fetch = */ 0) * 1000;
         if(Ilim_uA < 1000000)
-          DisplaySignedPMValue(Ilim_uA, 'm', 'A', ROW_NO_POWER);
+          DisplaySignedPMValue(Ilim_uA, 'm', 'A', ROW_NO_ILIM);
         else
-          DisplaySignedPMValue(Ilim_uA / 1000, 'A', 'A', ROW_NO_POWER);
-      }
-      else {
-        LCD_CharPos(1, ROW_NO_POWER);
-        Display_EEString(Power_str);
-      #endif
-        DisplaySignedPMValue(Power, Power_Unit, 'W', ROW_NO_POWER);
-      #ifdef MP28167_A_BUCK_BOOST_CONVERTER
-      }
+          DisplaySignedPMValue(Ilim_uA / 1000, 'A', 'A', ROW_NO_ILIM);
       #endif
     #endif
 
@@ -3031,7 +3042,9 @@ void PowerMonitor(void)
         if(((Flag & (1 << MP28167_A_SET_ILIM_FLAG_POS)) >> MP28167_A_SET_ILIM_FLAG_POS) == 0) {
           Flag |= (1 << MP28167_A_SET_ILIM_FLAG_POS);   // enable ILim Set Menu
           // clear INA3221 lines
-          LCD_ClearLine(INA3221_FIRST_ROW);
+          #ifndef MP28167_A_BUCK_BOOST_CONVERTER
+            LCD_ClearLine(INA3221_FIRST_ROW);
+          #endif
           LCD_ClearLine(INA3221_FIRST_ROW+1);
           LCD_ClearLine(INA3221_FIRST_ROW+2);
           LCD_ClearLine(INA3221_FIRST_ROW+3);
@@ -3161,6 +3174,7 @@ void PowerMonitor(void)
 #undef ROW_NO_VOUT
 #undef ROW_NO_CURRENT
 #undef ROW_NO_POWER
+#undef ROW_NO_ILIM
 #undef INA3221_FIRST_ROW
 
 #endif    // HW_POWER_MONITOR
