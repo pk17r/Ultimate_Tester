@@ -2438,6 +2438,30 @@ void CheckBattery(void)
 #endif
 
 
+#if defined(INA226_POWER_MONITOR) && defined(MP28167_A_BUCK_BOOST_CONVERTER)
+/*
+ *  check power supply
+ *  - check Vout with stored Set Vout in Pow_Supply_State.Set_Vout_mV
+ *  - power off Power Supply in case of a exceeded set voltage
+ */
+void CheckPowerSupply(void)
+{
+  /* Check if power supply voltage is under user set value */
+  if(Pow_Supply_State.Enable)
+  {
+    uint16_t Vout_mV = INA226_getLoadVoltage_mV();
+    if(Vout_mV > (Pow_Supply_State.Set_Vout_mV + 500))
+    {
+      // Output voltage over 5% of user set voltage -> disable output
+      MP28167_A_disable();
+      // Reset output voltage to user set value
+      MP28167_A_setVout_mV(Pow_Supply_State.Set_Vout_mV);
+    }
+  }
+}
+#endif
+
+
 
 /* ************************************************************************
  *   the one and only main()

@@ -979,6 +979,15 @@ uint8_t TestKey(uint16_t Timeout, uint8_t Mode)
  
   while (Run)
   {
+    #if defined(INA226_POWER_MONITOR) && defined(MP28167_A_BUCK_BOOST_CONVERTER)
+    /*
+    *  check power supply
+    *  - check Vout with stored Set Vout in Pow_Supply_State.Set_Vout_mV
+    *  - power off Power Supply in case of a exceeded set voltage
+    */
+    CheckPowerSupply();
+    #endif
+
     /* take care about feedback timeout */
     if (Timeout > 0)               /* timeout enabled */
     {

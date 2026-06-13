@@ -493,6 +493,15 @@ typedef struct
 } Config_Type;
 
 
+#ifdef MP28167_A_BUCK_BOOST_CONVERTER
+/* record state of power supply */
+typedef struct
+{
+  uint8_t           Enable;        /* on or off */
+  uint16_t          Set_Vout_mV;   /* Set Vout mV value */
+} Power_Supply;
+#endif
+
 /* basic adjustment offsets and values (stored in EEPROM) */
 typedef struct
 {

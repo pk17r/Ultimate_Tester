@@ -96,6 +96,10 @@
     uint8_t         IR_Code[IR_CODE_BYTES];  /* raw data */
   #endif
 
+  #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+    Power_Supply      Pow_Supply_State;                /* record state of power supply */
+  #endif
+
 
   /*
    *  NVRAM values with their defaults
@@ -626,6 +630,9 @@
     extern uint8_t       IR_Code[];          /* raw data */
   #endif
 
+  #ifdef MP28167_A_BUCK_BOOST_CONVERTER
+    extern Power_Supply      Pow_Supply_State;                /* record state of power supply */
+  #endif
 
   /*
    *  NVRAM values with their defaults

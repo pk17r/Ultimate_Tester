@@ -181,7 +181,12 @@ int16_t INA226_getShuntVoltage_mV(void)
 
 uint16_t INA226_getLoadVoltage_mV(void)
 {
-  return (uint16_t)(INA226_getBusVoltage_mV() - INA226_getShuntVoltage_mV());
+  uint16_t Vout_mV = (uint16_t)(INA226_getBusVoltage_mV() - INA226_getShuntVoltage_mV());
+  #if INA226_BUS_V_MULTIPLIER_e4 == 10000
+    return Vout_mV;
+  #else
+    return ((uint32_t)Vout_mV * INA226_BUS_V_MULTIPLIER_e4 / 10000);
+  #endif
 }
 
 int32_t INA226_getCurrent_uA(void)

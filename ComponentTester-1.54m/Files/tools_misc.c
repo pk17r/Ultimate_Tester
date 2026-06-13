@@ -2812,7 +2812,7 @@ void PowerMonitor(void)
     #endif
     #ifdef INA226_POWER_MONITOR
       // Voltage
-      Vout_mV = ((uint32_t)INA226_getLoadVoltage_mV() * INA226_BUS_V_MULTIPLIER_e4 / 10000);
+      Vout_mV = INA226_getLoadVoltage_mV();
       // Current
       #ifdef INA226_POWER_MONITOR_I_OFFSET_ADJUSTMENT
       int32_t INA226_ZeroCurrent_uA_atV = (NV.INA226_ZeroCurrent_uA / 100) * (Vout_mV / 50);
@@ -2989,7 +2989,7 @@ void PowerMonitor(void)
     }
     MP28167_A_Clear_Interrupts();
     // get Vout in range if out of range
-    MP28167_A_GetVout_And_ILim_InRange(Cfg.Vbat);
+    MP28167_A_Get_ILim_InRange(Cfg.Vbat);
     #endif
 
     /*
@@ -3070,7 +3070,7 @@ void PowerMonitor(void)
         else {
           // disable
           Display_EEString(OFF_str);
-          Flag &= ~(1 << MP28167_A_ENABLE_FLAG_POS);  // eable bit false
+          Flag &= ~(1 << MP28167_A_ENABLE_FLAG_POS);  // enable bit false
         }
         wait500ms();
         Flag &= ~(1 << MP28167_A_SET_ILIM_FLAG_POS);  // disable ILim Set Menu

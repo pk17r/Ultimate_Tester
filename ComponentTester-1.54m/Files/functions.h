@@ -34,6 +34,10 @@
   extern void CheckBattery(void);
   #endif
 
+  #if defined(INA226_POWER_MONITOR) && defined(MP28167_A_BUCK_BOOST_CONVERTER)
+  extern void CheckPowerSupply(void);
+  #endif
+
 #endif
 
 
@@ -272,7 +276,7 @@ extern uint8_t MP28167_A_PG();
 extern uint8_t MP28167_A_OCP();
 extern uint8_t MP28167_A_UVP();
 extern void MP28167_A_Clear_Interrupts();
-extern void MP28167_A_GetVout_And_ILim_InRange(uint16_t Vin_mV);
+extern void MP28167_A_Get_ILim_InRange(uint16_t Vin_mV);
 extern uint16_t MP28167_A_getVout_mV();
 extern uint8_t MP28167_A_setVout_mV(uint16_t vout_mV);
 extern uint8_t MP28167_A_setILim_mA(uint16_t IoutLim_mA);

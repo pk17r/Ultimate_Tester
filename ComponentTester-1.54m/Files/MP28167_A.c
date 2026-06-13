@@ -281,16 +281,17 @@ uint8_t MP28167_A_begin()
   //   return I2C_ERROR;
 
   /* set disable pin as output */
-  MP28167_A_DDR |= (1 << MP28167_A_DISABLE);     /* enable output */
+  MP28167_A_DDR |= (1 << MP28167_A_DISABLE);     /* designate Grounding Mosfet gate GPIO as output */
   /* disable by turning grounding mosfet high */
-  MP28167_A_PORT |= (1 << MP28167_A_DISABLE);    /* set pin high */
+  MP28167_A_PORT |= (1 << MP28167_A_DISABLE);    /* set pin high to ground output */
 
   // set 750kHz Frequency and MP28167_A_disable converter
   // uint8_t ctrl1_register = MP28167_A_readRegister(MP28167_A_CTL1);
   // ctrl1_register = (ctrl1_register | MP28167_A_CTL1_FREQ_750kHz);   // use 750kHz frequency
   // ctrl1_register = (ctrl1_register & MP28167_A_CTL1_DISABLE);       // MP28167_A_disable
+  Pow_Supply_State.Enable = 0;
   MP28167_A_writeRegister(MP28167_A_CTL1, 0x74);   // 0x74 = b01110100 = CTL1 Register = EN / OCP-OVP-HICCUP_LATCH-OFF / DISCHG_EN / MODE_Forced-PWM_Auto-PFM-PWM / FREQ_00-500kHz_01-750kHz / 00_Reserved
-  // set Vout to 1V after MP28167_A_disable - good practice
+  // set default Vout to 5V
   MP28167_A_setVout_mV(5010);
   // MP28167_A_setILim_mA(300 /*mA*/);
   Current_Ilim_mA = 300;
@@ -339,15 +340,14 @@ void MP28167_A_enable() {
   MP28167_A_Clear_Interrupts();
 
   MP28167_A_writeRegister(MP28167_A_MASK, 0x01);  // Masks off the PG indication function on ALT. This is required to disable ALT pin when VOUT [1V, 2.8V] with R1/R2 = 11.5
+  Pow_Supply_State.Enable = 1;
 }
 
 
 void MP28167_A_disable() {
   // disable via I2C
   MP28167_A_writeRegister(MP28167_A_CTL1, 0x74);
-
-  // set Vout to 1V after MP28167_A_disable - good practice
-  // MP28167_A_setVout_mV(1000);
+  MP28167_A_Clear_Interrupts();
 
   // wait at least 50ms to allow MP28167_A to drain output via resistive path
   wait100ms();
@@ -356,6 +356,7 @@ void MP28167_A_disable() {
   MP28167_A_DDR |= (1 << MP28167_A_DISABLE);     /* enable output */
   /* disable by turning grounding mosfet high */
   MP28167_A_PORT |= (1 << MP28167_A_DISABLE);    /* set pin high */
+  Pow_Supply_State.Enable = 0;
 }
 
 
@@ -443,6 +444,8 @@ uint8_t MP28167_A_setVrefRegisterVal(uint16_t vref_register_val)
   else if(vref_register_val > MP28167_A_VREF_REG_MAX)
     vref_register_val = MP28167_A_VREF_REG_MAX;
 
+  Pow_Supply_State.Set_Vout_mV = MP28167_A_VrefRegisterVal_To_Vout_mV(vref_register_val);
+
   MP28167_A_Clear_Interrupts();
 
   uint8_t vref_l = (vref_register_val & 0x0007);
@@ -459,11 +462,8 @@ uint8_t MP28167_A_setVrefRegisterVal(uint16_t vref_register_val)
 }
 
 
-void MP28167_A_GetVout_And_ILim_InRange(uint16_t Vin_mV) {
-  // get Vout in range
-  MP28167_A_setVrefRegisterVal(MP28167_A_getVrefRegisterVal());
-
-  // get ILim in range
+void MP28167_A_Get_ILim_InRange(uint16_t Vin_mV) {
+  // get IOut Max Limit in range
   uint16_t Iout_Max_mA = MP28167_A_getILimMax_mA(Vin_mV);
   if(Iout_Max_mA < Current_Ilim_mA) {
     if(Iout_Max_mA < MP28167_A_ILIM_MIN_mA)
