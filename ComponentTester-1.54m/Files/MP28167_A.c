@@ -227,6 +227,50 @@ uint8_t MP28167_A_readRegister(uint8_t Register, uint8_t *Value)
 
 ////////////////////////////////////////////////////////
 //
+//  CONVERSIONS
+//
+
+
+uint16_t MP28167_A_VoutToVref_mV(uint16_t Vout_mV)
+{
+  return (uint16_t)(((uint32_t)Vout_mV * (uint32_t)MP28167_A_R2) / (uint32_t)(MP28167_A_R1 + MP28167_A_R2));
+}
+
+
+uint16_t MP28167_A_VrefToVout_mV(uint16_t Vref_mV)
+{
+  return (uint16_t)(((uint32_t)Vref_mV * (uint32_t)(MP28167_A_R1 + MP28167_A_R2)) / (uint32_t)MP28167_A_R2);
+}
+
+
+uint16_t MP28167_A_Vref_mV_To_VrefRegisterVal(uint16_t vref_mV)
+{
+  return (uint16_t)(((uint32_t)vref_mV * 5) / 4);   // 1 / 0.8
+}
+
+
+uint16_t MP28167_A_VrefRegisterVal_To_Vref_mV(uint16_t vref_register_val)
+{
+  return (uint16_t)(((uint32_t)vref_register_val * 4) / 5);   // * 0.8
+}
+
+
+uint16_t MP28167_A_VrefRegisterVal_To_Vout_mV(uint16_t vref_register_val)
+{
+  return MP28167_A_VrefToVout_mV(MP28167_A_VrefRegisterVal_To_Vref_mV(vref_register_val));
+}
+
+
+uint16_t MP28167_A_Vout_To_VrefRegisterVal(uint16_t Vout_mV)
+{
+  return MP28167_A_Vref_mV_To_VrefRegisterVal(MP28167_A_VoutToVref_mV(Vout_mV));
+}
+
+
+
+
+////////////////////////////////////////////////////////
+//
 //  CONSTRUCTOR
 //
 
@@ -432,7 +476,7 @@ void MP28167_A_GetVout_And_ILim_InRange(uint16_t Vin_mV) {
 
 uint16_t MP28167_A_getVref_mV()
 {
-  return (uint16_t)(((uint32_t)MP28167_A_getVrefRegisterVal() * 4) / 5);   // * 0.8
+  return MP28167_A_VrefRegisterVal_To_Vref_mV(MP28167_A_getVrefRegisterVal());
 }
 
 
@@ -463,21 +507,7 @@ void MP28167_A_change_VrefRegisterVal(uint16_t steps, int8_t direction)
 
 uint8_t MP28167_A_setVref_mV(uint16_t vref_mV)
 {
-  uint16_t vref_register_val = (uint16_t)(((uint32_t)vref_mV * 5) / 4);   // 1 / 0.8
-
-  return MP28167_A_setVrefRegisterVal(vref_register_val);
-}
-
-
-uint16_t MP28167_A_VoutToVref_mV(uint16_t Vout_mV)
-{
-  return (uint16_t)(((uint32_t)Vout_mV * (uint32_t)MP28167_A_R2) / (uint32_t)(MP28167_A_R1 + MP28167_A_R2));
-}
-
-
-uint16_t MP28167_A_VrefToVout_mV(uint16_t Vref_mV)
-{
-  return (uint16_t)(((uint32_t)Vref_mV * (uint32_t)(MP28167_A_R1 + MP28167_A_R2)) / (uint32_t)MP28167_A_R2);
+  return MP28167_A_setVrefRegisterVal(MP28167_A_Vref_mV_To_VrefRegisterVal(vref_mV));
 }
 
 
@@ -512,7 +542,7 @@ uint16_t MP28167_A_getVout_mV()
 
 uint8_t MP28167_A_setVout_mV(uint16_t vout_mV)
 {
-  return MP28167_A_setVref_mV(MP28167_A_VoutToVref_mV(vout_mV));
+  return MP28167_A_setVrefRegisterVal(MP28167_A_Vout_To_VrefRegisterVal(vout_mV));
 }
 
 
