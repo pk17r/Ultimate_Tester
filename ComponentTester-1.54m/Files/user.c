@@ -1582,8 +1582,41 @@ uint8_t MenuTool(uint8_t Items, uint8_t Type, void *Menu[], unsigned char *Unit)
     /*
      *  process user feedback
      */
- 
-    n = TestKey(0, CHECK_BAT);     /* wait for key */
+
+    // update battery status in realtime in Main Menu along with taking user input
+    n = 0;
+    uint16_t Timeout2 = 250;
+    #ifdef POWER_OFF_TIMEOUT
+    uint16_t PwrTimeout2 = 0;     /* timeout for auto power-off (auto-hold mode) */
+    /* init power-off timeout */
+    if (Cfg.OP_Control & OP_PWR_TIMEOUT)  /* power-off timeout enabled */
+    {
+      PwrTimeout2 = POWER_OFF_TIMEOUT * (1000 / Timeout2);
+    }
+    #endif
+    while(n == 0)
+    {
+      n = TestKey(Timeout2, CHECK_BAT);     /* wait for key */
+      #if defined (MAINMENU_AT_POWER_ON) && ! defined (BAT_NONE)
+        CheckBattery();
+        ShowBattery();                      /* display (line #1) battery status */
+      #endif
+
+      #ifdef POWER_OFF_TIMEOUT
+      /* automatic power-off */
+      if (PwrTimeout2 > 0)             /* power-off timeout enabled */
+      {
+        if (PwrTimeout2 > 1)           /* some time left */
+        {
+          PwrTimeout2--;               /* decrease counter */
+        }
+        else                          /* timeout */
+        {
+          n = KEY_POWER_OFF;        /* signal power-off and exit loop */
+        }
+      }
+      #endif
+    }
 
     #ifdef HW_KEYS
     /* processing for rotary encoder, etc. */

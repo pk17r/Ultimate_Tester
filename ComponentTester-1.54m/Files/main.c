@@ -2226,6 +2226,8 @@ void ShowBattery(void)
   uint8_t           Char2;         /* battery icon right part */
   #endif
 
+  LCD_CharPos(1, 1);
+
   #ifndef UI_BATTERY
   /* display battery info (text) */
   Display_EEString_Space(Battery_str);     /* display: Bat. */
