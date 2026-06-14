@@ -90,9 +90,6 @@
 #define MP28167_A_I_IN_MAX_mA         4000
 #define MP28167_A_EFFICIENCY_100      90
 
-uint16_t Current_Ilim_mA = 0;
-uint16_t Iout_Max_mA = 0;
-
 ////////////////////////////////////////////////////////
 //
 //  PRIVATE
@@ -294,8 +291,8 @@ uint8_t MP28167_A_begin()
   // set default Vout to 5V
   MP28167_A_setVout_mV(5010);
   // MP28167_A_setILim_mA(300 /*mA*/);
-  Current_Ilim_mA = 300;
-  MP28167_A_writeRegister(MP28167_A_IOUT_LIM, 0x06);    // Set Initial ILimit = 300mA
+  MP28167_A_setILim_mA(300 /*mA*/);
+  // MP28167_A_writeRegister(MP28167_A_IOUT_LIM, 0x06);    // Set Initial ILimit = 300mA
   return I2C_OK;
 }
 
@@ -462,14 +459,13 @@ uint8_t MP28167_A_setVrefRegisterVal(uint16_t vref_register_val)
 }
 
 
-void MP28167_A_Get_ILim_InRange(uint16_t Vin_mV) {
+void MP28167_A_Get_ILim_InRange(uint16_t Vin_mV, uint16_t Vout_mV) {
   // get IOut Max Limit in range
-  uint16_t Iout_Max_mA = MP28167_A_getILimMax_mA(Vin_mV);
-  if(Iout_Max_mA < Current_Ilim_mA) {
-    if(Iout_Max_mA < MP28167_A_ILIM_MIN_mA)
-      Iout_Max_mA = MP28167_A_ILIM_MIN_mA;
-    MP28167_A_setILim_mA(Iout_Max_mA);
-    MP28167_A_getILim_mA(/*fetch = */ 1);
+  Pow_Supply_State.Iout_Max_mA = MP28167_A_getILimMax_mA(Vin_mV, Vout_mV);
+  if(Pow_Supply_State.Iout_Max_mA < Pow_Supply_State.Set_IoutLim_mA) {
+    if(Pow_Supply_State.Iout_Max_mA < MP28167_A_ILIM_MIN_mA)
+      Pow_Supply_State.Iout_Max_mA = MP28167_A_ILIM_MIN_mA;
+    MP28167_A_setILim_mA(Pow_Supply_State.Iout_Max_mA);
   }
 }
 
@@ -548,6 +544,8 @@ uint8_t MP28167_A_setVout_mV(uint16_t vout_mV)
 
 uint8_t MP28167_A_setILim_mA(uint16_t IoutLim_mA)
 {
+  Pow_Supply_State.Set_IoutLim_mA = IoutLim_mA;
+
   uint8_t ilim_register_val_desired = (uint8_t)(IoutLim_mA / (uint16_t)50);
   ilim_register_val_desired = (0x7F & ilim_register_val_desired);
   // Serial.print("ilim_register_val_desired=");Serial.println(ilim_register_val_desired);
@@ -581,11 +579,9 @@ uint8_t MP28167_A_setILim_mA(uint16_t IoutLim_mA)
 }
 
 
-uint16_t MP28167_A_getILim_mA(uint8_t fetch)
+uint16_t MP28167_A_getILim_mA()
 {
-  if(fetch != 0)
-    Current_Ilim_mA = (((uint16_t)MP28167_A_getILimReg()) * (uint16_t)50);
-  return Current_Ilim_mA;
+  return (((uint16_t)MP28167_A_getILimReg()) * (uint16_t)50);
 }
 
 
@@ -599,16 +595,15 @@ uint8_t MP28167_A_getILimReg()
 }
 
 
-uint16_t MP28167_A_getILimMax_mA(uint16_t Vin_mV)
+uint16_t MP28167_A_getILimMax_mA(uint16_t Vin_mV, uint16_t Vout_mV)
 {
   // continous Iout = 3A or Iin = 4A
-  uint16_t Vout_mV = MP28167_A_getVout_mV();
   uint32_t Power_In_Max_mmW = (uint32_t)Vin_mV * MP28167_A_I_IN_MAX_mA;
   uint32_t Power_Out_Max_mmW = Power_In_Max_mmW * MP28167_A_EFFICIENCY_100 / 100;
-  Iout_Max_mA = Power_Out_Max_mmW / Vout_mV;
-  if(Iout_Max_mA > MP28167_A_ILIM_MAX_mA)
-    Iout_Max_mA = MP28167_A_ILIM_MAX_mA;
-  return Iout_Max_mA;
+  Pow_Supply_State.Iout_Max_mA = Power_Out_Max_mmW / Vout_mV;
+  if(Pow_Supply_State.Iout_Max_mA > MP28167_A_ILIM_MAX_mA)
+    Pow_Supply_State.Iout_Max_mA = MP28167_A_ILIM_MAX_mA;
+  return Pow_Supply_State.Iout_Max_mA;
 }
 
 
@@ -623,19 +618,18 @@ void MP28167_A_change_ILim(uint16_t steps, int8_t direction)
   uint16_t IoutLim_new_mA = 0;
   uint16_t IoutLim_change_mA = 50*steps;
   if(direction > 0)
-    IoutLim_new_mA = Current_Ilim_mA + IoutLim_change_mA;
+    IoutLim_new_mA = Pow_Supply_State.Set_IoutLim_mA + IoutLim_change_mA;
   else {
-    if(IoutLim_change_mA > Current_Ilim_mA)
+    if(IoutLim_change_mA > Pow_Supply_State.Set_IoutLim_mA)
       IoutLim_new_mA = MP28167_A_ILIM_MIN_mA;
     else
-      IoutLim_new_mA = Current_Ilim_mA - IoutLim_change_mA;
+      IoutLim_new_mA = Pow_Supply_State.Set_IoutLim_mA - IoutLim_change_mA;
   }
-  if(IoutLim_new_mA > Iout_Max_mA)
-    IoutLim_new_mA = Iout_Max_mA;
+  if(IoutLim_new_mA > Pow_Supply_State.Iout_Max_mA)
+    IoutLim_new_mA = Pow_Supply_State.Iout_Max_mA;
   else if(IoutLim_new_mA < MP28167_A_ILIM_MIN_mA)
     IoutLim_new_mA = MP28167_A_ILIM_MIN_mA;
   MP28167_A_setILim_mA(IoutLim_new_mA);
-  MP28167_A_getILim_mA(/*fetch = */ 1);
 }
 
 

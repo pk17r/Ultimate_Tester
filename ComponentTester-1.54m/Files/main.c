@@ -2452,12 +2452,15 @@ void CheckPowerSupply(void)
   if(Pow_Supply_State.Enable)
   {
     uint16_t Vout_mV = INA226_getLoadVoltage_mV();
-    if(Vout_mV > (Pow_Supply_State.Set_Vout_mV + 500))
+    uint16_t IoutLim_mA = MP28167_A_getILim_mA();
+    if((Vout_mV > (Pow_Supply_State.Set_Vout_mV + 500)) || (IoutLim_mA != Pow_Supply_State.Set_IoutLim_mA))
     {
       // Output voltage over 5% of user set voltage -> disable output
       MP28167_A_disable();
       // Reset output voltage to user set value
       MP28167_A_setVout_mV(Pow_Supply_State.Set_Vout_mV);
+      // Reset output current limit to user set value
+      MP28167_A_setILim_mA(Pow_Supply_State.Set_IoutLim_mA);
     }
 
     // Power Supply Status messages
@@ -2480,13 +2483,15 @@ void CheckPowerSupply(void)
     }
     MP28167_A_Clear_Interrupts();
     // get Vout in range if out of range
-    MP28167_A_Get_ILim_InRange(Cfg.Vbat);
+    MP28167_A_Get_ILim_InRange(Cfg.Vbat, Vout_mV);
   }
   else if(MP28167_A_GetEnableStatus())
   {
     MP28167_A_disable();
     // Reset output voltage to user set value
     MP28167_A_setVout_mV(Pow_Supply_State.Set_Vout_mV);
+    // Reset output current limit to user set value
+    MP28167_A_setILim_mA(Pow_Supply_State.Set_IoutLim_mA);
   }
 }
 #endif

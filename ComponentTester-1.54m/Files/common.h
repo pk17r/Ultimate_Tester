@@ -499,6 +499,8 @@ typedef struct
 {
   uint8_t           Enable;        /* on or off */
   uint16_t          Set_Vout_mV;   /* Set Vout mV value */
+  uint16_t          Set_IoutLim_mA;    /* Set IoutLim mA value */
+  uint16_t          Iout_Max_mA;   /* Max IOut possible */
 } Power_Supply;
 #endif
 

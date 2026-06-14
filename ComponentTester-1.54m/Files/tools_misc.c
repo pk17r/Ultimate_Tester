@@ -2931,7 +2931,7 @@ void PowerMonitor(void)
           Display_Char('*');
         else
           Display_Space();
-        int32_t Ilim_uA = (int32_t)MP28167_A_getILim_mA(/*fetch = */ 0) * 1000;
+        int32_t Ilim_uA = (int32_t)Pow_Supply_State.Set_IoutLim_mA * 1000;
         if(Ilim_uA < 1000000)
           DisplaySignedPMValue(Ilim_uA, 'm', 'A', ROW_NO_ILIM);
         else
@@ -3021,13 +3021,12 @@ void PowerMonitor(void)
           LCD_ClearLine(INA3221_FIRST_ROW+2);
           LCD_ClearLine(INA3221_FIRST_ROW+3);
 
-          uint16_t Iout_Max_mA = MP28167_A_getILimMax_mA(Cfg.Vbat);
           LCD_CharPos(5, INA3221_FIRST_ROW+1);
           Display_EEString(SET_str); Display_Space(); Display_EEString(ILIM_str);
           LCD_CharPos(1, INA3221_FIRST_ROW+2);
           Display_EEString(ILIM_str); Display_Space(); Display_EEString(MIN_str); Display_Space(); Display_Value(MP28167_A_getILimMin_mA() / 10, -2, 'A');
           LCD_CharPos(1, INA3221_FIRST_ROW+3);
-          Display_EEString(ILIM_str); Display_Space(); Display_EEString(MAX_str); Display_Space(); Display_Value(Iout_Max_mA / 10, -2, 'A');
+          Display_EEString(ILIM_str); Display_Space(); Display_EEString(MAX_str); Display_Space(); Display_Value(Pow_Supply_State.Iout_Max_mA / 10, -2, 'A');
         }
         else {
           Flag &= ~(1 << MP28167_A_SET_ILIM_FLAG_POS);  // disable ILim Set Menu
